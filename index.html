@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ZDE UPRAVIT: název stránky a popis pro náhled odkazu -->
+<title>[JMÉNO] &amp; [JMÉNO] — svatba [DATUM]</title>
+<meta name="description" content="Bereme se [DATUM] v [MÍSTO]. Všechno, co potřebujete vědět — kdy, kde, jak se dostat a kde přespat.">
+<meta name="robots" content="noindex">
+
+<meta property="og:title" content="[JMÉNO] &amp; [JMÉNO] — svatba">
+<meta property="og:description" content="Bereme se [DATUM] v [MÍSTO].">
+<meta property="og:type" content="website">
+
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>💍</text></svg>">
+
+<!-- Nastaví motiv dřív, než se stránka vykreslí, aby neproblikla bílá. -->
+<script>
+  try {
+    var t = localStorage.getItem('theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#obsah">Přeskočit na obsah</a>
+
+<nav class="nav" aria-label="Sekce stránky">
+  <div class="nav-inner">
+    <ul class="nav-links">
+      <li><a href="#proc">Proč přijet</a></li>
+      <li><a href="#kdy-kde">Kde a kdy</a></li>
+      <li><a href="#program">Program</a></li>
+      <li><a href="#ubytovani">Ubytování</a></li>
+      <li><a href="#galerie">Fotky</a></li>
+      <li><a href="#rsvp">Potvrzení</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+    <button class="theme-toggle" type="button" aria-label="Přepnout světlý a tmavý motiv">◐</button>
+  </div>
+</nav>
+
+<main id="obsah">
+
+  <!-- ====================== ÚVOD ====================== -->
+  <header class="hero">
+    <p class="eyebrow">Bereme se</p>
+    <!-- ZDE UPRAVIT: jména -->
+    <h1>[JMÉNO]<span class="amp">&amp;</span>[JMÉNO]</h1>
+    <!-- ZDE UPRAVIT: datum a místo -->
+    <p class="hero-meta"><strong>[DATUM]</strong> &middot; [MÍSTO KONÁNÍ], [MĚSTO]</p>
+
+    <!-- ZDE UPRAVIT: data-date ve formátu RRRR-MM-DDTHH:MM (čas obřadu) -->
+    <div class="countdown" data-date="2027-06-12T13:00" aria-live="off">
+      <div><span class="num" data-unit="days">—</span><span class="lbl">dní</span></div>
+      <div><span class="num" data-unit="hours">—</span><span class="lbl">hodin</span></div>
+      <div><span class="num" data-unit="minutes">—</span><span class="lbl">minut</span></div>
+    </div>
+
+    <a class="btn" href="#rsvp">Potvrdit účast</a>
+  </header>
+
+  <!-- ====================== PROČ PŘIJET ====================== -->
+  <section id="proc">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Proč přijet</h2>
+        <p class="section-intro">Protože den, kdy si řekneme ano, dává smysl jen s lidmi, kteří nás k němu dovedli. A vy jste mezi nimi.</p>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <span class="icon" aria-hidden="true">🤍</span>
+          <h3>Jste důvod, proč to má smysl</h3>
+          <p>Nezveme sto lidí kvůli počtu. Zveme vás, protože bez vás by ten den byl jen razítko na úřadě.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">🍽️</span>
+          <h3>Bude se jíst a pít</h3>
+          <p>Pořádná večeře, otevřený bar a dort, kvůli kterému stojí za to nechat si místo.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">🎶</span>
+          <h3>A tancovat až do rána</h3>
+          <p>Kapela, pak DJ. Pohodlné boty si vezměte, budete je potřebovat.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">📍</span>
+          <h3>Na místě, které máme rádi</h3>
+          <p>[MÍSTO KONÁNÍ] — kousek od [MĚSTO], se zahradou, kde se dá i jen sedět a povídat si.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">🛏️</span>
+          <h3>Nemusíte nikam spěchat</h3>
+          <p>Ubytování je přímo na místě i kousek vedle. Nikdo se nemusí řešit, jak se dostane domů.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">📸</span>
+          <h3>A zůstane to</h3>
+          <p>Fotograf s námi bude celý den. Fotky pak najdete tady na téhle stránce.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== KDE A KDY ====================== -->
+  <section id="kdy-kde">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Kde a kdy</h2>
+        <p class="section-intro">Obřad i hostina jsou na jednom místě — mezi nimi se nikam nepřejíždí.</p>
+      </div>
+
+      <div class="venues">
+        <div class="venue">
+          <p class="when">Obřad &middot; [DATUM], [ČAS]</p>
+          <h3>[NÁZEV MÍSTA OBŘADU]</h3>
+          <address>[ULICE ČP]<br>[PSČ MĚSTO]</address>
+          <p class="map-link"><a href="[ODKAZ NA MAPY]" target="_blank" rel="noopener">Otevřít v mapách &rarr;</a></p>
+        </div>
+
+        <div class="venue">
+          <p class="when">Hostina &middot; od [ČAS]</p>
+          <h3>[NÁZEV MÍSTA HOSTINY]</h3>
+          <address>[ULICE ČP]<br>[PSČ MĚSTO]</address>
+          <p class="map-link"><a href="[ODKAZ NA MAPY]" target="_blank" rel="noopener">Otevřít v mapách &rarr;</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== PROGRAM ====================== -->
+  <section id="program">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Harmonogram dne</h2>
+        <p class="section-intro">Orientačně — časy se můžou o kus posunout, ale pořadí platí.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <span class="tl-time">12:30</span>
+          <h3>Příjezd hostů</h3>
+          <p>Přivítání, welcome drink, čas najít si místo.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time">13:00</span>
+          <h3>Obřad</h3>
+          <p>Prosíme být na místě nejpozději 13:00. Trvá zhruba půl hodiny.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time">13:45</span>
+          <h3>Gratulace a focení</h3>
+          <p>Společné fotky, přípitek.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time">15:00</span>
+          <h3>Oběd</h3>
+          <p>Servírované menu. Speciální stravování nám dejte vědět v potvrzení účasti.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time">17:00</span>
+          <h3>Krájení dortu</h3>
+          <p>A první tanec.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time">19:00</span>
+          <h3>Večerní raut</h3>
+          <p>Kdyby někdo ještě mohl.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time">20:00</span>
+          <h3>Kapela a pak DJ</h3>
+          <p>Zábava do rána.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== UBYTOVÁNÍ A DOPRAVA ====================== -->
+  <section id="ubytovani">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Ubytování a doprava</h2>
+        <p class="section-intro">Ať se nikdo neřeší, jak se dostane tam a hlavně zpátky.</p>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <span class="icon" aria-hidden="true">🏨</span>
+          <h3>Přímo na místě</h3>
+          <p>[POČET] pokojů v [NÁZEV]. Rezervujte na [KONTAKT] s heslem „svatba [PŘÍJMENÍ]“ — máme je blokované do [DATUM].</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">🛎️</span>
+          <h3>Kousek vedle</h3>
+          <p>[NÁZEV PENZIONU], [VZDÁLENOST] pěšky. Rezervace individuálně.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">🚗</span>
+          <h3>Autem</h3>
+          <p>Parkování zdarma přímo u areálu, kapacita [POČET] míst. Auto tam může zůstat přes noc.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">🚌</span>
+          <h3>Svozový autobus</h3>
+          <p>Z [MĚSTO] v [ČAS], zpátky ve [ČAS]. Místo si řekněte v potvrzení účasti.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">🚆</span>
+          <h3>Vlakem</h3>
+          <p>Nejbližší nádraží [NÁZEV], [VZDÁLENOST]. Odvoz zařídíme, napište nám.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">🧒</span>
+          <h3>S dětmi</h3>
+          <p>Děti jsou vítané. Bude pro ně koutek a hlídání od [ČAS].</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== DRESS CODE ====================== -->
+  <section id="dress-code">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Dress code</h2>
+        <p class="section-intro">Žádná pravidla, která by vás měla stresovat. Jen dvě prosby.</p>
+      </div>
+
+      <div class="cards" style="max-width:44rem;margin-inline:auto;">
+        <div class="card">
+          <span class="icon" aria-hidden="true">👗</span>
+          <h3>Sváteční, ale pohodlné</h3>
+          <p>Oblek nemusí být. Vezměte si něco, v čem se budete cítit dobře i v jedenáct večer na parketu. Obřad je venku na trávě — podpatky to nebudou mít lehké.</p>
+        </div>
+        <div class="card">
+          <span class="icon" aria-hidden="true">🤍</span>
+          <h3>Bílou nechte nevěstě</h3>
+          <p>Jinak si barvu vyberte, jakou chcete. Pokud chcete ladit, naše paleta je švestková a zlatá.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== GALERIE ====================== -->
+  <section id="galerie">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Fotogalerie</h2>
+        <p class="section-intro">Pár našich fotek teď, ty svatební doplníme, jakmile je dostaneme od fotografa.</p>
+      </div>
+
+      <!-- Naplní se z assets/gallery.js. Prázdný seznam = hláška níž. -->
+      <div class="gallery" id="gallery"></div>
+
+      <div class="gallery-empty" id="gallery-empty">
+        <span class="icon" aria-hidden="true">📷</span>
+        <p><strong>Fotky připravujeme.</strong></p>
+        <p>Vrátíme se sem po svatbě — a pokud nějakou vyfotíte vy, pošlete nám ji, rádi ji sem přidáme.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== DARY ====================== -->
+  <section id="dary">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Svatební dary</h2>
+      </div>
+      <div class="gifts">
+        <p>Největší dárek je, že přijedete. Vážně — nic dalšího nečekáme.</p>
+        <p>Kdyby vám to ale nedalo: domácnost máme zařízenou, takže nejvíc nám pomůže příspěvek na [NA CO — svatební cestu / rekonstrukci]. Číslo účtu <strong>[ČÍSLO ÚČTU]</strong>, nebo obálka na místě.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== RSVP ====================== -->
+  <section id="rsvp">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Potvrzení účasti</h2>
+        <p class="section-intro">Potřebujeme vědět počty kvůli jídlu a místům. Stačí pár vět.</p>
+      </div>
+
+      <div class="rsvp">
+        <span class="deadline">Prosíme do [DATUM]</span>
+        <p>Napište nám, jestli přijedete, kolik vás bude, jestli máte nějaké omezení v jídle a jestli chcete místo v autobuse.</p>
+        <div class="actions">
+          <!-- ZDE UPRAVIT: buď odkaz na formulář, nebo nechat mailto -->
+          <a class="btn" href="mailto:[EMAIL]?subject=Svatba%20%5BJM%C3%89NA%5D%20%E2%80%94%20potvrzen%C3%AD%20%C3%BA%C4%8Dasti&amp;body=Jm%C3%A9na%3A%20%0APo%C4%8Det%20osob%3A%20%0AStravovac%C3%AD%20omezen%C3%AD%3A%20%0AM%C3%ADsto%20v%20autobuse%3A%20ano%20%2F%20ne%0AUbytov%C3%A1n%C3%AD%3A%20ano%20%2F%20ne">Potvrdit e‑mailem</a>
+          <a class="btn btn-ghost" href="tel:[TELEFON]">Nebo zavolejte</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== FAQ ====================== -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Časté dotazy</h2>
+      </div>
+
+      <div class="faq">
+        <details>
+          <summary>Můžu vzít partnera nebo partnerku?</summary>
+          <p>Pokud je uvedený/á na pozvánce, určitě. Jestli si nejste jistí, napište nám — kapacita je omezená, ale zeptat se nic nestojí.</p>
+        </details>
+        <details>
+          <summary>Můžu vzít děti?</summary>
+          <p>Ano. Bude pro ně dětský koutek a od [ČAS] hlídání. Do potvrzení účasti nám napište počet a věk.</p>
+        </details>
+        <details>
+          <summary>Co když mám dietní omezení?</summary>
+          <p>Napište nám to v potvrzení účasti — bezlepkové, vegetariánské i veganské menu zařídíme.</p>
+        </details>
+        <details>
+          <summary>Můžu během obřadu fotit?</summary>
+          <p>Během samotného obřadu prosíme telefony schované — máme fotografa. Potom fotěte, co hrdlo ráčí, a pošlete nám to.</p>
+        </details>
+        <details>
+          <summary>Kdy to končí?</summary>
+          <p>Oficiálně [ČAS]. Neoficiálně, až odejde poslední.</p>
+        </details>
+        <details>
+          <summary>Zapomněl jsem něco / potřebuju něco vědět</summary>
+          <p>Napište nebo zavolejte, kontakty jsou hned pod tímhle. Není hloupá otázka.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== KONTAKT ====================== -->
+  <section id="kontakt">
+    <div class="wrap">
+      <div class="section-head">
+        <hr class="ornament">
+        <h2>Kontakt</h2>
+        <p class="section-intro">Cokoli potřebujete — ptejte se klidně i na hlouposti.</p>
+      </div>
+
+      <div class="contacts">
+        <div class="contact">
+          <p class="role">Nevěsta</p>
+          <p class="name">[JMÉNO]</p>
+          <a href="tel:[TELEFON]">[TELEFON]</a>
+          <a href="mailto:[EMAIL]">[EMAIL]</a>
+        </div>
+        <div class="contact">
+          <p class="role">Ženich</p>
+          <p class="name">[JMÉNO]</p>
+          <a href="tel:[TELEFON]">[TELEFON]</a>
+          <a href="mailto:[EMAIL]">[EMAIL]</a>
+        </div>
+        <div class="contact">
+          <p class="role">Svědek / koordinace</p>
+          <p class="name">[JMÉNO]</p>
+          <a href="tel:[TELEFON]">[TELEFON]</a>
+          <p style="font-size:.875rem;color:var(--text-muted);margin-top:.5rem;">Na místě v den svatby</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p class="footer-names">[JMÉNO] &amp; [JMÉNO]</p>
+  <p>[DATUM] &middot; [MÍSTO]</p>
+</footer>
+
+<!-- Lightbox galerie -->
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Zvětšená fotka">
+  <img id="lb-img" alt="">
+  <button class="lb-btn lb-close" type="button" aria-label="Zavřít">✕</button>
+  <button class="lb-btn lb-prev" type="button" aria-label="Předchozí">‹</button>
+  <button class="lb-btn lb-next" type="button" aria-label="Další">›</button>
+  <span class="lb-count" id="lb-count"></span>
+</div>
+
+<script src="assets/gallery.js"></script>
+<script src="assets/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# POZOR: tyhle dvě stránky jsou interní Košík BI prezentace, které v téhle
+# složce ležely dřív. Do veřejného repa NESMÍ — obsahují popis interní
+# infrastruktury. Nemaž tyhle řádky.
+index-cz.html
+workflow-demo-cz.html
+
+# OneDrive / Windows
+desktop.ini
+Thumbs.db
+~$*
+
+# macOS
+.DS_Store
+
+# Originály fotek před zmenšením (do repa patří jen ty zmenšené)
+assets/img/originals/
