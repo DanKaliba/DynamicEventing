@@ -14,3 +14,11 @@ Thumbs.db
 
 # Originály fotek před zmenšením (do repa patří jen ty zmenšené)
 assets/img/originals/
+
+# Zdrojový plát z Vesmíru (ilustrace Jan Roleček) a všech 114 vytažených
+# rostlin. Do veřejného repa nepatří — bylo by to šíření celého cizího
+# díla. Ven jde jen assets/louka.svg, kde je použitých 29 druhů.
+# Bez těchto souborů nejde tools/louka.py spustit; viz README.
+vesmir_kytky.pdf
+tools/kytky-vse.svg
+tools/kytky-vse.json

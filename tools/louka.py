@@ -1,238 +1,103 @@
-"""Vygeneruje SVG louku pro hero svatebního webu.
+"""Poskládá louku z botanických ilustrací vytažených z vesmir_kytky.pdf.
 
-Ručně rozmístit sto stonků by dopadlo pravidelně — a louka pravidelná
-není. Generátor je deterministický (pevný seed), takže výstup je pokaždé
-stejný; přegenerovat po zásahu je otázka vteřiny.
+Na rozdíl od první verze se květy nekreslí — používají se hotové rostliny
+z plátu (extrakce.py). Každá rostlina má počátek ve středu spodní hrany
+a výšku 100 jednotek, takže umístit ji znamená posunout a zvětšit.
 
-Tři vrstvy kvůli hloubce:
-  1. zadní    — menší, tmavší a hustší květy
-  2. podrost  — souvislá zubatá masa trávy dole, drží spodní hranu
-  3. přední   — větší a syté, nesou barvu
+Výstup je **samostatný soubor** assets/louka.svg, ne vložený do HTML:
+definice rostlin jsou velké a takhle se cachují zvlášť a nenafukují
+stránku.
 
-Hlavičky květů jdou do <defs> a používají se přes <use>. Bez toho má
-soubor přes 150 kB; takhle je pod 40 a rozmanitost zůstává, protože
-variant je od každého druhu několik a každé užití má vlastní otočení.
+SVG je záměrně statické. Dřív rostla každá rostlina zvlášť animací uvnitř
+SVG, jenže dokud animace nedoběhne, je louka slisovaná u země — a cokoli,
+co stránku vykreslí staticky (náhled odkazu, tisk, snímek obrazovky),
+tenhle stav chytí. Nástup teď řeší stránka jedním pohybem celé louky,
+takže když animace neproběhne, louka je prostě na místě.
 
-Barvy jsou navzorkované z fotky louky (viz palette.py), ne odhadnuté.
+Poměr stran je schválně hodně široký (8:1). Když je rámeček v CSS užší
+než tenhle poměr, object-fit: cover ořízne boky; kdyby byl širší, uřízl
+by rostlinám hlavy.
 """
 
-import math
+import io
+import json
 import random
+import re
+import sys
 
-random.seed(20270612)  # datum svatby, ať je seed na něco
+W, H = 3000, 300
 
-W, H = 1200, 320
-
-MAK = "#CC030E"
-MAK_STRED = "#2A0A08"
-CHRPA = "#2E6BD8"       # oproti vzorku zesvětleno — #175ACA na tmavé zeleni zaniká
-PRYSKYRNIK = "#E3C93A"  # taky zesvětleno, aby nešlo do olivova
-KOPRETINA = "#ECEEE7"
-SILENKA = "#C96EA6"
-TRAVA = "#99B949"
-TRAVA_TMAVA = "#496E16"
-LES = "#0C1A06"
-
-
-def mix(hexa, s_cim, podil):
-    hexa, s_cim = hexa.lstrip("#"), s_cim.lstrip("#")
-    out = []
-    for i in (0, 2, 4):
-        a, b = int(hexa[i:i + 2], 16), int(s_cim[i:i + 2], 16)
-        out.append(int(round(a * (1 - podil) + b * podil)))
-    return "#{:02X}{:02X}{:02X}".format(*out)
-
-
-def do_dalky(barva, podil):
-    """Barva viděná hlouběji v louce.
-
-    Čisté míchání s barvou lesa ubíjí žlutou do bahna, protože jí bere
-    světlost rychleji než sytost. Proto se nejdřív část cesty jde k trávě
-    a teprve zbytek ke tmě.
-    """
-    return mix(mix(barva, TRAVA, podil * 0.35), LES, podil * 0.55)
-
-
-def kruh(cx, cy, r, fill):
-    return f'<circle cx="{cx:.0f}" cy="{cy:.0f}" r="{r:.1f}" fill="{fill}"/>'
-
-
-def elipsa(cx, cy, rx, ry, fill, uhel=0):
-    t = f' transform="rotate({uhel:.0f} {cx:.0f} {cy:.0f})"' if uhel else ""
-    return f'<ellipse cx="{cx:.0f}" cy="{cy:.0f}" rx="{rx:.1f}" ry="{ry:.1f}" fill="{fill}"{t}/>'
-
-
-# ---------- Hlavičky květů, se středem v (0,0) ----------
-
-def mak(barva):
-    """Vlčí mák — čtyři široké překryté lístky, tmavý střed."""
-    kusy = []
-    for i in range(4):
-        uhel = i * 90 + random.uniform(-20, 20)
-        r = random.uniform(11, 15)
-        vzd = random.uniform(4, 7)
-        kusy.append(elipsa(
-            vzd * (1 if i in (0, 3) else -1),
-            vzd * (1 if i < 2 else -1),
-            r, r * random.uniform(0.72, 0.92), barva, uhel))
-    kusy.append(kruh(0, 0, 3.6, mix(MAK_STRED, barva, 0.25)))
-    return "".join(kusy)
-
-
-def chrpa(barva):
-    """Chrpa — roztřepaná hvězdice; lístky musí být dost dlouhé, aby se četla."""
-    kusy = []
-    for i in range(8):
-        uhel = i * 45 + random.uniform(-12, 12)
-        d = random.uniform(10, 14)
-        kusy.append(elipsa(0, -d / 1.5, 3.4, d / 1.5, barva, uhel))
-    kusy.append(kruh(0, 0, 3.4, mix(barva, LES, 0.4)))
-    return "".join(kusy)
-
-
-def pryskyrnik(barva):
-    """Pryskyřník — pět kulatých lístků."""
-    kusy = []
-    for i in range(5):
-        rad = math.radians(i * 72 + random.uniform(-10, 10))
-        d = 5.8
-        kusy.append(kruh(d * math.cos(rad), d * math.sin(rad), 5.4, barva))
-    kusy.append(kruh(0, 0, 2.6, mix(barva, "#8A6A10", 0.6)))
-    return "".join(kusy)
-
-
-def kopretina(barva):
-    """Kopretina — věnec lístků se žlutým středem."""
-    kusy = []
-    for i in range(12):
-        uhel = i * 30 + random.uniform(-7, 7)
-        kusy.append(elipsa(0, -9.5, 2.7, 8.0, barva, uhel))
-    kusy.append(kruh(0, 0, 4.3, PRYSKYRNIK))
-    return "".join(kusy)
-
-
-def silenka(barva):
-    """Silenka — pět drobných lístků, nejmenší květ louky."""
-    kusy = []
-    for i in range(5):
-        uhel = i * 72 + random.uniform(-12, 12)
-        rad = math.radians(uhel)
-        kusy.append(elipsa(4.4 * math.cos(rad), 4.4 * math.sin(rad), 4.0, 2.8, barva, uhel))
-    kusy.append(kruh(0, 0, 1.8, mix(barva, LES, 0.4)))
-    return "".join(kusy)
-
-
-def poupe(barva):
-    return elipsa(0, 0, 3.4, 6.0, barva)
-
-
-# Poslední číslo je váha — jak často druh v louce padne. Zhruba podle fotky.
+# Vybráno z plátu tak, aby byly zastoupené všechny barvy a soubor zůstal
+# rozumně velký. Čísla odpovídají pořadí na plátu (viz prehled.svg).
 DRUHY = {
-    "mak": (mak, MAK, 10),
-    "pryskyrnik": (pryskyrnik, PRYSKYRNIK, 8),
-    "kopretina": (kopretina, KOPRETINA, 9),
-    "chrpa": (chrpa, CHRPA, 5),
-    "silenka": (silenka, SILENKA, 2),
-    "poupe": (poupe, TRAVA_TMAVA, 4),
+    'zluté':   [7, 29, 40, 55, 96, 102],
+    'růžové':  [13, 14, 44, 83, 104],
+    'fialové': [21, 72, 76, 91, 103, 109],
+    'bílé':    [42, 88, 90],
+    'červené': [68, 99, 106],
+    'trávy':   [32, 58, 71, 84, 92, 101],
 }
 
-# Dvě hloubky: 0 = přední, syté; 1 = zadní, utlumené do dálky.
-HLOUBKY = [0.0, 0.5]
-VARIANT = 5
-
-defs = []
-ids = {}
-for nazev, (kresba, zakladni, _) in DRUHY.items():
-    for h_i, h in enumerate(HLOUBKY):
-        klice = []
-        for v in range(VARIANT):
-            ident = f"{nazev[:2]}{h_i}{v}"
-            defs.append(f'<g id="{ident}">{kresba(do_dalky(zakladni, h))}</g>')
-            klice.append(ident)
-        ids[(nazev, h_i)] = klice
-
-VAHY = [nazev for nazev, (_, _, v) in DRUHY.items() for _ in range(v)]
-
-
-def podrost():
-    """Souvislá zubatá masa trávy u spodní hrany.
-
-    Jeden vyplněný tvar místo stovky stébel — drží spodek kompozice
-    a stojí pár set bajtů. Tři vrstvy pro hloubku.
-    """
-    kusy = []
-    for zaklad, rozptyl, barva in [
-        (52, 30, do_dalky(TRAVA_TMAVA, 0.55)),
-        (34, 26, do_dalky(TRAVA_TMAVA, 0.25)),
-        (20, 18, TRAVA_TMAVA),
-    ]:
-        body = [f"M -10,{H}"]
-        x = -10.0
-        while x < W + 10:
-            krok = random.uniform(7, 26)
-            # Většina stébel drží úroveň, každé páté vystřelí nad ni. Bez toho
-            # je z toho pilové ostří místo trávy.
-            vyska = zaklad + random.uniform(0, rozptyl)
-            if random.random() < 0.2:
-                vyska += random.uniform(rozptyl, rozptyl * 2.4)
-            vrchol = H - vyska
-            # Stéblo se ohýbá, takže špička nesedí nad středem základny.
-            spicka = x + krok * random.uniform(0.25, 0.75)
-            body.append(
-                f"Q {x + krok * 0.3:.0f},{vrchol + vyska * 0.35:.0f} "
-                f"{spicka:.0f},{vrchol:.0f} "
-                f"Q {x + krok * 0.7:.0f},{vrchol + vyska * 0.4:.0f} "
-                f"{x + krok:.0f},{H}")
-            x += krok
-        body.append("Z")
-        kusy.append(f'<path d="{" ".join(body)}" fill="{barva}"/>')
-    return "".join(kusy)
-
-
-def stonek(x, vyska, meritko, h_i):
-    """Jeden stonek s květem, připravený k animaci růstu."""
-    nazev = random.choice(VAHY)
-    ident = random.choice(ids[(nazev, h_i)])
-
-    barva_stonku = do_dalky(
-        random.choice([TRAVA, TRAVA, TRAVA_TMAVA]), HLOUBKY[h_i] + 0.15)
-    ohyb = random.uniform(-30, 30)
-    sirka = max(1.0, 2.0 * meritko)
-
-    stvol = (f'<path d="M 0,0 Q {ohyb:.0f},{-vyska * 0.6:.0f} '
-             f'{ohyb * 1.5:.0f},{-vyska:.0f}" stroke="{barva_stonku}" '
-             f'stroke-width="{sirka:.1f}" fill="none" stroke-linecap="round"/>')
-
-    otoceni = random.uniform(-25, 25)
-    hlava = (f'<use href="#{ident}" transform="translate({ohyb * 1.5:.0f},{-vyska:.0f}) '
-             f'rotate({otoceni:.0f}) scale({meritko:.2f})"/>')
-
-    # Zpoždění roste zleva doprava — louka se rozjede jako vlna.
-    zpozdeni = (x / W) * 0.5 + random.uniform(0, 0.22)
-    return (f'<g transform="translate({x:.0f},{H})">'
-            f'<g class="stonek" style="--d:{zpozdeni:.2f}s">{stvol}{hlava}</g></g>')
-
-
-def vrstva(pocet, rozsah_vysky, rozsah_meritka, h_i, trida):
-    kusy = []
-    for i in range(pocet):
-        # Rovnoměrné rozdělení s rozptylem — ne mřížka, ale ani shluky.
-        x = (i + random.uniform(-0.5, 0.5)) * (W / pocet)
-        kusy.append(stonek(
-            max(-25, min(W + 25, x)),
-            random.uniform(*rozsah_vysky),
-            random.uniform(*rozsah_meritka), h_i))
-    return f'<g class="{trida}">' + "".join(kusy) + "</g>"
-
-
-svg = (
-    f'<svg class="louka" viewBox="0 0 {W} {H}" '
-    f'preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">'
-    f'<defs>{"".join(defs)}</defs>'
-    + vrstva(70, (70, 175), (0.5, 0.8), 1, "vrstva-zadni")
-    + podrost()
-    + vrstva(42, (120, 280), (0.85, 1.3), 0, "vrstva-predni")
-    + "</svg>"
+# Trávy jsou výplň, mají padat častěji než jednotlivé kvetoucí druhy.
+VAHY = (
+    DRUHY['zluté'] * 3 + DRUHY['růžové'] * 3 + DRUHY['fialové'] * 3 +
+    DRUHY['bílé'] * 3 + DRUHY['červené'] * 3 + DRUHY['trávy'] * 7
 )
 
-print(svg)
+
+def nacti_definice(cesta_svg):
+    svg = io.open(cesta_svg, encoding='utf-8').read()
+    return {ident: txt for txt, ident
+            in re.findall(r'(<g id="(k\d{3})".*?</g>)(?=<g id="k|</defs>)', svg, re.S)}
+
+
+def zjemni(txt):
+    """Zkrátí souřadnice na jedno desetinné místo. Na výsledku to není
+    vidět a soubor spadne zhruba o desetinu."""
+    return re.sub(r'(\d+)\.(\d)\d+', r'\1.\2', txt)
+
+
+def vrstva(pocet, vysky, pruhlednost, trida, rng):
+    kusy = []
+    for i in range(pocet):
+        # Rovnoměrně s rozptylem — ne mřížka, ale ani shluky.
+        x = (i + rng.uniform(-0.5, 0.5)) * (W / pocet)
+        x = max(-40, min(W + 40, x))
+        vyska = rng.uniform(*vysky)
+        meritko = vyska / 100.0
+        druh = rng.choice(VAHY)
+        # Půlka rostlin zrcadlově — plát má každý druh jen v jedné poloze.
+        zrcadlo = -1 if rng.random() < 0.5 else 1
+        kusy.append(
+            f'<g transform="translate({x:.0f},{H})">'
+            f'<use href="#k{druh:03d}" transform="scale({meritko * zrcadlo:.3f},{meritko:.3f})"/>'
+            f'</g>')
+
+    return f'<g class="{trida}" opacity="{pruhlednost}">' + ''.join(kusy) + '</g>'
+
+
+def main(kytky_svg, ven, pozadi=None):
+    definice = nacti_definice(kytky_svg)
+    rng = random.Random(20270619)  # datum svatby
+
+    pouzite = sorted({n for ns in DRUHY.values() for n in ns})
+    defs = ''.join(zjemni(definice[f'k{n:03d}']) for n in pouzite)
+
+    # Zadní vrstva je menší a průhlednější — na tmavém i světlém podkladu
+    # to čte jako dálka, aniž by se musely přebarvovat výplně.
+    zadni = vrstva(58, (105, 190), 0.55, 'vrstva-zadni', rng)
+    predni = vrstva(38, (175, 290), 1, 'vrstva-predni', rng)
+
+    podklad = f'<rect width="100%" height="100%" fill="{pozadi}"/>' if pozadi else ''
+
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" '
+           f'preserveAspectRatio="xMidYMax slice" role="img" '
+           f'aria-label="Kreslená louka lučních rostlin">'
+           f'<defs>{defs}</defs>{podklad}{zadni}{predni}</svg>')
+
+    io.open(ven, 'w', encoding='utf-8').write(svg)
+    print(f'{ven}: {len(svg)} B, druhů {len(pouzite)}, rostlin 96')
+
+
+if __name__ == '__main__':
+    main(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)

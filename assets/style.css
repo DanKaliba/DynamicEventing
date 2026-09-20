@@ -63,6 +63,11 @@
   --sirka: 74rem;
   --okraj: 1.25rem;
   --sloupec-nadpisu: 13rem;
+
+  /* Výška louky. Váže se na šířku okna, ne na výšku — tím zůstává poměr
+     stran rámečku užší než 10:1 samotného SVG, takže object-fit ořízne
+     boky a ne hlavy rostlin. */
+  --vyska-louky: clamp(9rem, 20vw, 24rem);
 }
 
 :root[data-theme="dark"] {
@@ -230,29 +235,39 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 .nav.odscrollovano .nav-odkazy a[aria-current="true"] { color: var(--odkaz); opacity: 1; }
 
 /* ================= Hero =================
-   Tmavý les nahoře, louka vyrůstá ze spodní hrany. */
+   Tmavý les, ze spodní hrany vyrůstá louka.
+
+   Hero je vysoký přesně na obrazovku (svh kvůli mobilním lištám), takže
+   louka je vidět hned po otevření a nemusí se k ní scrollovat. Text je
+   svisle vystředěný ve zbytku po odečtení louky. */
 
 .hero {
   position: relative;
   background: var(--les);
   color: var(--kopretina);
-  margin-top: -3rem;
-  padding-top: 3rem;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: -3.25rem;
+  padding-top: 3.25rem;
   overflow: hidden;
-  isolation: isolate;
 }
 
 .hero-text {
+  width: 100%;
   max-width: var(--sirka);
   margin-inline: auto;
-  padding: clamp(4rem, 13vh, 8rem) var(--okraj) clamp(13rem, 30vh, 19rem);
+  padding: 1.5rem var(--okraj) calc(var(--vyska-louky) + 1.5rem);
 }
 
 .hero h1 {
-  font-size: clamp(3.25rem, 13vw, 9rem);
+  /* min() proti vh brání tomu, aby jména přerostla nízké okno na šířku. */
+  font-size: clamp(2.75rem, min(11vw, 15vh), 8rem);
   font-weight: 300;
   color: var(--kopretina);
-  margin-bottom: clamp(1.75rem, 5vw, 3rem);
+  margin-bottom: clamp(1.25rem, 4vw, 2.5rem);
 }
 /* Druhé jméno odsazené — jako dva stonky vedle sebe, ne vycentrovaný nápis. */
 .hero h1 .druhe {
@@ -278,7 +293,7 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 }
 
 .odpocet {
-  margin-top: clamp(2rem, 5vw, 3rem);
+  margin-top: clamp(1.25rem, 3vw, 2rem);
   font-size: 0.9375rem;
   color: var(--trava);
 }
@@ -291,38 +306,36 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   padding-inline: 0.1em;
 }
 
-/* Louka sedí na spodní hraně heroa a překrývá text jen tehdy, když
-   je okno hodně nízké — proto má hero dole velký padding. */
+/* Louka je samostatný soubor, ne inline SVG: definice rostlin jsou velké
+   a takhle se cachují zvlášť místo aby zdržovaly první vykreslení stránky.
+
+   object-fit: cover s ukotvením dolů ořízne boky, ne vršky. Aby to tak
+   zůstalo, nesmí být rámeček širší v poměru než samotné SVG (10:1) —
+   o to se stará --vyska-louky, která se váže na šířku okna. */
 .louka {
   position: absolute;
   left: 0;
-  right: 0;
-  bottom: -1px;
+  bottom: 0;
   width: 100%;
-  height: clamp(11rem, 26vh, 17rem);
-  z-index: -1;
+  height: var(--vyska-louky);
+  object-fit: cover;
+  object-position: 50% 100%;
   pointer-events: none;
+  animation: louka-nastup 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-/* Jediná animace na stránce: louka jednou vyroste. */
-.stonek {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  transform: scaleY(0.02);
-  animation: vyrust 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  animation-delay: var(--d, 0s);
-}
-@keyframes vyrust {
-  from { transform: scaleY(0.02); }
-  to { transform: scaleY(1); }
+/* Jediná animace na stránce. Louka jednou najede zespodu na místo.
+   Schválně je to pohyb celé louky, ne růst jednotlivých rostlin zevnitř
+   SVG: kdyby animace neproběhla, louka je prostě na místě, místo aby
+   zůstala slisovaná u země. */
+@keyframes louka-nastup {
+  from { transform: translateY(14%); opacity: 0; }
+  to { transform: none; opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .stonek {
-    animation: none;
-    transform: none;
-  }
+  .louka { animation: none; }
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
   }

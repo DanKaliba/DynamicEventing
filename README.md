@@ -4,13 +4,15 @@ Statická jednostránka. Žádný build, žádný framework, žádný externí r
 otevřeš `index.html` v prohlížeči a funguje.
 
 ```
-index.html           obsah; sekce oddělené komentáři, louka vložená jako inline SVG
+index.html           obsah; sekce oddělené komentáři
 assets/style.css     paleta, theming, layout
 assets/gallery.js    ← seznam fotek, jediné místo k editaci galerie
 assets/main.js       odpočet, lightbox, přepínač motivu, stav navigace
 assets/fonts/        Fraunces (nadpisy) a Inter (text), lokálně
 assets/img/          fotky
-tools/louka.py       generátor louky v hero sekci
+assets/louka.svg     louka v hero sekci (samostatný soubor, cachuje se zvlášť)
+tools/extrakce.py    rozseká plát z PDF na jednotlivé rostliny
+tools/louka.py       poskládá z nich louku
 tools/paleta.py      vzorkovač barev z fotky
 ```
 
@@ -100,23 +102,44 @@ python tools/paleta.py cesta/k/fotce.jpg
 
 ### Louka
 
-Hero je tmavý les, ze spodní hrany vyrůstá louka — inline SVG, 112 stonků ve
-třech vrstvách. Generuje ho `tools/louka.py` s pevným seedem, takže výstup je
-reprodukovatelný. Hlavičky květů jsou v `<defs>` a používají se přes `<use>`;
-bez toho by SVG mělo přes 150 kB, takhle má 68 kB (po gzipu 9 kB).
+Hero je tmavý les a u spodní hrany stojí louka: **96 rostlin ve dvou
+vrstvách, 29 botanických druhů**. Nejsou kreslené — jsou vytažené
+z `vesmir_kytky.pdf` (ilustrace Jan Roleček, Vesmír), plátu se 113 druhy
+karpatských lesostepních luk.
 
-Přegenerovat po úpravě (hustota, poměr druhů, barvy):
+`tools/extrakce.py` plát rozseká: seskupí vektorové cesty union-findem nad
+obalovými obdélníky, drobné odštěpky přilepí k nejbližší rostlině a každou
+uloží s počátkem ve středu spodní hrany a výškou 100 jednotek.
+`tools/louka.py` z nich pak poskládá louku s pevným seedem.
 
 ```bash
-python tools/louka.py > /tmp/louka.svg
-# pak ručně nahradit <svg class="louka">…</svg> v index.html
+python tools/extrakce.py vesmir_kytky.pdf tools/kytky-vse.svg tools/kytky-vse.json
+python tools/louka.py tools/kytky-vse.svg assets/louka.svg
 ```
+
+**Zdrojový plát ani všech 114 vytažených rostlin nejsou v repu** (viz
+`.gitignore`) — do veřejného repa cizí dílo celé nepatří. Ven jde jen
+výsledná louka s 29 použitými druhy. Bez lokální kopie PDF tedy první
+příkaz neprojde.
+
+Louka je **samostatný soubor**, ne inline SVG. Definice rostlin jsou velké
+(152 kB, po gzipu 40 kB) a takhle se cachují zvlášť místo aby zdržovaly
+první vykreslení stránky.
+
+Poměr stran SVG je 10:1 a `--vyska-louky` se váže na **šířku** okna, ne na
+výšku. Díky tomu je rámeček vždycky užší v poměru než obrázek, takže
+`object-fit: cover` ořízne boky a ne vršky rostlin.
 
 ### Motion
 
-Na stránce je **jediná animace**: louka jednou vyroste při načtení, zleva
-doprava. Nic dalšího se nehýbe. Pod `prefers-reduced-motion: reduce` se
-nespustí a louka je rovnou vzrostlá.
+Na stránce je **jediná animace**: louka jednou najede zespodu na místo.
+Nic dalšího se nehýbe, a pod `prefers-reduced-motion: reduce` ani ona.
+
+Dřív rostla animací každá rostlina zvlášť zevnitř SVG. Vypadalo to líp, ale
+dokud animace nedoběhla, byla louka slisovaná u země — a cokoli, co stránku
+vykreslí staticky (náhled odkazu, tisk, generátor snímků), tenhle stav
+chytilo. Teď je SVG statické a nástup řeší stránka: když animace neproběhne,
+louka je prostě na místě.
 
 ### Typografie
 
@@ -131,3 +154,10 @@ Google Fonts (a tedy ani žádné sledování hostů).
 `index-cz.html` a `workflow-demo-cz.html` jsou interní Košík BI prezentace,
 které tu ležely předtím. Jsou v `.gitignore`, aby se nedostaly do veřejného
 repa. Nemaž ty řádky.
+
+## Ilustrace
+
+Rostliny v louce pocházejí z plátu „Ilustrace pestrosti tvarů a barev květeny
+karpatských lesostepních luk“, text a ilustrace **Jan Roleček**, Vesmír.
+Použité jako podklad pro `assets/louka.svg`. Jde o autorské dílo — pokud
+má web zůstat veřejný delší dobu, stojí za to napsat autorovi nebo redakci.
