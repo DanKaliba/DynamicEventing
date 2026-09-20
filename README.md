@@ -1,84 +1,130 @@
-# Svatební web
+# Svatba na Himmelreichu
 
 Statická jednostránka. Žádný build, žádný framework, žádný externí request —
 otevřeš `index.html` v prohlížeči a funguje.
 
 ```
-index.html           všechen obsah, sekce jsou oddělené komentáři
-assets/style.css     paleta, theming (světlý/tmavý), layout
+index.html           obsah; sekce oddělené komentáři, louka vložená jako inline SVG
+assets/style.css     paleta, theming, layout
 assets/gallery.js    ← seznam fotek, jediné místo k editaci galerie
-assets/main.js       odpočet, lightbox, přepínač motivu, navigace
-assets/fonts/        Inter (variabilní woff2, lokální)
+assets/main.js       odpočet, lightbox, přepínač motivu, stav navigace
+assets/fonts/        Fraunces (nadpisy) a Inter (text), lokálně
 assets/img/          fotky
+tools/louka.py       generátor louky v hero sekci
+tools/paleta.py      vzorkovač barev z fotky
 ```
 
 ---
 
 ## 1. Doplnit obsah
 
-Všechno, co je potřeba vyplnit, je v `index.html` v hranatých závorkách velkými
-písmeny. Najdeš to takhle:
+Všechno k vyplnění je v `index.html` v hranatých závorkách velkými písmeny:
 
-```bash
-grep -n "\[[A-ZÁ-Ž]" index.html
+```powershell
+Select-String -Path index.html -Pattern "\[[A-ZÁ-Ž]"
 ```
 
-Jde o: jména, datum, čas, adresy, odkazy na mapy, telefony, e-maily,
-číslo účtu a detaily ubytování. Text sekcí (proč přijet, dress code, FAQ) je
-napsaný — přepiš ho podle sebe.
+Jména, datum, adresa, odkaz na mapy, telefony, e-maily, časy, číslo účtu.
+Texty sekcí (proč přijet, co na sebe, dotazy) jsou napsané — přepiš je podle
+sebe, jsou to jen návrhy.
 
-Odpočet se řídí atributem `data-date` u `<div class="countdown">` — formát
-`RRRR-MM-DDTHH:MM`, čas obřadu. Po svatbě se odpočet sám schová.
+Odpočet se řídí atributem `data-datum` u `<p class="odpocet">`, formát
+`RRRR-MM-DDTHH:MM`. Ukazuje dny, ne vteřiny, a po svatbě se sám schová.
 
 ## 2. Přidat fotky
 
-1. Zmenši je — šířka max 2000 px, JPEG kvalita ~80, ideálně pod 500 kB/kus.
+1. Zmenši je — šířka max 2000 px, JPEG kvalita ~80, pod 500 kB/kus.
 2. Nahraj do `assets/img/`. Názvy bez diakritiky a mezer: `obrad-01.jpg`.
 3. Přidej řádek do `assets/gallery.js`:
 
 ```js
-window.GALLERY = [
-  { src: 'assets/img/obrad-01.jpg', alt: 'Obřad v zahradě' },
+window.GALERIE = [
+  { src: 'assets/img/obrad-01.jpg', popis: 'Obřad na louce', sirka: 2000, vyska: 1333 },
 ];
 ```
 
-`alt` je krátký popis fotky — potřebný pro odečítače obrazovky.
-Dokud je seznam prázdný, galerie ukazuje hlášku „Fotky připravujeme".
+`popis` je krátký popis fotky — potřebný pro odečítače obrazovky.
+`sirka`/`vyska` jsou volitelné, ale bez nich stránka při načítání poskakuje.
+Dokud je seznam prázdný, ukazuje se hláška „Sem přijdou fotky ze svatby".
 
-## 3. Zveřejnit přes GitHub Pages
+## 3. Zveřejnit
 
-**Jednorázové nastavení:**
+Repo je veřejné a GitHub Pages běží z větve `main`, složka `/ (root)`.
+Každá změna tedy jde ven takhle:
 
-1. Repo musí být **veřejné** — GitHub Pages zdarma na privátním nejede.
-   `Settings → General → Danger Zone → Change visibility → Public`
-2. `Settings → Pages`
-3. **Source:** `Deploy from a branch`
-4. **Branch:** `main`, složka `/ (root)` → **Save**
-5. Za pár minut běží na `https://<uživatel>.github.io/<repo>/`
-
-**Každá další změna:**
-
-```bash
+```powershell
 git add -A
-git commit -m "Doplněno ubytování"
+git commit -m "Doplněna jména a datum"
 git push
 ```
 
-Za 1–2 minuty je to venku. Stav nasazení vidíš v záložce **Actions**.
+Za 1–2 minuty je to na **https://dankaliba.github.io/DynamicEventing/**.
+Průběh nasazení je v záložce Actions.
 
 ### Soukromí
 
 Web je veřejný — kdokoli s odkazem ho uvidí. `<meta name="robots" content="noindex">`
-v hlavičce brání tomu, aby se stránka dostala do vyhledávačů, ale není to zámek.
-**Nedávej sem nic, co nechceš mít veřejné** — čísla účtů a telefony zvaž.
+ho drží mimo vyhledávače, ale není to zámek. Než tam dáš číslo účtu a telefony,
+zvaž to.
 
-### Vlastní doména
+---
 
-Když budeš chtít třeba `nasesvatba.cz`:
+## Design
 
-1. U registrátora nastav `CNAME` na `<uživatel>.github.io`
-2. `Settings → Pages → Custom domain` → zadej doménu → Save
-3. Počkej, až se zaškrtne **Enforce HTTPS**
+### Paleta
+
+Barvy jsou **navzorkované z fotky květnaté louky**, ne vybrané od oka.
+`tools/paleta.py` projde fotku, rozdělí pixely podle odstínu a v každém pásmu
+vezme medián dostatečně sytých bodů (medián, ne průměr — ten by sousední
+odstíny smíchal do šedi).
+
+| proměnná | hex | z čeho |
+|---|---|---|
+| `--les` | `#0C1A06` | tmavý živý plot za loukou |
+| `--mak` | `#CC030E` | vlčí mák |
+| `--chrpa` | `#175ACA` | chrpa |
+| `--pryskyrnik` | `#D2BB31` | pryskyřník |
+| `--trava` | `#99B949` | osvětlená tráva |
+| `--trava-tmava` | `#496E16` | tráva ve stínu |
+| `--kopretina` | `#ECEEE7` | kopretina |
+
+Všechny dvojice text/pozadí jsou ověřené na WCAG AA (≥ 4.5:1), v obou
+motivech. `--pryskyrnik` se na světlém pozadí **nesmí** použít na text —
+má kontrast 1.75:1. Je jen pro ilustraci a pro tmavý motiv.
+
+Znovu navzorkovat z jiné fotky:
+
+```bash
+python tools/paleta.py cesta/k/fotce.jpg
+```
+
+### Louka
+
+Hero je tmavý les, ze spodní hrany vyrůstá louka — inline SVG, 112 stonků ve
+třech vrstvách. Generuje ho `tools/louka.py` s pevným seedem, takže výstup je
+reprodukovatelný. Hlavičky květů jsou v `<defs>` a používají se přes `<use>`;
+bez toho by SVG mělo přes 150 kB, takhle má 68 kB (po gzipu 9 kB).
+
+Přegenerovat po úpravě (hustota, poměr druhů, barvy):
+
+```bash
+python tools/louka.py > /tmp/louka.svg
+# pak ručně nahradit <svg class="louka">…</svg> v index.html
+```
+
+### Motion
+
+Na stránce je **jediná animace**: louka jednou vyroste při načtení, zleva
+doprava. Nic dalšího se nehýbe. Pod `prefers-reduced-motion: reduce` se
+nespustí a louka je rovnou vzrostlá.
+
+### Typografie
+
+Nadpisy **Fraunces** — old-style serif s měkkými, trochu nepravidelnými tahy;
+působí ručně, ne kaligraficky. Text **Inter**. Oba lokálně, žádný request na
+Google Fonts (a tedy ani žádné sledování hostů).
+
+---
 
 ## Poznámka k téhle složce
 
