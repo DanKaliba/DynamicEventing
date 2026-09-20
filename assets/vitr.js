@@ -31,7 +31,9 @@
      skutečné maximum je ~5,3°. */
   var MAX_UHEL = 4.5;      // stupňů, cíl pro rostlinu přímo u kurzoru
   var DOSAH = 230;         // px, dokam kurzor dosáhne
-  var DOSAH_PORYVU = 320;  // px, ťuknutí má širší záběr než kurzor
+  var DOSAH_TUKNUTI = 320; // px, ťuknutí má širší záběr než kurzor
+  var DOSAH_ZAVANU = 520;  // px, závan od scrollu je ještě širší
+  var PRELET = 45;         // snímků, za kolik závan přeběhne celou louku
   var TUHOST = 0.06;       // jak rychle míří k cíli; víc = tvrdší
   var TLUMENI = 0.80;      // jak rychle doznívá; míň = dřív klid
   var KLID = 0.08;         // stupňů; pod tím je náklon neviditelný a uklidí se
@@ -78,6 +80,7 @@
         el: el,
         sila: vpredu ? 1 : 0.5,   // zadní vrstva je dál, ohne se míň
         x: 0,
+        mimo: false,
         uhel: 0,
         rychlost: 0,
         zapsano: 0
@@ -94,13 +97,23 @@
       stav.forEach(function (s) {
         var b = s.el.getBoundingClientRect();
         s.x = b.left + b.width / 2 - ramec.left;
+        // Louka je širší než okno (viewBox 10:1, ořezaný na boky), takže
+        // část rostlin zůstává mimo záběr. V DOM jsou pořád, ale počítat
+        // je nemá smysl — z 96 jich tím ubyde zhruba polovina.
+        s.mimo = s.x < -60 || s.x > sirka + 60;
+        if (s.mimo && s.zapsano !== 0) {
+          s.el.style.transform = '';
+          s.uhel = s.rychlost = s.zapsano = 0;
+        }
       });
     }
 
     zmerit();
 
     var kurzor = { x: null, rychlost: 0 };
-    var poryv = { x: 0, sila: 0, smer: 1 };
+    // Závan má vlastní dosah a může putovat — proto posun. Bez něj by
+    // scroll rozhýbal jen okolí jednoho bodu místo celé louky.
+    var poryv = { x: 0, sila: 0, smer: 1, dosah: DOSAH_TUKNUTI, posun: 0, utlum: 0.93 };
     var bezi = false;
     var klidnychSnimku = 0;
 
@@ -117,6 +130,7 @@
 
       for (var i = 0; i < stav.length; i++) {
         var s = stav[i];
+        if (s.mimo) continue;
         var cil = 0;
 
         if (kurzor.x !== null) {
@@ -133,9 +147,9 @@
 
         if (poryv.sila > 0.01) {
           var dp = Math.abs(s.x - poryv.x);
-          if (dp < DOSAH_PORYVU) {
+          if (dp < poryv.dosah) {
             cil += poryv.smer * MAX_UHEL * poryv.sila *
-                   (1 - dp / DOSAH_PORYVU) * s.sila;
+                   (1 - dp / poryv.dosah) * s.sila;
           }
         }
 
@@ -162,7 +176,17 @@
         }
       }
 
-      poryv.sila *= 0.93;
+      poryv.x += poryv.posun;
+      poryv.sila *= poryv.utlum;
+
+      // Louka je širší než okno a přečnívající rostliny zůstávají v DOM.
+      // Jakmile závan přeletí za okraj, zhasne — jinak by dál hýbal tím,
+      // co stejně není vidět.
+      if (poryv.posun !== 0 &&
+          (poryv.x > sirka + poryv.dosah || poryv.x < -poryv.dosah)) {
+        poryv.sila = 0;
+        poryv.posun = 0;
+      }
       kurzor.rychlost *= 0.82;
 
       // Pár snímků klidu navíc, ať smyčka neskáče mezi během a spánkem.
@@ -174,11 +198,19 @@
       requestAnimationFrame(snimek);
     }
 
-    /* ---------- vstupy ---------- */
+    /* ---------- vstupy ----------
+
+       Posluchače nesedí na louce, ale na celém heroi. Louka má v CSS
+       pointer-events: none, aby nepřekážela výběru textu — takže by na ni
+       žádná událost myši nedošla. Navíc je tím vítr citlivější: stačí
+       přejet heroem a tráva pod textem zareaguje. */
+
+    var plocha = svg.closest ? svg.closest('.hero') : null;
+    if (!plocha) plocha = svg.parentNode;
 
     var posledniX = null;
 
-    svg.addEventListener('pointermove', function (u) {
+    plocha.addEventListener('pointermove', function (u) {
       var x = u.clientX - svg.getBoundingClientRect().left;
       if (posledniX !== null) {
         kurzor.rychlost = Math.max(kurzor.rychlost, Math.abs(x - posledniX) * 60);
@@ -188,7 +220,7 @@
       probudit();
     }, { passive: true });
 
-    svg.addEventListener('pointerleave', function () {
+    plocha.addEventListener('pointerleave', function () {
       kurzor.x = null;
       posledniX = null;
       probudit();
@@ -196,18 +228,18 @@
 
     // Na dotyku hover neexistuje: po zvednutí prstu se musí kurzor zrušit,
     // jinak by louka zůstala ohnutá v místě posledního doteku.
-    svg.addEventListener('pointerup', function () {
+    plocha.addEventListener('pointerup', function () {
       kurzor.x = null;
       posledniX = null;
       probudit();
     }, { passive: true });
-    svg.addEventListener('pointercancel', function () {
+    plocha.addEventListener('pointercancel', function () {
       kurzor.x = null;
       posledniX = null;
       probudit();
     }, { passive: true });
 
-    svg.addEventListener('pointerdown', function (u) {
+    plocha.addEventListener('pointerdown', function (u) {
       poryv.x = u.clientX - svg.getBoundingClientRect().left;
       poryv.sila = 1;
       poryv.smer = poryv.x > sirka / 2 ? -1 : 1;
@@ -233,9 +265,25 @@
         var vidno = ramec.bottom > 0 && ramec.top < window.innerHeight;
         if (!vidno || Math.abs(zmena) < 2) return;
 
-        poryv.x = sirka / 2;
-        poryv.smer = zmena > 0 ? -1 : 1;
-        poryv.sila = Math.max(poryv.sila, Math.min(Math.abs(zmena) / 45, 0.85));
+        var sila = Math.min(Math.abs(zmena) / 45, 0.85);
+
+        // Běžící závan se jen přiživí. Kdyby se přenastavoval při každé
+        // události scrollu, pořád by startoval od kraje a nikam by nedoběhl.
+        if (poryv.sila > 0.25 && poryv.posun !== 0) {
+          poryv.sila = Math.max(poryv.sila, sila);
+          probudit();
+          return;
+        }
+
+        // Závan přeletí přes celou louku, jinak se hýbe jen její střed.
+        var doprava = zmena > 0;
+        poryv.x = doprava ? -DOSAH_ZAVANU * 0.5 : sirka + DOSAH_ZAVANU * 0.5;
+        poryv.posun = (sirka + DOSAH_ZAVANU) / PRELET * (doprava ? 1 : -1);
+        poryv.dosah = DOSAH_ZAVANU;
+        poryv.smer = doprava ? 1 : -1;
+        // Doznívá pomaleji než ťuknutí — musí vydržet celý přelet.
+        poryv.utlum = 0.985;
+        poryv.sila = Math.max(poryv.sila, sila);
         probudit();
       });
     }, { passive: true });

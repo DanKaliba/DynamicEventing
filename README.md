@@ -158,11 +158,17 @@ i prst:
 |---|---|
 | pohyb kurzoru / tah prstem | rostliny se uhýbají, silněji zblízka a při rychlém pohybu |
 | ťuknutí / kliknutí | poryv z toho místa, rozbíhá se do stran a doběhne |
-| scroll | zhoupnutí podle rychlosti — na mobilu jediné, co udělá každý |
+| scroll | závan přeletí loukou od kraje ke kraji, rychlost podle scrollu |
+
+Posluchače sedí na celém `.hero`, ne na louce. Louka má `pointer-events:
+none`, aby nepřekážela výběru textu, takže přímo na ni by žádná událost
+myši nedošla — a navíc je tím vítr citlivější, stačí přejet heroem.
 
 Hýbe se jen ~15 rostlin kolem kurzoru, zbytek se v cyklu přeskakuje.
-Smyčka `requestAnimationFrame` se po uklidnění sama zastaví. Pod
-`prefers-reduced-motion: reduce` se SVG ani nevkládá.
+Louka je navíc širší než okno (viewBox 10:1 ořezaný na boky), takže
+zhruba polovina rostlin je mimo záběr; ty se označí v `zmerit()` a
+přeskakují se úplně. Smyčka `requestAnimationFrame` se po uklidnění sama
+zastaví. Pod `prefers-reduced-motion: reduce` se SVG ani nevkládá.
 
 Ohyb je tlumená pružina, `uhel += rychlost` po snímcích. Konstanty nejsou
 od oka — rekurence se dá přehrát mimo prohlížeč a změřit, takže
