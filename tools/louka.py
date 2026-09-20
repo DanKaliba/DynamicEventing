@@ -68,10 +68,14 @@ def vrstva(pocet, vysky, pruhlednost, trida, rng):
         druh = rng.choice(VAHY)
         # Půlka rostlin zrcadlově — plát má každý druh jen v jedné poloze.
         zrcadlo = -1 if rng.random() < 0.5 else 1
+        # Dva obaly schválně: vnější nese posun jako atribut, vnitřní je
+        # volný pro CSS transform (ohyb ve větru). Kdyby bylo obojí na
+        # jednom prvku, CSS transform by posun přepsal.
         kusy.append(
             f'<g transform="translate({x:.0f},{H})">'
+            f'<g class="kytka">'
             f'<use href="#k{druh:03d}" transform="scale({meritko * zrcadlo:.3f},{meritko:.3f})"/>'
-            f'</g>')
+            f'</g></g>')
 
     return f'<g class="{trida}" opacity="{pruhlednost}">' + ''.join(kusy) + '</g>'
 

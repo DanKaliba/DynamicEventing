@@ -324,6 +324,21 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   animation: louka-nastup 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
+/* Když se obrázek vymění za živé SVG (assets/vitr.js), nástup už proběhl
+   — nesmí se přehrát znovu. Velikost řeší preserveAspectRatio uvnitř SVG,
+   které dělá totéž co object-fit: cover s ukotvením dolů. */
+.louka-ziva {
+  display: block;
+  animation: none;
+}
+
+/* Obal, za který se rostlina naklání. Otáčí se kolem paty, ne kolem
+   středu — jinak by ve větru poskakovala nahoru a dolů. */
+.kytka {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
 /* Jediná animace na stránce. Louka jednou najede zespodu na místo.
    Schválně je to pohyb celé louky, ne růst jednotlivých rostlin zevnitř
    SVG: kdyby animace neproběhla, louka je prostě na místě, místo aby

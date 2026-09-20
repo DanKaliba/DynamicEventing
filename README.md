@@ -8,6 +8,7 @@ index.html           obsah; sekce oddělené komentáři
 assets/style.css     paleta, theming, layout
 assets/gallery.js    ← seznam fotek, jediné místo k editaci galerie
 assets/main.js       odpočet, lightbox, přepínač motivu, stav navigace
+assets/vitr.js       vítr v louce (reakce na kurzor, dotyk a scroll)
 assets/fonts/        Fraunces (nadpisy) a Inter (text), lokálně
 assets/img/          fotky
 assets/louka.svg     louka v hero sekci (samostatný soubor, cachuje se zvlášť)
@@ -132,14 +133,43 @@ výšku. Díky tomu je rámeček vždycky užší v poměru než obrázek, takž
 
 ### Motion
 
-Na stránce je **jediná animace**: louka jednou najede zespodu na místo.
-Nic dalšího se nehýbe, a pod `prefers-reduced-motion: reduce` ani ona.
+Na stránce se hýbe jen louka, a jen jako odpověď na akci. **Trvalé kývání
+na pozadí tam schválně není** — louka je v hero, byla by pořád na obrazovce
+a 96 nepřetržitě animovaných prvků zbytečně žere baterku.
 
-Dřív rostla animací každá rostlina zvlášť zevnitř SVG. Vypadalo to líp, ale
-dokud animace nedoběhla, byla louka slisovaná u země — a cokoli, co stránku
-vykreslí staticky (náhled odkazu, tisk, generátor snímků), tenhle stav
-chytilo. Teď je SVG statické a nástup řeší stránka: když animace neproběhne,
-louka je prostě na místě.
+**Nástup.** Louka jednou najede zespodu na místo. Dřív rostla animací každá
+rostlina zvlášť zevnitř SVG; vypadalo to líp, ale dokud animace nedoběhla,
+byla louka slisovaná u země — a cokoli, co stránku vykreslí staticky (náhled
+odkazu, tisk, generátor snímků), tenhle stav chytilo. Teď je SVG statické
+a nástup řeší stránka: když animace neproběhne, louka je prostě na místě.
+
+**Vítr** (`assets/vitr.js`). Louka je ve stránce jako `<img>`, což je plochý
+obrázek — dovnitř se nedostane myš ani skript. Skript ji proto po načtení
+stáhne a vloží do DOMu jako živé SVG. Selže-li to, zůstane obrázek.
+
+> Kvůli tomu **vítr nefunguje při otevření `index.html` přes `file://`** —
+> prohlížeč tam nepovolí `fetch` na sousední soubor. Lokálně spusť
+> `python -m http.server` a otevři `http://localhost:8000`.
+
+Tři vstupy, všechny přes Pointer Events, takže jeden kód obslouží myš, pero
+i prst:
+
+| vstup | co dělá |
+|---|---|
+| pohyb kurzoru / tah prstem | rostliny se uhýbají, silněji zblízka a při rychlém pohybu |
+| ťuknutí / kliknutí | poryv z toho místa, rozbíhá se do stran a doběhne |
+| scroll | zhoupnutí podle rychlosti — na mobilu jediné, co udělá každý |
+
+Hýbe se jen ~15 rostlin kolem kurzoru, zbytek se v cyklu přeskakuje.
+Smyčka `requestAnimationFrame` se po uklidnění sama zastaví. Pod
+`prefers-reduced-motion: reduce` se SVG ani nevkládá.
+
+Ohyb je tlumená pružina, `uhel += rychlost` po snímcích. Konstanty nejsou
+od oka — rekurence se dá přehrát mimo prohlížeč a změřit, takže
+`TUHOST = 0.06` a `TLUMENI = 0.80` jsou vybrané z mřížky: náběh 0,13 s,
+překmit 18 %, klid 0,40 s. Tužší kombinace se usadí za 0,18 s, ale pohyb
+pak působí mechanicky. Kvůli tomu překmitu vyjede úhel o pětinu nad
+`MAX_UHEL`, takže skutečné maximum je ~5,3°.
 
 ### Typografie
 
