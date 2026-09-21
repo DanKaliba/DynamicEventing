@@ -17,6 +17,7 @@ assets/vzor.svg     obrysy rostlin na pozadí sekcí, jako maska
 tools/extrakce.py   rozseká plát z PDF na jednotlivé rostliny
 tools/louka.py      poskládá z nich louku
 tools/vzor.py       poskládá z nich opakovatelnou dlaždici na pozadí
+tools/mapa.py       mapka ubytování z reálných GPS souřadnic (vložená přímo v index.html)
 tools/paleta.py     vzorkovač barev z fotky
 ```
 
@@ -298,6 +299,39 @@ pak působí mechanicky. Kvůli tomu překmitu vyjede úhel o pětinu nad
 Nadpisy **Fraunces** — old-style serif s měkkými, trochu nepravidelnými tahy;
 působí ručně, ne kaligraficky. Text **Inter**. Oba lokálně, žádný request na
 Google Fonts (a tedy ani žádné sledování hostů).
+
+### Mapka ubytování
+
+V sekci Ubytování je malá mapka okolí — poloha Himmelreichu a pár možností,
+kde spát, když se na chalupu nevejdete. Není to vložený Google/Mapy.cz iframe
+(to by táhlo externí požadavky a sledování, čemuž se zbytek webu vyhýbá), ale
+vlastní SVG generované z reálných GPS souřadnic.
+
+`tools/mapa.py` promítne souřadnice jednoduchou rovnoběžkovou projekcí (na
+necelý kilometr napříč je zkreslení oproti pořádné kartografii zanedbatelné)
+a plátno spočítá z reálného rozpětí bodů, ne z pevného čísla — jinak se při
+přidání vzdálenějšího bodu okraj mapy tiše usekne.
+
+```bash
+python tools/mapa.py                    # jen vypíše vzdálenosti od Himmelreichu
+python tools/mapa.py /tmp/mapka.svg     # a zapíše i SVG
+```
+
+**Plné kolečko = střecha nad hlavou** (chalupa, hotel, kemp). **Prázdné
+kolečko = bivak** — spací pytel a nebe nad hlavou, žádná budova. Barvy
+používají existující proměnné z palety (`var(--chrpa)` pro hotel), kemp má
+vlastní `--kemp: #8F740C` — `var(--pryskyrnik)` by nešlo použít, ta má na
+světlém pozadí kontrast jen 1.75:1 (viz sekce Paleta výš).
+
+Mapka je vložená **přímo v `index.html`**, ne jako samostatný `<img>` soubor
+jako louka nebo vzor pozadí — používá `var(--text)` a spol. přímo, takže se
+motivu přizpůsobí bez JS a bez druhého generování. Při úpravě souřadnic v
+`tools/mapa.py` je potřeba vygenerované `<svg class="mapka">…</svg>` ručně
+nahradit v `index.html`.
+
+Přidat další bod: řádek do `BODY` na začátku skriptu (jméno, lat, lon,
+kategorie). Konfliktní popisek u blízkých bodů (jako Himmelreich a Kemp Pod
+Císařem, jen 99 m od sebe) se doladí v `POPISEK_PREPIS`.
 
 ---
 

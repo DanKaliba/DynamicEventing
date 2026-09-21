@@ -175,21 +175,56 @@
     <div class="sekce-mrizka">
       <h2>Kde spát a jak se tam dostat</h2>
       <div class="telo">
-        <p>Chalupa má vlastní pokoje a je to nejjednodušší varianta —
-          po večeři ujdete třicet kroků.</p>
+        <!-- DOPLNIT: počet pokojů pro rodinu a datum, do kdy je blokujeme -->
+        <p>Nejbližší rodina spí přímo u nás na chalupě — [POČET] pokojů,
+          blokujeme je do [DATUM]. Ozvěte se nám, ne přímo na chalupě, ať se
+          rezervace nepřekříží.</p>
 
-        <!-- DOPLNIT: počty, kontakty, časy, vzdálenosti -->
+        <p>Pro všechny ostatní je do postele pár minut chůze. Seřazeno podle
+          pohodlí:</p>
+
+        <ol class="ubytovani-zebricek">
+          <li class="uroven uroven--hotel">
+            <h3>Hotel Ostrov</h3>
+            <p>Vlastní pokoj, vlastní koupelna, tři minuty pěšky od chalupy.
+              <a href="https://www.hotelostrov.com/" target="_blank" rel="noopener">hotelostrov.com</a></p>
+          </li>
+
+          <li class="uroven uroven--kemp">
+            <h3>Kemp Pod Císařem</h3>
+            <p>Přes ulici — sto metrů od chalupy. Pokoj, chatka nebo vlastní
+              stan, podle chuti:</p>
+            <ul class="kemp-varianty">
+              <li><strong>Pokoje</strong> — dvou- nebo čtyřlůžkové, koupelna
+                společná na patře.</li>
+              <li><strong>Chatky</strong> — pro čtyři nebo pět, vlastní krytá
+                terasa. Lůžkoviny nejsou součástí, vezměte si spacák.</li>
+              <li><strong>Stan, karavan nebo auto</strong> — tři louky,
+                elektrické přípojky, ohniště povolená.</li>
+            </ul>
+            <p><a href="https://podcisarem.cz/cs" target="_blank" rel="noopener">podcisarem.cz</a></p>
+          </li>
+
+          <li class="uroven uroven--bivak">
+            <h3>Bivak ve skalách</h3>
+            <p>Jsme v pískovcových skalách plných horolezeckých bivaků — pro
+              otužilé, co chtějí spát pod širákem a ráno se probudit s
+              výhledem. Tři oblíbené:
+              <a href="https://www.horosvaz.cz/skaly-skala-5939/" target="_blank" rel="noopener">Německý bivak</a>,
+              <a href="https://www.horosvaz.cz/skaly-skala-5863/" target="_blank" rel="noopener">Sova</a>
+              a Lesní jesličky, kde se prý hezky spí.</p>
+          </li>
+        </ol>
+
+        <div class="mapa-ramecek">
+          <svg class="mapka" viewBox="0 0 625 627" role="img" aria-label="Mapka okolí chalupy Himmelreich s možnostmi ubytování"><circle cx="349.8" cy="171.1" r="7" fill="var(--mak)"/><text x="349.8" y="191.1" text-anchor="middle" font-family="var(--display)" font-size="15" font-weight="600" fill="var(--odkaz)">Himmelreich</text><circle cx="368.1" cy="78.0" r="5.5" fill="var(--chrpa)"/><text x="368.1" y="98.0" text-anchor="middle" font-family="var(--display)" font-size="15" fill="var(--chrpa)">Hotel Ostrov</text><circle cx="372.3" cy="136.3" r="5.5" fill="var(--kemp)"/><text x="382.3" y="124.3" text-anchor="start" font-family="var(--display)" font-size="15" fill="var(--text)">Kemp Pod Císařem</text><circle cx="110.0" cy="227.3" r="5" fill="var(--pozadi)" stroke="var(--text-tlumeny)" stroke-width="1.5"/><text x="118.0" y="213.3" text-anchor="start" font-family="var(--display)" font-size="15" fill="var(--text-tlumeny)">Německý bivak</text><circle cx="297.7" cy="497.3" r="5" fill="var(--pozadi)" stroke="var(--text-tlumeny)" stroke-width="1.5"/><text x="297.7" y="483.3" text-anchor="middle" font-family="var(--display)" font-size="15" fill="var(--text-tlumeny)">Sova</text><circle cx="504.5" cy="271.1" r="5" fill="var(--pozadi)" stroke="var(--text-tlumeny)" stroke-width="1.5"/><text x="496.5" y="259.1" text-anchor="end" font-family="var(--display)" font-size="15" fill="var(--text-tlumeny)">Lesní jesličky</text><g font-family="var(--text-font)" font-size="12" fill="var(--text-tlumeny)"><line x1="110.0" y1="572.7" x2="194.0" y2="572.7" stroke="var(--text-tlumeny)" stroke-width="1.5"/><line x1="110.0" y1="568.7" x2="110.0" y2="576.7" stroke="var(--text-tlumeny)"/><line x1="194.0" y1="568.7" x2="194.0" y2="576.7" stroke="var(--text-tlumeny)"/><text x="152.0" y="564.7" text-anchor="middle">200 m</text></g><g stroke="var(--text-tlumeny)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="558.5" y1="572.7" x2="558.5" y2="548.7"/><path d="M 554.5,554.7 L 558.5,546.7 L 562.5,554.7"/></g><text x="558.5" y="542.7" text-anchor="middle" font-family="var(--text-font)" font-size="12" font-weight="600" fill="var(--text-tlumeny)">S</text></svg>
+        </div>
+        <p class="mapa-popisek">Vzdušnou čarou od chalupy: Kemp asi 100 m,
+          hotel 200 m, bivaky pak už pořádná procházka do skal —
+          400 až 800 m.</p>
+
+        <!-- DOPLNIT: časy, vzdálenosti -->
         <div class="prakticke">
-          <div>
-            <h3>Pokoje na chalupě</h3>
-            <p>[POČET] lůžek, blokujeme je do [DATUM]. Rezervace přes nás,
-              ne přímo na chalupě — ať se to nepřekříží.</p>
-          </div>
-          <div>
-            <h3>Penziony v Tisé</h3>
-            <p>Pár minut autem. Seznam pošleme tomu, kdo napíše, že chce spát
-              mimo.</p>
-          </div>
           <div>
             <h3>Autem</h3>
             <p>Parkování přímo u chalupy, zdarma. Auto tam klidně může zůstat

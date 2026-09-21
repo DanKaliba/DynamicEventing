@@ -48,6 +48,11 @@
   --trava: #99B949;
   --trava-tmava: #496E16;
 
+  /* Mimo louku: barva "kemp" na mapce ubytování (tools/mapa.py). Není
+     z fotky ani odvozená — vybraná tak, aby jako plocha (≥3:1) obstála
+     v obou motivech zároveň, --pryskyrnik na to nejde (1.75:1 na světlém). */
+  --kemp: #8F740C;
+
   /* Odvozené pro text a plochy */
   --pozadi: #F3F5EC;
   --text: #0C1A06;
@@ -535,7 +540,11 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 /* Praktické informace — pojem a vysvětlení, žádné karty. */
 
 .prakticke {
-  margin: 0;
+  /* margin-top narovnává specificitu: .telo > * + * dává 1.1em, ale
+     tahle třída má stejnou specificitu a je definovaná později v souboru
+     — bez vlastního pravidla by mezera nad mřížkou spadla na 0. Stejná
+     hodnota jako u .mapa-ramecek, ať obě navazují stejným rytmem. */
+  margin: 1.75rem 0 0;
   display: grid;
   gap: 1.5rem;
 }
@@ -546,6 +555,90 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   margin: 0;
   color: var(--text-tlumeny);
   font-size: 0.9375rem;
+}
+
+/* Ubytování — seřazeno podle luxusu, proto <ol>, ne <ul>: pořadí je
+   skutečná informace (i bez viditelných čísel z něj odečítač obrazovky
+   pozná "1 ze 3" atd.). Barevná tečka před názvem každé úrovně je stejná
+   barva jako její bod na mapce hned pod seznamem — spojuje text s mapou,
+   aniž by bylo nutné cokoli popisovat navíc. */
+
+.ubytovani-zebricek {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.uroven {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--linka);
+}
+.uroven:first-child { border-top: 0; padding-top: 0; }
+
+.uroven h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  font-size: 1.0625rem;
+}
+.uroven h3::before {
+  content: "";
+  flex: none;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  transform: translateY(-0.05rem);
+}
+.uroven--hotel h3::before { background: var(--chrpa); }
+.uroven--kemp h3::before { background: var(--kemp); }
+.uroven--bivak h3::before {
+  background: var(--pozadi);
+  border: 1.5px solid var(--text-tlumeny);
+}
+
+.uroven p {
+  margin: 0.5rem 0 0;
+  max-width: 34rem;
+}
+.uroven p + p { margin-top: 0.6rem; }
+
+.kemp-varianty {
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+  max-width: 34rem;
+}
+.kemp-varianty li {
+  font-size: 0.9375rem;
+  color: var(--text-tlumeny);
+  padding-left: 1rem;
+  position: relative;
+}
+.kemp-varianty li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+}
+.kemp-varianty strong { color: var(--text); }
+
+/* Mapka — rámeček jako u fotky ve field guide, ne karta se stínem. */
+.mapa-ramecek {
+  margin-top: 1.75rem;
+  max-width: 34rem;
+  border: 1px solid var(--linka-silna);
+  border-radius: 2px;
+}
+.mapka {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.mapa-popisek {
+  margin: 0.6rem 0 0;
+  font-size: 0.875rem;
+  color: var(--text-tlumeny);
+  max-width: 34rem;
 }
 
 /* Galerie */
