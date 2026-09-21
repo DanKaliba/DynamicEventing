@@ -9,6 +9,7 @@ assets/style.css     paleta, theming, layout
 assets/gallery.js    ← seznam fotek, jediné místo k editaci galerie
 assets/main.js       odpočet, lightbox, přepínač motivu, stav navigace
 assets/vitr.js       vítr v louce (reakce na kurzor, dotyk a scroll)
+assets/rsvp.js       odeslání potvrzení účasti do Google Formuláře
 assets/fonts/        Fraunces (nadpisy) a Inter (text), lokálně
 assets/img/          fotky
 assets/louka.svg     louka v hero sekci (samostatný soubor, cachuje se zvlášť)
@@ -50,7 +51,75 @@ window.GALERIE = [
 `sirka`/`vyska` jsou volitelné, ale bez nich stránka při načítání poskakuje.
 Dokud je seznam prázdný, ukazuje se hláška „Sem přijdou fotky ze svatby".
 
-## 3. Zveřejnit
+## 3. Napojit potvrzení účasti
+
+Formulář na stránce odesílá do Google Formuláře, odpovědi padají do Sheetu.
+Web je statický, žádný backend tu není — tohle je způsob, jak se obejít
+bez něj a přitom si nechat vlastní vzhled.
+
+**Dokud není napojený, sám se schová** a místo něj se ukáže odkaz na
+e-mail. Tiše mizející potvrzení účasti je horší než žádný formulář: chybu
+bys poznal až podle prázdných židlí.
+
+### a) Založit formulář
+
+V Google Formulářích vytvoř formulář se **sedmi otázkami v tomhle pořadí**
+(na názvech nezáleží, na pořadí a typu ano):
+
+| # | otázka | typ | povinná |
+|---|---|---|---|
+| 1 | Kdo se hlásí | krátká odpověď | ano |
+| 2 | Přijedete? | výběr z možností: `Přijedeme`, `Bohužel nedorazíme` | ano |
+| 3 | Kolik vás bude | krátká odpověď | ne |
+| 4 | Co nejíte | krátká odpověď | ne |
+| 5 | Místo v autobuse | výběr: `Ano`, `Ne` | ne |
+| 6 | Spaní na chalupě | výběr: `Ano`, `Ne` | ne |
+| 7 | Vzkaz | odstavec | ne |
+
+U otázek 2, 5 a 6 musí být možnosti napsané **přesně takhle**, jinak Google
+odpověď zahodí. Nenastavuj žádnou otázku jako povinnou v Googlu — hlídá si
+to stránka sama a povinné pole v Googlu by odmítlo odeslání, když někdo
+napíše, že nedorazí.
+
+### b) Zjistit čísla polí
+
+V editoru formuláře: **⋮ → Získat předvyplněný odkaz**. Vyplň do všech
+sedmi polí cokoliv a dej **Získat odkaz → Kopírovat odkaz**. Vznikne něco
+jako:
+
+```
+https://docs.google.com/forms/d/e/1FAIpQLSdXXXXXXXX/viewform?usp=pp_url
+  &entry.1234567890=test&entry.987654321=Přijedeme&entry.5555=2...
+```
+
+- `1FAIpQLSdXXXXXXXX` je **ID formuláře**
+- `entry.1234567890` a spol. jsou **čísla polí**, v pořadí otázek
+
+### c) Přepsat do index.html
+
+V sekci `id="potvrzeni"`:
+
+1. v `action=` nahraď `__ID_FORMULARE__` tím ID formuláře
+2. sedm `name="entry.10000000XX"` nahraď skutečnými čísly, v pořadí
+   podle tabulky výše
+
+```powershell
+Select-String -Path index.html -Pattern "entry\.|__ID_FORMULARE__"
+```
+
+Pak commitni, pushni a zkus formulář odeslat. Odpověď se musí objevit
+v Googlu v záložce **Odpovědi**.
+
+> **Co nejde zaručit:** prohlížeč kvůli pravidlům pro cizí domény
+> neprozradí, co Google odpověděl. Stránka pozná jen to, že se něco
+> vrátilo, ne že se odpověď uložila. Proto je pod formulářem e-mail a
+> proto se vyplatí před svatbou počty v Sheetu porovnat se seznamem
+> pozvaných.
+
+Když později přidáš otázku, čísla polí se musí doplnit znovu — Google je
+generuje při vytvoření otázky.
+
+## 4. Zveřejnit
 
 Repo je veřejné a GitHub Pages běží z větve `main`, složka `/ (root)`.
 Každá změna tedy jde ven takhle:

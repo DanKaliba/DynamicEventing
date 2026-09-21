@@ -100,6 +100,12 @@
 
 * { box-sizing: border-box; }
 
+/* Atribut hidden musí přebít i vlastní pravidla. Prohlížeč ho řeší
+   výchozím display: none, jenže to má nejnižší prioritu — stačí kdekoli
+   .neco { display: grid } a hidden přestane fungovat. Přesně na tohle
+   jsem najel u formuláře potvrzení účasti. */
+[hidden] { display: none !important; }
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 4.5rem;
@@ -578,8 +584,7 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 /* Potvrzení účasti */
 
 .potvrzeni {
-  border-left: 3px solid var(--mak);
-  padding-left: 1.5rem;
+  max-width: 34rem;
 }
 .termin {
   color: var(--text-tlumeny);
@@ -598,6 +603,130 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   font-size: 0.9375rem;
 }
 .tlacitko:hover { background: var(--odkaz-aktivni); color: #fff; }
+
+/* Formulář potvrzení účasti */
+
+.formular {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.formular fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.pole {
+  display: grid;
+  gap: 0.3rem;
+}
+.pole > span {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.pole .napoveda {
+  font-weight: 400;
+  color: var(--text-tlumeny);
+}
+
+.formular input[type="text"],
+.formular input[type="number"],
+.formular textarea {
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--linka-silna);
+  border-radius: 2px;
+  padding: 0.55rem 0.7rem;
+  width: 100%;
+}
+.formular textarea {
+  resize: vertical;
+  min-height: 3.5rem;
+}
+.formular input:focus-visible,
+.formular textarea:focus-visible {
+  border-color: var(--odkaz);
+  outline: 1px solid var(--odkaz);
+  outline-offset: 0;
+}
+
+/* Přepínače ano/ne. Radio je schované, ale zůstává v tabulátoru
+   a ovládá se šipkami — proto jen průhledné, ne display: none. */
+.volby {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.volba {
+  position: relative;
+}
+.volba input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+.volba span {
+  display: block;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--linka-silna);
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.volba input:checked + span {
+  background: var(--mak);
+  border-color: var(--mak);
+  color: #fff;
+}
+.volba input:focus-visible + span {
+  outline: 2px solid var(--odkaz);
+  outline-offset: 2px;
+}
+
+.formular button {
+  font: inherit;
+  justify-self: start;
+  background: var(--mak);
+  color: #fff;
+  border: 0;
+  padding: 0.75rem 1.75rem;
+  border-radius: 2px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+.formular button:hover { background: var(--odkaz-aktivni); }
+.formular button[disabled] { opacity: 0.6; cursor: default; }
+
+.dekujeme {
+  border-left: 3px solid var(--mak);
+  padding-left: 1.5rem;
+}
+.dekujeme h3 {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 0.3rem;
+}
+
+.chyba {
+  color: var(--odkaz);
+  font-size: 0.9375rem;
+}
+
+.jinak {
+  margin-top: 1.5rem;
+  font-size: 0.9375rem;
+  color: var(--text-tlumeny);
+}
 
 /* Časté dotazy */
 

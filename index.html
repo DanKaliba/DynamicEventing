@@ -262,18 +262,107 @@
     </div>
   </section>
 
-  <!-- ====================== POTVRZENÍ ÚČASTI ====================== -->
+  <!-- ====================== POTVRZENÍ ÚČASTI ======================
+       Formulář odesílá do Google Formuláře. Až ho založíš, přepiš:
+         1. adresu v action= (ID je v odkazu formuláře)
+         2. sedm name="entry.XXXX" níž
+       Kde ta čísla vzít je popsané v README, oddíl „Potvrzení účasti".
+       Dokud tam zůstanou zástupná čísla, formulář se sám schová a ukáže
+       se místo něj e-mail — viz assets/rsvp.js.
+  -->
   <section class="sekce" id="potvrzeni">
     <div class="sekce-mrizka">
       <h2>Dejte nám vědět</h2>
       <div class="telo">
         <div class="potvrzeni">
-          <!-- DOPLNIT: termín a e-mail -->
+          <!-- DOPLNIT: termín -->
           <p class="termin">Prosíme do [DATUM]</p>
-          <p>Potřebujeme počty kvůli jídlu, lůžkům a autobusu. Stačí pár vět:
-            kdo přijede, kolik vás bude, jestli někdo něco nejí, jestli chcete
-            místo v autobuse a jestli u nás budete spát.</p>
-          <a class="tlacitko" href="mailto:[EMAIL]?subject=Svatba%20-%20potvrzeni%20ucasti&amp;body=Jmena%3A%0APocet%20osob%3A%0ANejime%3A%0AAutobus%3A%20ano%20%2F%20ne%0ASpime%20na%20chalupe%3A%20ano%20%2F%20ne">Napsat e‑mail</a>
+          <p>Potřebujeme počty kvůli jídlu, lůžkům a autobusu.
+            Za každou pozvánku stačí jeden formulář.</p>
+
+          <form class="formular" id="rsvp" method="post"
+                action="https://docs.google.com/forms/d/e/__ID_FORMULARE__/formResponse">
+
+            <label class="pole">
+              <span>Kdo se hlásí <span class="napoveda">— jména všech, za koho vyplňujete</span></span>
+              <input type="text" name="entry.1000000001" required autocomplete="name">
+            </label>
+
+            <fieldset class="pole">
+              <span>Přijedete?</span>
+              <div class="volby">
+                <label class="volba">
+                  <input type="radio" name="entry.1000000002" value="Přijedeme" required checked
+                         data-ucast="ano">
+                  <span>Přijedeme</span>
+                </label>
+                <label class="volba">
+                  <input type="radio" name="entry.1000000002" value="Bohužel nedorazíme"
+                         data-ucast="ne">
+                  <span>Bohužel nedorazíme</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <label class="pole jen-pri-ucasti">
+              <span>Kolik vás bude</span>
+              <input type="number" name="entry.1000000003" min="1" max="20" inputmode="numeric">
+            </label>
+
+            <label class="pole jen-pri-ucasti">
+              <span>Co nejíte <span class="napoveda">— alergie, bezlepkové, vegetariánské…</span></span>
+              <input type="text" name="entry.1000000004">
+            </label>
+
+            <fieldset class="pole jen-pri-ucasti">
+              <span>Místo ve svozovém autobuse</span>
+              <div class="volby">
+                <label class="volba">
+                  <input type="radio" name="entry.1000000005" value="Ano" checked>
+                  <span>Ano, prosím</span>
+                </label>
+                <label class="volba">
+                  <input type="radio" name="entry.1000000005" value="Ne">
+                  <span>Přijedeme po svém</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="pole jen-pri-ucasti">
+              <span>Budete spát na chalupě?</span>
+              <div class="volby">
+                <label class="volba">
+                  <input type="radio" name="entry.1000000006" value="Ano" checked>
+                  <span>Ano</span>
+                </label>
+                <label class="volba">
+                  <input type="radio" name="entry.1000000006" value="Ne">
+                  <span>Ne</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <label class="pole">
+              <span>Chcete nám něco vzkázat? <span class="napoveda">— nepovinné</span></span>
+              <textarea name="entry.1000000007" rows="3"></textarea>
+            </label>
+
+            <!-- Google tyhle dvě pole u odeslání očekává. -->
+            <input type="hidden" name="fvv" value="1">
+            <input type="hidden" name="pageHistory" value="0">
+
+            <button type="submit">Odeslat</button>
+            <p class="chyba" id="rsvp-chyba" hidden></p>
+          </form>
+
+          <div class="dekujeme" id="rsvp-dekujeme" hidden>
+            <h3>Děkujeme, máme to.</h3>
+            <p>Kdybyste potřebovali cokoli změnit, napište nám — kontakty jsou níž.</p>
+          </div>
+
+          <!-- DOPLNIT: e-mail -->
+          <p class="jinak">Nefunguje vám formulář? Napište na
+            <a href="mailto:[EMAIL]">[EMAIL]</a> nebo zavolejte, kontakty jsou níž.</p>
         </div>
       </div>
     </div>
@@ -366,5 +455,6 @@
 <script src="assets/gallery.js"></script>
 <script src="assets/main.js"></script>
 <script src="assets/vitr.js" defer></script>
+<script src="assets/rsvp.js" defer></script>
 </body>
 </html>
