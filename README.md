@@ -127,9 +127,20 @@ Louka je **samostatný soubor**, ne inline SVG. Definice rostlin jsou velké
 (152 kB, po gzipu 40 kB) a takhle se cachují zvlášť místo aby zdržovaly
 první vykreslení stránky.
 
-Poměr stran SVG je 10:1 a `--vyska-louky` se váže na **šířku** okna, ne na
-výšku. Díky tomu je rámeček vždycky užší v poměru než obrázek, takže
-`object-fit: cover` ořízne boky a ne vršky rostlin.
+Poměr stran SVG je 10:1. `--vyska-louky` má strop podle šířky i výšky okna:
+`clamp(9rem, min(20vw, 38vh), 22rem)`.
+
+Strop podle šířky drží poměr rámečku užší než 10:1, takže `object-fit:
+cover` ořezává boky a ne vršky rostlin. Strop podle výšky je tam proto, že
+`min-height: 100svh` je jen minimum — na širokém a nízkém okně notebooku
+obsah hero přerostl a spodek okna louku uřízl (na 1872×785 začínala až
+na 75 % výšky a vidět byla sotva polovina). Zmenšovat výšku je bezpečné:
+nižší rámeček je v poměru ještě užší. Nebezpečné by bylo zvětšovat šířku
+bez výšky.
+
+Dvě pravidla pro nízká okna utahují odsazení a zmenšují jména; pod 450 px
+výšky (telefon na šířku) jde pryč i odpočet. Ověřeno od 360 do 1010 px
+výšky — hero se nikde nevejde mimo obrazovku.
 
 ### Motion
 

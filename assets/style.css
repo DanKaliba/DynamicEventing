@@ -64,10 +64,14 @@
   --okraj: 1.25rem;
   --sloupec-nadpisu: 13rem;
 
-  /* Výška louky. Váže se na šířku okna, ne na výšku — tím zůstává poměr
-     stran rámečku užší než 10:1 samotného SVG, takže object-fit ořízne
-     boky a ne hlavy rostlin. */
-  --vyska-louky: clamp(9rem, 20vw, 24rem);
+  /* Výška louky. Vázat ji jen na šířku okna nestačilo: na širokém a nízkém
+     okně notebooku pak louka i s textem přerostla obrazovku a spodek okna
+     ji uřízl. Proto i strop podle výšky.
+
+     Zmenšování je bezpečné — nižší rámeček je v poměru UŽŠÍ než 10:1
+     samotného SVG, takže object-fit dál ořezává boky a ne hlavy rostlin.
+     Nebezpečné by bylo jen zvyšování šířky bez výšky. */
+  --vyska-louky: clamp(9rem, min(20vw, 38vh), 22rem);
 }
 
 :root[data-theme="dark"] {
@@ -250,8 +254,8 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: -3.25rem;
-  padding-top: 3.25rem;
+  margin-top: -3rem;
+  padding-top: 3rem;
   overflow: hidden;
 }
 
@@ -259,15 +263,15 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   width: 100%;
   max-width: var(--sirka);
   margin-inline: auto;
-  padding: 1.5rem var(--okraj) calc(var(--vyska-louky) + 1.5rem);
+  padding: 1rem var(--okraj) calc(var(--vyska-louky) + 1rem);
 }
 
 .hero h1 {
   /* min() proti vh brání tomu, aby jména přerostla nízké okno na šířku. */
-  font-size: clamp(2.75rem, min(11vw, 15vh), 8rem);
+  font-size: clamp(2.25rem, min(10vw, 13vh), 7.5rem);
   font-weight: 300;
   color: var(--kopretina);
-  margin-bottom: clamp(1.25rem, 4vw, 2.5rem);
+  margin-bottom: clamp(1rem, 3vw, 2rem);
 }
 /* Druhé jméno odsazené — jako dva stonky vedle sebe, ne vycentrovaný nápis. */
 .hero h1 .druhe {
@@ -281,7 +285,7 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 }
 
 .hero-udaje {
-  font-size: clamp(1.0625rem, 2.2vw, 1.375rem);
+  font-size: clamp(1rem, 2vw, 1.25rem);
   line-height: 1.5;
   color: var(--kopretina);
   max-width: 30rem;
@@ -293,7 +297,7 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 }
 
 .odpocet {
-  margin-top: clamp(1.25rem, 3vw, 2rem);
+  margin-top: clamp(1rem, 2.5vw, 1.5rem);
   font-size: 0.9375rem;
   color: var(--trava);
 }
@@ -337,6 +341,32 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 .kytka {
   transform-box: fill-box;
   transform-origin: 50% 100%;
+}
+
+/* Nízká okna (notebook s velkým prohlížečem, telefon na šířku). Text
+   a louka se tam do obrazovky nevejdou v běžných rozměrech, takže se
+   utáhne odsazení a zmenší jména. Odsazení hera nahoře se nesahá — drží
+   překryv s navigací a bez něj by nad heroem probleskl světlý pruh. */
+@media (max-height: 700px) {
+  :root { --vyska-louky: clamp(6rem, min(20vw, 30vh), 14rem); }
+  .hero-text {
+    padding-top: 0.25rem;
+    padding-bottom: calc(var(--vyska-louky) + 0.5rem);
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, min(9vw, 12vh), 4rem);
+    margin-bottom: 0.6rem;
+  }
+  .odpocet { margin-top: 0.6rem; }
+}
+
+/* Telefon na šířku. I po utažení se sem jména, datum, odpočet a louka
+   nevejdou — odpočet jde pryč jako to nejmíň podstatné, ať zbyde místo
+   na to, kvůli čemu tu lidi jsou: kdo, kdy a kde. */
+@media (max-height: 450px) {
+  :root { --vyska-louky: clamp(4.5rem, min(20vw, 26vh), 10rem); }
+  .hero h1 { font-size: clamp(1.6rem, min(8vw, 14vh), 3rem); }
+  .odpocet { display: none; }
 }
 
 /* Jediná animace na stránce. Louka jednou najede zespodu na místo.
