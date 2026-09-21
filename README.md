@@ -333,6 +333,26 @@ Přidat další bod: řádek do `BODY` na začátku skriptu (jméno, lat, lon,
 kategorie). Konfliktní popisek u blízkých bodů (jako Himmelreich a Kemp Pod
 Císařem, jen 99 m od sebe) se doladí v `POPISEK_PREPIS`.
 
+**Terén** (`SILNICE`, `RYBNIK_STRED`/`RYBNIK_R`, `LES_STRED`/`LES_R` v horní
+části skriptu) na rozdíl od bodů v `BODY` **nemá přesné souřadnice**. Je
+odhadnutý podle
+poměrů na screenshotech z Mapy.cz — dost přesně na to, aby mapa přestala
+být prázdný čtverec s tečkami, ne dost přesně na navigaci. Stezky ke třem
+bivakům jsou stylizované zvlněné křivky od osady k cíli, ne trasované GPS
+stopy — skutečné cesty lesem vedou jinudy a klikatěji.
+
+Lesní/skalní zóna schválně pokrývá jen Německý bivak a Sovu (oba mají
+odkaz na horosvaz.cz, jsou to skutečné lezecké věže ve stejném skalním
+pásmu). Lesní jesličky leží na opačné, východní straně a do zóny
+nepatří — kdyby zóna měla obsáhnout všechny tři body, musela by se
+natáhnout přes celou mapu a přestala by cokoli rozlišovat.
+
+Řídicí bod zvlněné stezky se posouvá vodorovně na stranu, kde cíl
+skutečně leží (ne kolmo na spojnici) — kolmý posun má náhodnou stranu,
+a když náhodou vyjde směrem k silnici, stezka se s ní na kus cesty táhne
+souběžně a splývá s ní. Přesně to se stalo při prvním pokusu se stezkou
+k Sově.
+
 ---
 
 ## Poznámka k téhle složce

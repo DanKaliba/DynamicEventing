@@ -1,18 +1,28 @@
 """Vygeneruje malou mapku okolí Himmelreichu s možnostmi ubytování.
 
-Souřadnice jsou reálné GPS body (viz BODY níž), promítnuté jednoduchou
+Souřadnice bodů (viz BODY níž) jsou reálné GPS, promítnuté jednoduchou
 rovnoběžkovou projekcí (v tak malém měřítku — necelý kilometr napříč —
 je zkreslení oproti pořádné kartografické projekci zanedbatelné).
 Himmelreich je počátek souřadnic mapy, ne nutně střed plátna.
+
+Terén (TEREN níž — rybník, silnice, lesní zóna) naproti tomu přesné
+souřadnice NEMÁ. Je odhadnutý podle poměrů na screenshotech z Mapy.cz
+(poloha rybníku u Hotelu Ostrov, trasa silnice osadou, značené stezky
+směrem ke skalám) — dost přesně na to, aby mapa přestala být prázdný
+čtverec s tečkami, ne dost přesně na navigaci. Cesty ke třem bivakům
+jsou stylizované (jemně zvlněná křivka od osady k cíli), ne trasované
+GPS stopy — skutečné cesty lesem vedou jinudy a klikatěji.
 
 Plné kolečko = střecha nad hlavou (chalupa, hotel, kemp).
 Prázdné kolečko = bivak — spací pytel a nebe nad hlavou, žádná budova.
 Rozdíl mezi plným a prázdným kolečkem tedy nese skutečnou informaci,
 není to jen ozdoba.
 
-Plátno se počítá z reálného rozpětí bodů, ne z pevného čísla — jinak
-se při přidání vzdálenějšího bodu (třeba dalšího bivaku) okraj mapy
-tiše usekne, přesně jak se stalo napoprvé se Sovou.
+Plátno se počítá z reálného rozpětí bodů BODY, ne z pevného čísla —
+jinak se při přidání vzdálenějšího bodu (třeba dalšího bivaku) okraj
+mapy tiše usekne, přesně jak se stalo napoprvé se Sovou. Terén se do
+téhle úvahy nepočítá (je autorsky umístěný tak, aby se do okrajů vešel)
+a mimo plátno se prostě neprokreslí — SVG ho ořízne samo.
 
 Spustit samostatně vypíše i vzdálenosti od Himmelreichu v metrech — pro
 psaní textu v index.html, ne pro vkládání do stránky.
@@ -20,6 +30,7 @@ psaní textu v index.html, ne pro vkládání do stránky.
 
 import io
 import math
+import random
 import sys
 
 # (jméno, lat, lon, kategorie)
@@ -37,15 +48,12 @@ STRED = (50.8019203, 14.0456936)  # Himmelreich — vztažný bod pro vzdálenos
 
 # Barvy jsou buď CSS proměnné (přizpůsobí se motivu automaticky), nebo
 # pevný hex tam, kde žádná vhodná proměnná v paletě není — u toho je pak
-# vybraná hodnota, co obstojí v obou motivech (viz komentář u KEMP_HEX).
+# vybraná hodnota, co obstojí v obou motivech (viz komentář u --kemp
+# v style.css).
 BARVA = {
     "domov": "var(--mak)",    # mak — stejná barva jako favicon a odkazy
     "hotel": "var(--chrpa)",  # chrpa má už hotovou tmavou variantu v paletě
 }
-# "kemp" má vlastní proměnnou --kemp v style.css (var(--pryskyrnik) by
-# nešlo — ta barva má na světlém pozadí kontrast jen 1.75:1, viz README).
-# Hodnota #8F740C tam je vybraná tak, aby jako plocha (≥3:1, ne plný
-# text) obstála v obou motivech zároveň: 4.09 na světlém, 4.01 na tmavém.
 
 # Ruční doladění popisků tam, kde by automatika (label nad bodem,
 # zarovnání podle blízkosti okraje) dvě jména slepila k sobě — hlavně
@@ -61,6 +69,36 @@ POPISEK_PREPIS = {
 MERITKO = 0.42  # px na metr
 LEVY_OKRAJ, PRAVY_OKRAJ = 110, 120
 HORNI_OKRAJ, DOLNI_OKRAJ = 78, 130
+
+# ---------------------------------------------------------------------------
+# Terén — odhadnutý, ne GPS. Souřadnice v metrech od Himmelreichu, stejná
+# soustava jako BODY (kladné x = východ, kladné y = sever).
+# ---------------------------------------------------------------------------
+
+# Silnice osadou: od jihu k severu kolem shluku Himmelreich/Kemp/Hotel,
+# mírně na východ od Himmelreichu (podle screenshotu 1, kde silnice
+# odděluje chalupu od rybníku). Vede za okraje plátna, ať je jasné,
+# že pokračuje dál.
+SILNICE = [(15, -650), (22, -300), (28, -20), (34, 90), (42, 210), (52, 480)]
+
+# Rybník (Ostrovský rybník / PP Eiland) — hned u Hotelu Ostrov, podle
+# screenshotů 1, 3 a 5. Přibližný tvar, ne vytrasovaný polygon.
+RYBNIK_STRED = (72, 275)
+RYBNIK_R = (34, 46)
+
+# Lesní/skalní zóna — podle screenshotů hustě zalesněná oblast s
+# pískovcovými věžemi, jihozápadně od osady. Pokrývá jen Německý bivak
+# a Sovu (oba mají odkaz na horosvaz.cz, jsou to skutečné lezecké věže
+# ve skalách); Lesní jesličky leží na opačné, východní straně a do
+# stejné skalní oblasti nepatří — proto je zóna elipsa mezi prvními
+# dvěma, ne jedna velká plocha přes všechny tři.
+LES_STRED = (-347, -455)
+LES_R = (300, 340)
+LES_POPISEK_POZICE = (-300, -430)
+
+# Odkud vedou stezky k bivakům — zhruba od Kempu, kde se cesty k lesu
+# reálně sbíhají (screenshoty 1 a 2).
+STEZKA_START = (50, 70)
 
 
 def do_metru(bod, stred):
@@ -82,12 +120,42 @@ def vzdalenost_m(bod, stred):
     return math.hypot(x, y)
 
 
+def vyhladit_uzavrenou(body):
+    """Uzavřená vyhlazená křivka přes zadané body (už v cílových jednotkách).
+
+    Klasický trik na hladký mnohoúhelník bez počítání tečen: každá hrana
+    se nahradí kvadratickou křivkou, jejíž řídicí bod je původní roh a
+    koncový bod je střed hrany. Levné na výpočet, dost hladké na to, aby
+    rybník nevypadal jako vystřižený z papíru s rovnými hranami.
+    """
+    stredy = [((body[i][0] + body[(i + 1) % len(body)][0]) / 2,
+               (body[i][1] + body[(i + 1) % len(body)][1]) / 2)
+              for i in range(len(body))]
+    d = [f'M {stredy[-1][0]:.1f},{stredy[-1][1]:.1f}']
+    for roh, stred_hrany in zip(body, stredy):
+        d.append(f'Q {roh[0]:.1f},{roh[1]:.1f} {stred_hrany[0]:.1f},{stred_hrany[1]:.1f}')
+    d.append('Z')
+    return ' '.join(d)
+
+
+def nepravidelny_prstenec(cx, cy, rx, ry, pocet, nepravidelnost, rng):
+    """Body rozhozené kolem elipsy — základ pro rybník i lesní zónu."""
+    out = []
+    for i in range(pocet):
+        uhel = 2 * math.pi * i / pocet + rng.uniform(-0.15, 0.15)
+        r = 1 + rng.uniform(-nepravidelnost, nepravidelnost)
+        out.append((cx + rx * r * math.cos(uhel), cy + ry * r * math.sin(uhel)))
+    return out
+
+
 def vygeneruj_svg():
     """Vrátí hotové <svg>…</svg> jako řetězec, připravené k vložení do HTML.
 
     Používá var(--text) apod. — proto musí být vložené inline ve stránce,
     ne jako <img src=…>, jinak by si vlastní CSS proměnné stránky nevzalo.
     """
+    rng = random.Random(1808)  # pevný seed — rybník i les vypadají pokaždé stejně
+
     body_m = [(jmeno, kat, *do_metru((lat, lon), STRED)) for jmeno, lat, lon, kat in BODY]
 
     min_x = min(x for _, _, x, _ in body_m)
@@ -104,6 +172,64 @@ def vygeneruj_svg():
                 HORNI_OKRAJ + (max_y - y) * MERITKO)
 
     pozice = {jmeno: px(x, y) for jmeno, kat, x, y in body_m}
+
+    # ---------- Terén — kreslí se první, ať jsou body a popisky nahoře. ----------
+
+    teren = []
+
+    # Lesní/skalní zóna — tichá, jde pod všechno ostatní.
+    les_body = [px(x, y) for x, y in nepravidelny_prstenec(
+        *LES_STRED, *LES_R, pocet=10, nepravidelnost=0.3, rng=rng)]
+    teren.append(
+        f'<path d="{vyhladit_uzavrenou(les_body)}" fill="var(--trava-tmava)" '
+        f'fill-opacity="0.13" stroke="none"/>')
+    lx, ly = px(*LES_POPISEK_POZICE)
+    teren.append(
+        f'<text x="{lx:.1f}" y="{ly:.1f}" text-anchor="middle" '
+        f'font-family="var(--text-font)" font-size="12" font-style="italic" '
+        f'fill="var(--text-tlumeny)">pískovcové skály</text>')
+
+    # Rybník.
+    rybnik_body = [px(x, y) for x, y in nepravidelny_prstenec(
+        *RYBNIK_STRED, *RYBNIK_R, pocet=9, nepravidelnost=0.22, rng=rng)]
+    teren.append(
+        f'<path d="{vyhladit_uzavrenou(rybnik_body)}" fill="var(--chrpa)" '
+        f'fill-opacity="0.24" stroke="var(--chrpa)" stroke-opacity="0.35" '
+        f'stroke-width="1"/>')
+
+    # Silnice — polyline s kulatými zlomy, vede za okraje plátna.
+    silnice_px = [px(x, y) for x, y in SILNICE]
+    d = 'M ' + ' L '.join(f'{x:.1f},{y:.1f}' for x, y in silnice_px)
+    teren.append(
+        f'<path d="{d}" fill="none" stroke="var(--text-tlumeny)" '
+        f'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" '
+        f'stroke-opacity="0.55"/>')
+
+    # Stezky ke třem bivakům — jemně prohnutá čára, ne přímka. Řídicí bod
+    # se posouvá VODOROVNĚ, ne kolmo na spojnici — kolmý posun měl
+    # náhodnou stranu a u Sovy náhodou vyšel směrem k silnici, takže se
+    # stezka s ní na kus cesty táhla souběžně a splývala s ní. Vodorovný
+    # posun na stranu, kde cíl skutečně leží (na západ pro oba bivaky
+    # v lese, na východ pro Lesní jesličky), stezku spolehlivě odkloní
+    # pryč od silnice hned od začátku.
+    start_px = px(*STEZKA_START)
+    for jmeno, kat, x, y in body_m:
+        if kat != "bivak":
+            continue
+        cil_px = px(x, y)
+        sx, sy = start_px
+        cxp, cyp = cil_px
+        stred_x, stred_y = (sx + cxp) / 2, (sy + cyp) / 2
+        strana = -1 if x < STEZKA_START[0] else 1  # metry: záporné x = západ
+        posun = rng.uniform(28, 55) * strana
+        rx = stred_x + posun
+        ry = stred_y + rng.uniform(-15, 15)
+        teren.append(
+            f'<path d="M {sx:.1f},{sy:.1f} Q {rx:.1f},{ry:.1f} {cxp:.1f},{cyp:.1f}" '
+            f'fill="none" stroke="var(--text-tlumeny)" stroke-width="1.5" '
+            f'stroke-dasharray="1 4" stroke-linecap="round" stroke-opacity="0.7"/>')
+
+    # ---------- Body ubytování a jejich popisky. ----------
 
     kusy = []
     for jmeno, kat, x, y in body_m:
@@ -144,6 +270,15 @@ def vygeneruj_svg():
             else:
                 kotva, dx = "middle", 0
 
+        # Bílý (pozadí-barevný) podklad za popiskem, ať je čitelný i přes
+        # silnici nebo lesní zónu — bez něj by se text s terénem sléval.
+        odhad_sirka = len(jmeno) * 8.2
+        podklad_x = cx + dx - (odhad_sirka / 2 if kotva == "middle" else
+                                (0 if kotva == "start" else odhad_sirka))
+        kusy.append(
+            f'<rect x="{podklad_x:.1f}" y="{cy + dy - 12:.1f}" width="{odhad_sirka:.0f}" '
+            f'height="17" fill="var(--pozadi)" fill-opacity="0.82"/>')
+
         kusy.append(
             f'<text x="{cx + dx:.1f}" y="{cy + dy:.1f}" text-anchor="{kotva}" '
             f'font-family="var(--display)" font-size="15"{tucne} '
@@ -177,7 +312,7 @@ def vygeneruj_svg():
     svg = (
         f'<svg class="mapka" viewBox="0 0 {W:.0f} {H:.0f}" role="img" '
         f'aria-label="Mapka okolí chalupy Himmelreich s možnostmi ubytování">'
-        f'{"".join(kusy)}{meritko_svg}{severka}</svg>')
+        f'{"".join(teren)}{"".join(kusy)}{meritko_svg}{severka}</svg>')
     return svg
 
 
