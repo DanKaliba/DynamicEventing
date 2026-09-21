@@ -119,6 +119,45 @@ body {
   font-size: 1.0625rem;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+/* Obrysy lučních rostlin za obsahem, jako doodle pozadí ve WhatsAppu.
+
+   Jeden černobílý soubor (assets/vzor.svg) funguje pro oba motivy díky
+   masce: barvu dodává background-color na tomhle pseudoprvku, masku jen
+   tvar. Proto žádné druhé vygenerování pro tmavý režim.
+
+   Hero a patička mají vlastní neprůhledné pozadí (var(--les)), takže
+   ho tenhle vzor sám od sebe nepřekryje — je vidět jen za obsahem sekcí
+   mezi nimi, ne za loukou.
+
+   position: fixed drží vzor jako papírovou texturu ukotvenou k oknu,
+   ne ke scrollované stránce — při rolování se tak netahá spolu s textem. */
+/* Bez podpory masky se prvek vůbec nevytvoří — jinak by se bez ní
+   vykreslila plná barevná vrstva přes celou stránku místo textury,
+   což je horší než žádný vzor. */
+@supports (mask-image: none) or (-webkit-mask-image: none) {
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: var(--text);
+    opacity: var(--sytost-vzoru, 0.05);
+    -webkit-mask-image: url("vzor.svg");
+    mask-image: url("vzor.svg");
+    -webkit-mask-repeat: repeat;
+    mask-repeat: repeat;
+    -webkit-mask-size: 640px 640px;
+    mask-size: 640px 640px;
+  }
+}
+
+:root[data-theme="dark"] { --sytost-vzoru: 0.07; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --sytost-vzoru: 0.07; }
 }
 
 h1, h2 {

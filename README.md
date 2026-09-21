@@ -4,18 +4,20 @@ Statická jednostránka. Žádný build, žádný framework, žádný externí r
 otevřeš `index.html` v prohlížeči a funguje.
 
 ```
-index.html           obsah; sekce oddělené komentáři
-assets/style.css     paleta, theming, layout
-assets/gallery.js    ← seznam fotek, jediné místo k editaci galerie
-assets/main.js       odpočet, lightbox, přepínač motivu, stav navigace
-assets/vitr.js       vítr v louce (reakce na kurzor, dotyk a scroll)
-assets/rsvp.js       odeslání potvrzení účasti do Google Formuláře
-assets/fonts/        Fraunces (nadpisy) a Inter (text), lokálně
-assets/img/          fotky
-assets/louka.svg     louka v hero sekci (samostatný soubor, cachuje se zvlášť)
-tools/extrakce.py    rozseká plát z PDF na jednotlivé rostliny
-tools/louka.py       poskládá z nich louku
-tools/paleta.py      vzorkovač barev z fotky
+index.html          obsah; sekce oddělené komentáři
+assets/style.css    paleta, theming, layout
+assets/gallery.js   ← seznam fotek, jediné místo k editaci galerie
+assets/main.js      odpočet, lightbox, přepínač motivu, stav navigace
+assets/vitr.js      vítr v louce (reakce na kurzor, dotyk a scroll)
+assets/rsvp.js      odeslání potvrzení účasti do Google Formuláře
+assets/fonts/       Fraunces (nadpisy) a Inter (text), lokálně
+assets/img/         fotky
+assets/louka.svg    louka v hero sekci (samostatný soubor, cachuje se zvlášť)
+assets/vzor.svg     obrysy rostlin na pozadí sekcí, jako maska
+tools/extrakce.py   rozseká plát z PDF na jednotlivé rostliny
+tools/louka.py      poskládá z nich louku
+tools/vzor.py       poskládá z nich opakovatelnou dlaždici na pozadí
+tools/paleta.py     vzorkovač barev z fotky
 ```
 
 ---
@@ -210,6 +212,40 @@ bez výšky.
 Dvě pravidla pro nízká okna utahují odsazení a zmenšují jména; pod 450 px
 výšky (telefon na šířku) jde pryč i odpočet. Ověřeno od 360 do 1010 px
 výšky — hero se nikde nevejde mimo obrazovku.
+
+### Pozadí sekcí
+
+Za obsahem sekcí (ne za hero ani patičkou — ty mají vlastní neprůhledné
+pozadí) je tichá textura obrysů stejných rostlin jako v louce, jako
+doodle pozadí ve WhatsAppu. Generuje ji `tools/vzor.py` — vezme siluety
+z `tools/kytky-vse.svg`, výplně nahradí tahem a rozmístí je do
+opakovatelné dlaždice 640×640 px.
+
+```bash
+python tools/vzor.py tools/kytky-vse.svg tools/kytky-vse.json assets/vzor.svg
+```
+
+Rozmístění je rozostřená mřížka (5×5 buněk, náhodný posun uvnitř každé),
+ne čistě náhodné — čistě náhodné dělalo shluky, a protože se dlaždice
+opakuje, jeden hustý shluk by se propsal jako nápadný pravidelný vzorek.
+Rostlina přesahující přes okraj dlaždice se dokreslí i na protější
+straně, jinak by byly vidět švy.
+
+`assets/vzor.svg` je jeden černobílý soubor pro oba motivy. V CSS se
+použije jako `mask-image` na `body::before` — barvu dodává
+`background-color: var(--text)`, tvar jen maska. Sytost řídí
+`--sytost-vzoru` (výchozí `0.05`, v tmavém motivu `0.07` — na tmavém
+pozadí je stejná čára hůř vidět). Zesílit nebo úplně vypnout:
+
+```css
+:root { --sytost-vzoru: 0.1; }   /* silnější */
+:root { --sytost-vzoru: 0; }     /* pryč */
+```
+
+Bez podpory `mask-image` (staré prohlížeče) se `body::before` vůbec
+nevytvoří — `@supports` to hlídá. Jinak by se bez masky vykreslila plná
+barevná vrstva přes celou stránku místo textury, což by bylo horší než
+žádný vzor.
 
 ### Motion
 
