@@ -9,9 +9,13 @@
 (function () {
   'use strict';
 
-  /* ---------- Světlý a tmavý motiv ---------- */
-
-  var prepinac = document.querySelector('.prepinac');
+  /* ---------- Světlý a tmavý motiv ----------
+     Cílená třída, ne obecná .prepinac — tu teď sdílí i jazykový
+     přepínač kvůli společnému vzhledu, a querySelector('.prepinac')
+     by vrátil první z nich v DOM pořadí, ne nutně tenhle. Přesně tahle
+     záměna byla příčina, proč přepínač motivu přestal fungovat a klik
+     na jazykové tlačítko místo toho přepínal obojí najednou. */
+  var prepinac = document.querySelector('.prepinac-motiv');
 
   if (prepinac) {
     prepinac.addEventListener('click', function () {
