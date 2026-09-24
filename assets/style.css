@@ -488,10 +488,35 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
    nikde nic vycentrovaného. */
 
 .sekce {
+  position: relative;
   border-top: 1px solid var(--linka);
   padding: clamp(3rem, 7vw, 5rem) 0;
 }
 .sekce:first-of-type { border-top: 0; }
+
+/* Kytky u kraje — Andrein požadavek na růžové prvky (tools/kytky-okraj.py).
+   Sedí jen v okraji mimo sloupec obsahu (--sirka), takže text nikdy
+   nepřekryjí — proto se objeví, teprve když je ten okraj dost široký. */
+.sekce::after {
+  content: "";
+  display: none;
+  position: absolute;
+  bottom: 2rem;
+  width: 3.7rem;
+  height: 9rem;
+  background: url("kytky-okraj.svg") no-repeat center / contain;
+  pointer-events: none;
+}
+@media (min-width: 90rem) {
+  .sekce::after { display: block; }
+  .sekce:nth-of-type(odd)::after {
+    right: calc(50% - (var(--sirka) / 2) - 2rem - 3.7rem);
+  }
+  .sekce:nth-of-type(even)::after {
+    left: calc(50% - (var(--sirka) / 2) - 2rem - 3.7rem);
+    transform: scaleX(-1);
+  }
+}
 
 .sekce-mrizka {
   max-width: var(--sirka);
