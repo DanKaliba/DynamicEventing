@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>Ladění prahů — odfouknutí květin</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 1.5rem 1.5rem 4rem;
+    background: #eef2e6; color: #24301a;
+    font: 15px/1.5 system-ui, sans-serif;
+  }
+  header { max-width: 60rem; margin: 0 auto 1.5rem; }
+  h1 { font-size: 1.3rem; margin: 0 0 .4rem; }
+  h2 { font-size: 1rem; margin: 1.6rem 0 .6rem; color: #4b5d38; }
+  p.hint { margin: 0 0 1rem; color: #4b5d38; }
+  .ovladani { display: flex; gap: .6rem; margin-bottom: .8rem; flex-wrap: wrap; }
+  button {
+    font: inherit; padding: .5rem 1rem; border-radius: .4rem;
+    border: 1px solid #4b5d38; background: #fff; cursor: pointer;
+  }
+  button:hover { background: #e3ecd8; }
+  pre#vystup {
+    max-width: 60rem; margin: 0 auto 1.5rem; padding: 1rem;
+    background: #10170a; color: #d9e8c9; border-radius: .5rem;
+    overflow-x: auto; font-size: 13px;
+  }
+  main { max-width: 90rem; margin: 0 auto; }
+  .mrizka {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .karta {
+    background: #fff; border-radius: .6rem; padding: .6rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    display: flex; flex-direction: column; gap: .4rem;
+  }
+  svg.platno {
+    width: 100%; height: 200px; touch-action: none;
+    background: #f6f8f1; border-radius: .4rem;
+  }
+  .zem { stroke: #b7c2a6; stroke-width: 1; stroke-dasharray: 3 3; }
+  .prah-cara { stroke: #cc030e; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+  .prah-uchyt { fill: #cc030e; opacity: 0; cursor: ns-resize; }
+  .prekryvy .odleta { fill: #ff7a3d; opacity: .38; }
+  .prekryvy .zustava { fill: #2f6b1f; opacity: .16; }
+  .popis { display: flex; justify-content: space-between; font-size: 13px; }
+  .popis strong { font-variant-numeric: tabular-nums; }
+  .hodnota { font-variant-numeric: tabular-nums; color: #6b7a58; }
+  .pocet { font-size: 12px; color: #6b7a58; }
+  input[type=range] { width: 100%; }
+  .chybi { color: #a33; font-size: 13px; padding: 1rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ladění prahů pro odfouknutí</h1>
+  <p class="hint">
+    U každé rostliny táhni za červenou čáru (nebo posuvník pod obrázkem):
+    co je <strong>nad</strong> čárou se počítá jako „odlétá“ (oranžové), co je
+    <strong>pod</strong> jako „zůstává“ (zelené, stonek). Ukládá se průběžně
+    do prohlížeče, o práci tedy při refreshi nepřijdeš.
+  </p>
+  <div class="ovladani">
+    <button id="export">Exportovat prahy.json</button>
+    <button id="kopirovat">Zkopírovat JSON</button>
+    <button id="reset">Smazat a začít znovu</button>
+  </div>
+  <pre id="vystup" hidden></pre>
+</header>
+<main id="karty">
+  <p class="chybi">Načítám…</p>
+</main>
+<script>
+(function () {
+  'use strict';
+
+  // Stejný výběr druhů jako tools/louka.py — při změně tam změnit i tady.
+  var DRUHY = {
+    zlute:   [7, 29, 40, 55, 96, 102],
+    ruzove:  [13, 14, 44, 83, 104],
+    fialove: [21, 72, 76, 91, 103, 109],
+    bile:    [42, 88, 90],
+    cervene: [68, 99, 106],
+    travy:   [32, 58, 71, 84, 92, 101]
+  };
+  var LABELY = {
+    zlute: 'žluté', ruzove: 'růžové', fialove: 'fialové',
+    bile: 'bílé', cervene: 'červené', travy: 'trávy'
+  };
+
+  var svgNS = 'http://www.w3.org/2000/svg';
+  var ULOZENO = nactiUlozene();
+
+  Promise.all([
+    fetch('kytky-vse.svg').then(function (r) {
+      if (!r.ok) throw new Error('kytky-vse.svg: ' + r.status);
+      return r.text();
+    }),
+    fetch('kytky-vse.json').then(function (r) {
+      if (!r.ok) throw new Error('kytky-vse.json: ' + r.status);
+      return r.json();
+    })
+  ]).then(function (vysledky) {
+    var doc = new DOMParser().parseFromString(vysledky[0], 'image/svg+xml');
+    var index = {};
+    vysledky[1].forEach(function (d) { index[d.id] = d; });
+    postavit(doc, index);
+  }).catch(function (chyba) {
+    document.getElementById('karty').innerHTML =
+      '<p class="chybi">Nepodařilo se načíst tools/kytky-vse.svg nebo .json (' +
+      chyba.message + '). Spusť tohle přes <code>python -m http.server</code> ' +
+      'z kořene repa a otevři http://localhost:8000/tools/prahy.html — ' +
+      'přímo přes file:// prohlížeč fetch na sousední soubor odmítne.</p>';
+  });
+
+  function postavit(doc, index) {
+    var karty = document.getElementById('karty');
+    karty.innerHTML = '';
+
+    Object.keys(DRUHY).forEach(function (kat) {
+      var sekce = document.createElement('section');
+      var h2 = document.createElement('h2');
+      h2.textContent = LABELY[kat] + ' (' + DRUHY[kat].length + ')';
+      sekce.appendChild(h2);
+
+      var mrizka = document.createElement('div');
+      mrizka.className = 'mrizka';
+
+      DRUHY[kat].forEach(function (n) {
+        var id = 'k' + String(n).padStart(3, '0');
+        var def = doc.getElementById(id);
+        if (!def) { console.warn('chybí definice', id); return; }
+        mrizka.appendChild(vytvoritKartu(id, def, index[id]));
+      });
+
+      sekce.appendChild(mrizka);
+      karty.appendChild(sekce);
+    });
+  }
+
+  function vytvoritKartu(id, def, info) {
+    var sirka = (info && info.sirka) || 60;
+    var pulsirka = sirka / 2 + 12;
+    var vb = (-pulsirka).toFixed(1) + ' -108 ' + (pulsirka * 2).toFixed(1) + ' 116';
+
+    var karta = document.createElement('div');
+    karta.className = 'karta';
+
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', vb);
+    svg.setAttribute('class', 'platno');
+    karta.appendChild(svg);
+
+    var zem = pridatEl(svg, 'line', {
+      x1: -pulsirka, x2: pulsirka, y1: 0, y2: 0, class: 'zem'
+    });
+
+    var rostlina = document.createElementNS(svgNS, 'g');
+    var klon = def.cloneNode(true);
+    klon.removeAttribute('id');
+    rostlina.appendChild(klon);
+    svg.appendChild(rostlina);
+
+    var prekryvy = document.createElementNS(svgNS, 'g');
+    prekryvy.setAttribute('class', 'prekryvy');
+    svg.appendChild(prekryvy);
+
+    var cara = pridatEl(svg, 'line', { x1: -pulsirka, x2: pulsirka, class: 'prah-cara' });
+    var uchyt = pridatEl(svg, 'rect', {
+      x: -pulsirka, width: pulsirka * 2, height: 12, class: 'prah-uchyt'
+    });
+
+    var popis = document.createElement('div');
+    popis.className = 'popis';
+    popis.innerHTML = '<strong>' + id + '</strong><span class="hodnota"></span>';
+    karta.appendChild(popis);
+
+    var posuvnik = document.createElement('input');
+    posuvnik.type = 'range';
+    posuvnik.min = '-105'; posuvnik.max = '2'; posuvnik.step = '0.5';
+    karta.appendChild(posuvnik);
+
+    var pocet = document.createElement('div');
+    pocet.className = 'pocet';
+    karta.appendChild(pocet);
+
+    requestAnimationFrame(function () {
+      var cesty = Array.prototype.slice.call(klon.querySelectorAll('path'));
+      var bboxy = cesty.map(function (p) { return zmeritBbox(svg, p); });
+
+      var vychozi = (ULOZENO[id] != null) ? ULOZENO[id] : odhadnoutVychozi(bboxy);
+      posuvnik.value = vychozi;
+      prekreslit(vychozi);
+
+      posuvnik.addEventListener('input', function () {
+        prekreslit(parseFloat(posuvnik.value));
+      });
+
+      var tazeni = false;
+      uchyt.addEventListener('pointerdown', function (u) {
+        tazeni = true;
+        uchyt.setPointerCapture(u.pointerId);
+      });
+      uchyt.addEventListener('pointermove', function (u) {
+        if (!tazeni) return;
+        var y = souradniceY(svg, u);
+        y = Math.max(-105, Math.min(2, y));
+        posuvnik.value = y;
+        prekreslit(y);
+      });
+      uchyt.addEventListener('pointerup', function (u) {
+        tazeni = false;
+        uchyt.releasePointerCapture(u.pointerId);
+      });
+
+      function prekreslit(prah) {
+        cara.setAttribute('y1', prah); cara.setAttribute('y2', prah);
+        uchyt.setAttribute('y', prah - 6);
+        prekryvy.innerHTML = '';
+
+        var odleta = 0;
+        bboxy.forEach(function (b) {
+          var stred = (b.minY + b.maxY) / 2;
+          var leti = stred < prah;
+          if (leti) odleta++;
+          pridatEl(prekryvy, 'rect', {
+            x: b.minX, y: b.minY,
+            width: Math.max(0.5, b.maxX - b.minX),
+            height: Math.max(0.5, b.maxY - b.minY),
+            class: leti ? 'odleta' : 'zustava'
+          });
+        });
+
+        popis.querySelector('.hodnota').textContent = prah.toFixed(1);
+        pocet.textContent = 'odlétá ' + odleta + ' / zůstává ' + (bboxy.length - odleta) + ' cest';
+
+        ULOZENO[id] = Math.round(prah * 10) / 10;
+        ulozit();
+      }
+    });
+
+    return karta;
+  }
+
+  function pridatEl(rodic, jmeno, atributy) {
+    var el = document.createElementNS(svgNS, jmeno);
+    Object.keys(atributy).forEach(function (k) { el.setAttribute(k, atributy[k]); });
+    rodic.appendChild(el);
+    return el;
+  }
+
+  // Ancestorské transformy (scale+translate z extrakce.py) getBBox() na
+  // potomkovi nezahrne — proto se měří přes skutečně vykreslený rect
+  // a přepočítává zpátky přes inverzní CTM, ne přes getBBox().
+  function zmeritBbox(svg, path) {
+    var r = path.getBoundingClientRect();
+    var m = svg.getScreenCTM().inverse();
+    var p1 = svg.createSVGPoint(); p1.x = r.left; p1.y = r.top;
+    var p2 = svg.createSVGPoint(); p2.x = r.right; p2.y = r.bottom;
+    var a = p1.matrixTransform(m), b = p2.matrixTransform(m);
+    return {
+      minX: Math.min(a.x, b.x), maxX: Math.max(a.x, b.x),
+      minY: Math.min(a.y, b.y), maxY: Math.max(a.y, b.y)
+    };
+  }
+
+  function souradniceY(svg, u) {
+    var bod = svg.createSVGPoint();
+    bod.x = u.clientX; bod.y = u.clientY;
+    return bod.matrixTransform(svg.getScreenCTM().inverse()).y;
+  }
+
+  // Hrubý start, dokud si to člověk nedoladí sám: práh v 40 % výšky rostliny.
+  function odhadnoutVychozi(bboxy) {
+    var nejvyssi = Math.min.apply(null, bboxy.map(function (b) { return b.minY; }));
+    return Math.round(nejvyssi * 0.6 * 10) / 10;
+  }
+
+  function nactiUlozene() {
+    try {
+      var s = localStorage.getItem('prahy-tool');
+      return s ? JSON.parse(s) : {};
+    } catch (e) { return {}; }
+  }
+
+  function ulozit() {
+    try { localStorage.setItem('prahy-tool', JSON.stringify(ULOZENO)); } catch (e) {}
+  }
+
+  function serazenyJson() {
+    var serazeno = {};
+    Object.keys(ULOZENO).sort().forEach(function (k) { serazeno[k] = ULOZENO[k]; });
+    return JSON.stringify(serazeno, null, 1);
+  }
+
+  document.getElementById('export').addEventListener('click', function () {
+    var text = serazenyJson();
+    var vystup = document.getElementById('vystup');
+    vystup.hidden = false;
+    vystup.textContent = text;
+
+    var blob = new Blob([text], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'prahy.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  document.getElementById('kopirovat').addEventListener('click', function () {
+    navigator.clipboard.writeText(serazenyJson()).catch(function () {});
+    var vystup = document.getElementById('vystup');
+    vystup.hidden = false;
+    vystup.textContent = serazenyJson();
+  });
+
+  document.getElementById('reset').addEventListener('click', function () {
+    if (confirm('Smazat uložené prahy a začít znovu?')) {
+      localStorage.removeItem('prahy-tool');
+      location.reload();
+    }
+  });
+})();
+</script>
+</body>
+</html>
