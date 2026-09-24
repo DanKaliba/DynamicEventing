@@ -232,13 +232,6 @@
               can stay there overnight.</p>
           </div>
           <div>
-            <h3><span class="jazyk-cs">Autobus z Ústí</span><span class="jazyk-en">Bus from Ústí</span></h3>
-            <p class="jazyk-cs">Vypravíme svoz z Ústí nad Labem v [ČAS]
-              a zpátky ve [ČAS]. Místo si řekněte v potvrzení účasti.</p>
-            <p class="jazyk-en">We'll run a shuttle from Ústí nad Labem at
-              [ČAS] and back at [ČAS]. Reserve a seat in your RSVP.</p>
-          </div>
-          <div>
             <h3><span class="jazyk-cs">Vlakem</span><span class="jazyk-en">By train</span></h3>
             <p class="jazyk-cs">Do Ústí nad Labem, dál autobusem nebo vás
               vyzvedneme. Napište nám čas příjezdu.</p>
@@ -335,9 +328,9 @@
           <!-- DOPLNIT: termín (na obou jazykových verzích) -->
           <p class="termin jazyk-cs">Prosíme do [DATUM]</p>
           <p class="termin jazyk-en">Please reply by [DATUM]</p>
-          <p class="jazyk-cs">Potřebujeme počty kvůli jídlu, lůžkům
-            a autobusu. Za každou pozvánku stačí jeden formulář.</p>
-          <p class="jazyk-en">We need numbers for food, beds, and the bus.
+          <p class="jazyk-cs">Potřebujeme počty kvůli jídlu a lůžkům.
+            Za každou pozvánku stačí jeden formulář.</p>
+          <p class="jazyk-en">We need numbers for food and beds.
             One form per invitation is enough.</p>
 
           <form class="formular" id="rsvp" method="post"
@@ -383,28 +376,14 @@
             </label>
 
             <fieldset class="pole jen-pri-ucasti">
-              <span><span class="jazyk-cs">Místo ve svozovém autobuse</span><span class="jazyk-en">Seat on the shuttle bus</span></span>
-              <div class="volby">
-                <label class="volba">
-                  <input type="radio" name="entry.1000000005" value="Ano" checked>
-                  <span><span class="jazyk-cs">Ano, prosím</span><span class="jazyk-en">Yes, please</span></span>
-                </label>
-                <label class="volba">
-                  <input type="radio" name="entry.1000000005" value="Ne">
-                  <span><span class="jazyk-cs">Přijedeme po svém</span><span class="jazyk-en">We'll make our own way</span></span>
-                </label>
-              </div>
-            </fieldset>
-
-            <fieldset class="pole jen-pri-ucasti">
               <span><span class="jazyk-cs">Budete spát na chalupě?</span><span class="jazyk-en">Will you sleep at the cottage?</span></span>
               <div class="volby">
                 <label class="volba">
-                  <input type="radio" name="entry.1000000006" value="Ano" checked>
+                  <input type="radio" name="entry.1000000005" value="Ano" checked>
                   <span><span class="jazyk-cs">Ano</span><span class="jazyk-en">Yes</span></span>
                 </label>
                 <label class="volba">
-                  <input type="radio" name="entry.1000000006" value="Ne">
+                  <input type="radio" name="entry.1000000005" value="Ne">
                   <span><span class="jazyk-cs">Ne</span><span class="jazyk-en">No</span></span>
                 </label>
               </div>
@@ -416,7 +395,7 @@
                   <span class="jazyk-cs">— nepovinné</span>
                   <span class="jazyk-en">— optional</span>
                 </span></span>
-              <textarea name="entry.1000000007" rows="3"></textarea>
+              <textarea name="entry.1000000006" rows="3"></textarea>
             </label>
 
             <!-- Google tyhle dvě pole u odeslání očekává. -->
