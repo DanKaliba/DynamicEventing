@@ -53,6 +53,17 @@
      v obou motivech zároveň, --pryskyrnik na to nejde (1.75:1 na světlém). */
   --kemp: #8F740C;
 
+  /* Pozadí hera — pevná pastelová zelená, nezávislá na přepínači
+     světlý/tmavý motiv (na rozdíl od --les předtím). Proto i text v heru
+     potřebuje vlastní pevné barvy níž — var(--text) by se s přepínačem
+     měnilo na skoro bílou a na tomhle pozadí by zmizelo. Luminance
+     B0FF9D (0.83) je blízko --pozadi světlého motivu (0.90), takže jdou
+     použít prakticky stejné tmavé barvy jako jinde na stránce ve světlém
+     režimu — ověřeno kontrastem, ne od oka. */
+  --hero-bg: #B0FF9D;
+  --hero-text: #0C1A06;
+  --hero-text-tlumeny: #496E16;
+
   /* Odvozené pro text a plochy */
   --pozadi: #F3F5EC;
   --text: #0C1A06;
@@ -68,6 +79,12 @@
   --sirka: 74rem;
   --okraj: 1.25rem;
   --sloupec-nadpisu: 13rem;
+
+  /* Sytost vzoru na pozadí sekcí (assets/vzor.svg). Dřív to bylo jen
+     0.05 jako fallback přímo v opacity: var(--sytost-vzoru, 0.05) níž,
+     na bílém pozadí to bylo skoro neviditelné. Deklarované tady jako
+     skutečná proměnná, ať se to příště hledá snáz. */
+  --sytost-vzoru: 0.1;
 
   /* Výška louky. Vázat ji jen na šířku okna nestačilo: na širokém a nízkém
      okně notebooku pak louka i s textem přerostla obrazovku a spodek okna
@@ -111,6 +128,15 @@
    jsem najel u formuláře potvrzení účasti. */
 [hidden] { display: none !important; }
 
+/* Přepínač jazyka CZ/EN. Každý překládaný kus obsahu existuje na
+   stránce dvakrát (.jazyk-cs a .jazyk-en jako sourozenci, nebo jako
+   dvojice <span> uvnitř jednoho nadpisu/odkazu) a tohle přepíná, který
+   z nich je vidět. Bez data-jazyk (výchozí stav, i bez JS) vyhrává
+   čeština — schválně přes :not(), ne jen [data-jazyk="cs"], ať to
+   funguje i dřív, než main.js stačí proběhnout. */
+:root[data-jazyk="en"] .jazyk-cs { display: none; }
+:root:not([data-jazyk="en"]) .jazyk-en { display: none; }
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 4.5rem;
@@ -150,7 +176,7 @@ body {
     z-index: -1;
     pointer-events: none;
     background-color: var(--text);
-    opacity: var(--sytost-vzoru, 0.05);
+    opacity: var(--sytost-vzoru);
     -webkit-mask-image: url("vzor.svg");
     mask-image: url("vzor.svg");
     -webkit-mask-repeat: repeat;
@@ -223,7 +249,14 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   position: sticky;
   top: 0;
   z-index: 40;
-  background: transparent;
+  /* Pevná barva, ne transparent. Hero pod navigací začíná kvůli
+     zápornému margin-top o pár px výš, ale ne přesně o tolik, kolik
+     navigace sama měří na výšku — zbyde škvíra pár px, kterou by
+     transparent nechal prosvítat holým pozadím <body>. S dřívějším
+     tmavým heroem to splývalo (skoro stejná barva), na pevné pastelové
+     zelené už ne — proto pevná barva místo spoléhání na přesnou
+     aritmetiku výšky. */
+  background: var(--hero-bg);
   border-bottom: 1px solid transparent;
   transition: background 0.25s, border-color 0.25s;
 }
@@ -249,6 +282,13 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 }
 .nav-odkazy::-webkit-scrollbar { display: none; }
 
+/* Dokud nav sedí nad heroem (žádné .odscrollovano), prosvítá jeho
+   pozadí — barvy tu proto musí číst na var(--hero-bg), ne na --pozadi.
+   Hero je od přepínače motivu nezávislý pevný pastelový odstín, takže
+   i tyhle barvy musí být pevné (var(--hero-text) / var(--mak)), ne
+   var(--kopretina)/var(--pryskyrnik) laděné na starý tmavý hero — na
+   světlé pastelové zelené by byly skoro neviditelné. Kontrast ověřený
+   i s opacitou započítanou (0.75 → 7.27:1, 0.6 → 4.42:1). */
 .nav-odkazy a {
   display: block;
   padding: 0.35rem 0.55rem;
@@ -256,12 +296,12 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   white-space: nowrap;
   font-size: 0.875rem;
   text-decoration: none;
-  color: var(--kopretina);
+  color: var(--hero-text);
   opacity: 0.75;
   transition: opacity 0.15s, color 0.15s;
 }
-.nav-odkazy a:hover { opacity: 1; color: var(--kopretina); }
-.nav-odkazy a[aria-current="true"] { opacity: 1; color: var(--pryskyrnik); }
+.nav-odkazy a:hover { opacity: 1; color: var(--hero-text); }
+.nav-odkazy a[aria-current="true"] { opacity: 1; color: var(--mak); }
 
 .prepinac {
   flex: none;
@@ -272,13 +312,27 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   background: transparent;
   border: 1px solid currentColor;
   border-radius: 4px;
-  color: var(--kopretina);
+  color: var(--hero-text);
   opacity: 0.6;
   cursor: pointer;
   font-size: 0.9rem;
   line-height: 1;
 }
 .prepinac:hover { opacity: 1; }
+
+/* Přepínač jazyka — sdílí vzhled s .prepinac (motiv), jen širší kvůli
+   dvěma písmenům místo ikony. Text tlačítka je CÍLOVÝ jazyk (na co
+   klik přepne), ne aktuální — proto ho assets/main.js po každém
+   přepnutí přepisuje na opačnou zkratku. */
+.prepinac-jazyk {
+  width: auto;
+  min-width: 2.25rem;
+  padding-inline: 0.35rem;
+  font-family: var(--text-font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
 
 .nav.odscrollovano {
   background: var(--pozadi);
@@ -289,7 +343,7 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 .nav.odscrollovano .nav-odkazy a[aria-current="true"] { color: var(--odkaz); opacity: 1; }
 
 /* ================= Hero =================
-   Tmavý les, ze spodní hrany vyrůstá louka.
+   Pastelově zelené pozadí, ze spodní hrany vyrůstá louka.
 
    Hero je vysoký přesně na obrazovku (svh kvůli mobilním lištám), takže
    louka je vidět hned po otevření a nemusí se k ní scrollovat. Text je
@@ -297,8 +351,8 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 
 .hero {
   position: relative;
-  background: var(--les);
-  color: var(--kopretina);
+  background: var(--hero-bg);
+  color: var(--hero-text);
   min-height: 100vh;
   min-height: 100svh;
   display: flex;
@@ -317,45 +371,38 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 }
 
 .hero h1 {
-  /* min() proti vh brání tomu, aby jména přerostla nízké okno na šířku. */
-  font-size: clamp(2.25rem, min(10vw, 13vh), 7.5rem);
+  /* Jedno jméno vedle druhého na jednom řádku (dřív bylo druhé jméno
+     odsazené na nový řádek jako dva stonky vedle sebe) — proto tu teď
+     musí být i min() proti vw, ne jen proti vh, ať "Ája a Daník" jako
+     jeden dlouhý řádek nepřeteče úzké okno. */
+  font-size: clamp(2rem, min(7.5vw, 13vh), 6rem);
   font-weight: 300;
-  color: var(--kopretina);
+  color: var(--hero-text);
   margin-bottom: clamp(1rem, 3vw, 2rem);
-}
-/* Druhé jméno odsazené — jako dva stonky vedle sebe, ne vycentrovaný nápis. */
-.hero h1 .druhe {
-  display: block;
-  padding-left: clamp(1.5rem, 9vw, 7rem);
-}
-.hero h1 .spojka {
-  font-style: italic;
-  font-weight: 300;
-  color: var(--mak);
 }
 
 .hero-udaje {
   font-size: clamp(1rem, 2vw, 1.25rem);
   line-height: 1.5;
-  color: var(--kopretina);
+  color: var(--hero-text);
   max-width: 30rem;
 }
 .hero-udaje .misto {
   display: block;
-  color: var(--trava);
+  color: var(--hero-text-tlumeny);
   margin-top: 0.35rem;
 }
 
 .odpocet {
   margin-top: clamp(1rem, 2.5vw, 1.5rem);
   font-size: 0.9375rem;
-  color: var(--trava);
+  color: var(--hero-text-tlumeny);
 }
 .odpocet strong {
   font-family: var(--display);
   font-weight: 400;
   font-size: 1.5rem;
-  color: var(--pryskyrnik);
+  color: var(--kemp);
   font-variant-numeric: tabular-nums;
   padding-inline: 0.1em;
 }
@@ -858,38 +905,6 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   margin-top: 1.5rem;
   font-size: 0.9375rem;
   color: var(--text-tlumeny);
-}
-
-/* Časté dotazy */
-
-.dotazy details {
-  border-bottom: 1px solid var(--linka);
-  padding: 0.9rem 0;
-}
-.dotazy details:first-of-type { border-top: 1px solid var(--linka); }
-.dotazy summary {
-  cursor: pointer;
-  font-weight: 600;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1.5rem;
-}
-.dotazy summary::-webkit-details-marker { display: none; }
-.dotazy summary::after {
-  content: "+";
-  flex: none;
-  color: var(--odkaz);
-  font-weight: 400;
-  font-size: 1.25rem;
-}
-.dotazy details[open] summary::after { content: "–"; }
-.dotazy details p {
-  margin: 0.6rem 0 0;
-  color: var(--text-tlumeny);
-  font-size: 0.9375rem;
-  max-width: 34rem;
 }
 
 /* Kontakty */

@@ -24,6 +24,32 @@
   var chyba = document.getElementById('rsvp-chyba');
   var tlacitko = formular.querySelector('button[type="submit"]');
 
+  /* ---------- Texty, které skript vypisuje sám ----------
+     Zbytek stránky řeší dva jazyky přes .jazyk-cs/.jazyk-en v HTML
+     (viz style.css) — to tady nejde, protože tenhle text vzniká až za
+     běhu. Jazyk se čte při KAŽDÉM volání, ne jednou při startu, takže
+     hláška vždycky odpovídá tomu, co je zrovna přepnuté na stránce. */
+  var TEXTY = {
+    cs: {
+      nenapojeny: 'Formulář ještě není napojený — napište nám prosím e-mailem.',
+      odesilam: 'Odesílám…',
+      odeslat: 'Odeslat',
+      selhalo: 'Odeslání se nepovedlo. Zkuste to prosím znovu, nebo nám ' +
+        'napište e-mailem.'
+    },
+    en: {
+      nenapojeny: 'The form isn’t connected yet — please email us instead.',
+      odesilam: 'Sending…',
+      odeslat: 'Send',
+      selhalo: 'Sending failed. Please try again, or email us instead.'
+    }
+  };
+
+  function text(klic) {
+    var jazyk = document.documentElement.getAttribute('data-jazyk') === 'en' ? 'en' : 'cs';
+    return TEXTY[jazyk][klic];
+  }
+
   /* ---------- Nevyplněná adresa formuláře ----------
      Dokud v action zůstane zástupný text, odesílání by tiše mizelo
      v prázdnu. To je horší než žádný formulář — chybějící potvrzení
@@ -33,7 +59,7 @@
     formular.hidden = true;
     if (chyba) {
       chyba.hidden = false;
-      chyba.textContent = 'Formulář ještě není napojený — napište nám prosím e-mailem.';
+      chyba.textContent = text('nenapojeny');
       formular.parentNode.insertBefore(chyba, formular.nextSibling);
     }
     if (window.console) {
@@ -96,11 +122,10 @@
   function selhalo() {
     odeslano = false;
     tlacitko.disabled = false;
-    tlacitko.textContent = 'Odeslat';
+    tlacitko.textContent = text('odeslat');
     if (chyba) {
       chyba.hidden = false;
-      chyba.textContent = 'Odeslání se nepovedlo. Zkuste to prosím znovu, ' +
-        'nebo nám napište e-mailem.';
+      chyba.textContent = text('selhalo');
     }
   }
 
@@ -112,7 +137,7 @@
   formular.addEventListener('submit', function () {
     odeslano = true;
     tlacitko.disabled = true;
-    tlacitko.textContent = 'Odesílám…';
+    tlacitko.textContent = text('odesilam');
     if (chyba) chyba.hidden = true;
 
     // Kdyby se rám nikdy nenačetl (spadlá síť, blokovaný Google),

@@ -14,11 +14,16 @@
 <link rel="stylesheet" href="assets/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='11' fill='%23CC030E'/><circle cx='16' cy='16' r='3.5' fill='%232A0A08'/></svg>">
 
-<!-- Motiv se nastaví dřív, než se stránka vykreslí, aby neproblikla. -->
+<!-- Motiv a jazyk se nastaví dřív, než se stránka vykreslí, aby neproblikly. -->
 <script>
   try {
     var t = localStorage.getItem('motiv');
     if (t) document.documentElement.setAttribute('data-theme', t);
+    var j = localStorage.getItem('jazyk');
+    if (j) {
+      document.documentElement.setAttribute('data-jazyk', j);
+      document.documentElement.lang = j;
+    }
   } catch (e) {}
 </script>
 </head>
@@ -29,29 +34,34 @@
 <nav class="nav" aria-label="Sekce stránky">
   <div class="nav-vnitrek">
     <ul class="nav-odkazy">
-      <li><a href="#proc">Proč přijet</a></li>
-      <li><a href="#kde">Kde a kdy</a></li>
-      <li><a href="#program">Program</a></li>
-      <li><a href="#ubytovani">Ubytování</a></li>
-      <li><a href="#galerie">Fotky</a></li>
-      <li><a href="#potvrzeni">Potvrzení</a></li>
-      <li><a href="#kontakt">Kontakt</a></li>
+      <li><a href="#proc"><span class="jazyk-cs">Proč přijet</span><span class="jazyk-en">Why come</span></a></li>
+      <li><a href="#kde"><span class="jazyk-cs">Kde a kdy</span><span class="jazyk-en">When &amp; where</span></a></li>
+      <li><a href="#program"><span class="jazyk-cs">Program</span><span class="jazyk-en">Schedule</span></a></li>
+      <li><a href="#ubytovani"><span class="jazyk-cs">Ubytování</span><span class="jazyk-en">Where to stay</span></a></li>
+      <li><a href="#galerie"><span class="jazyk-cs">Fotky</span><span class="jazyk-en">Photos</span></a></li>
+      <li><a href="#potvrzeni"><span class="jazyk-cs">Potvrzení</span><span class="jazyk-en">RSVP</span></a></li>
+      <li><a href="#kontakt"><span class="jazyk-cs">Kontakt</span><span class="jazyk-en">Contact</span></a></li>
     </ul>
+    <button class="prepinac prepinac-jazyk" type="button" data-jazyk-cil="en"
+            aria-label="Switch to English">EN</button>
     <button class="prepinac" type="button" aria-label="Přepnout světlý a tmavý motiv">◐</button>
   </div>
 </nav>
 
 <header class="hero">
   <div class="hero-text">
-    <h1>Ája<span class="druhe"><span class="spojka">a</span> Daník</span></h1>
+    <h1>Ája a Daník</h1>
 
     <p class="hero-udaje">
-      Bereme se v sobotu 19. června 2027.
+      <span class="jazyk-cs">Bereme se v sobotu 19. června 2027.</span>
+      <span class="jazyk-en">We're getting married on Saturday, June 19, 2027.</span>
       <span class="misto">Chalupa Himmelreich, Ostrov u Tisé</span>
     </p>
 
     <p class="odpocet" data-datum="2027-06-19T13:00" hidden>
-      Zbývá <strong data-dni>—</strong> dní.
+      <span class="jazyk-cs">Zbývá</span><span class="jazyk-en">There are</span>
+      <strong data-dni>—</strong>
+      <span class="jazyk-cs">dní.</span><span class="jazyk-en">days to go.</span>
     </p>
   </div>
   <img class="louka" src="assets/louka.svg" alt="" width="3000" height="300">
@@ -62,23 +72,28 @@
   <!-- ====================== PROČ PŘIJET ====================== -->
   <section class="sekce" id="proc">
     <div class="sekce-mrizka">
-      <h2>Proč přijet</h2>
+      <h2><span class="jazyk-cs">Štěstí je opravdové, jen když se sdílí</span><span class="jazyk-en">Happiness is only real when shared</span></h2>
       <div class="telo">
-        <p class="uvodni">Himmelreich znamená německy nebeská říše. Je to chalupa
-          v Ostrově u Tisé, pod pískovcovými stěnami, kousek od hranic — a my
-          jsme si ji vybrali, protože je to místo, kde se nikam nespěchá.</p>
+        <p class="uvodni jazyk-cs">Ale, ahoj! Budeme se brát a nic nám neudělá větší
+          radost, než když u toho budeš s námi. Protože buďme k sobě upřímní,
+          bez vás by to byl jen podpis na papíře. S každým z vás máme
+          společně pouto, příběhy a momenty štěstí.</p>
+        <p class="uvodni jazyk-en">Oh, hi! We're getting married, and nothing
+          would make us happier than having you there with us. Let's be
+          honest — without you it would just be a signature on paper. With
+          each of you we share a bond, stories, and moments of happiness.</p>
 
-        <p>Nebudeme mít obřadní síň ani sál s kulatými stoly. Bude louka, dřevo,
-          oheň a rybník za chalupou. Obřad, večeře i ráno po jsou na jednom
-          místě, takže se nikam nepřejíždí a nikdo nemusí řešit, jak se dostane
-          domů.</p>
+        <p class="jazyk-cs">Obřad se bude konat pod jednou z pískovcových věží
+          v Ostrově a na oslavu máme pronajatou chaloupku se zahradou.</p>
+        <p class="jazyk-en">The ceremony will take place beneath one of the
+          sandstone towers in Ostrov, and for the celebration we've rented
+          a little cottage with a garden.</p>
 
-        <p>Zveme vás, protože jste ti, se kterými to dává smysl. Rodina,
-          nejbližší kamarádi, lidi, kteří nás znali dřív než my dva sebe.
-          Bez vás by to byl jen podpis na papíře.</p>
-
-        <p class="tlumene">Jestli váháte kvůli cestě — je to od Ústí necelou
-          půlhodinu a z Prahy hodina a půl. Stojí to za to.</p>
+        <p class="tlumene jazyk-cs">Jestli váháte kvůli cestě — je to od Ústí
+          necelou půlhodinu a z Prahy hodina a půl. Stojí to za to.</p>
+        <p class="tlumene jazyk-en">If you're hesitant because of the
+          distance — it's under half an hour from Ústí and about an hour
+          and a half from Prague. It's worth it.</p>
       </div>
     </div>
   </section>
@@ -86,24 +101,36 @@
   <!-- ====================== KDE A KDY ====================== -->
   <section class="sekce" id="kde">
     <div class="sekce-mrizka">
-      <h2>Kde a kdy</h2>
+      <h2><span class="jazyk-cs">Kde a kdy</span><span class="jazyk-en">When &amp; where</span></h2>
       <div class="telo">
-        <p class="misto-nazev">Chalupa Himmelreich</p>
+        <p class="misto-nazev"><span class="jazyk-cs">Chalupa Himmelreich</span><span class="jazyk-en">Himmelreich Cottage</span></p>
         <!-- DOPLNIT: přesná adresa a odkaz na mapy -->
         <address class="adresa">[ULICE ČP], Ostrov u Tisé<br>403 36 Tisá</address>
-        <p><a href="[ODKAZ NA MAPY]" target="_blank" rel="noopener">Otevřít v mapách</a>
+        <p class="jazyk-cs"><a href="[ODKAZ NA MAPY]" target="_blank" rel="noopener">Otevřít v mapách</a>
+          &nbsp;·&nbsp;
+          <a href="https://www.himmelreich.cz" target="_blank" rel="noopener">himmelreich.cz</a></p>
+        <p class="jazyk-en"><a href="[ODKAZ NA MAPY]" target="_blank" rel="noopener">Open in maps</a>
           &nbsp;·&nbsp;
           <a href="https://www.himmelreich.cz" target="_blank" rel="noopener">himmelreich.cz</a></p>
 
-        <p>Obřad začíná <strong>v sobotu 19. června ve 13:00</strong> venku na louce za
-          chalupou. Přijeďte prosím aspoň půl hodiny předem — ať se stihnete
-          pozdravit a najít si místo.</p>
+        <p class="jazyk-cs">Obřad začíná <strong>v sobotu 19. června ve 13:00</strong>,
+          společně půjdeme pěšinkou ke skalám, takže na tuhle část vezmete
+          balerínky a nosítka na miminka.</p>
+        <p class="jazyk-en">The ceremony begins <strong>on Saturday, June 19
+          at 1:00 PM</strong>. We'll walk together along a little path to
+          the rocks, so for this part bring flats and baby carriers.</p>
 
-        <p>Když bude pršet, stěhujeme se pod střechu do stodoly. Nic se tím
-          nemění, jen se budeme víc tlačit.</p>
+        <p class="jazyk-cs">Oslava pak bude vedle chalupy Himmelreich. Když
+          bude pršet, nic se nemění, stěhujeme se dovnitř.</p>
+        <p class="jazyk-en">The celebration afterwards will be next to
+          Himmelreich Cottage. If it rains, nothing changes — we'll just
+          move inside.</p>
 
-        <p class="tlumene">Restaurace Pod Císařem je přímo v areálu. Vaří tam
-          celý den, takže o hladu nezůstanete ani mezi chody.</p>
+        <p class="tlumene jazyk-cs">Restaurace Pod Císařem je přímo
+          v areálu. Vaří tam celý den, takže o hladu nezůstanete ani mezi
+          chody.</p>
+        <p class="tlumene jazyk-en">The Pod Císařem restaurant is right on
+          site. They cook all day, so you won't go hungry between courses.</p>
       </div>
     </div>
   </section>
@@ -111,59 +138,70 @@
   <!-- ====================== PROGRAM ====================== -->
   <section class="sekce" id="program">
     <div class="sekce-mrizka">
-      <h2>Jak den poběží</h2>
+      <h2><span class="jazyk-cs">Jak den poběží</span><span class="jazyk-en">How the day will run</span></h2>
       <div class="telo">
-        <p class="tlumene">Časy jsou orientační, pořadí platí.
+        <p class="tlumene jazyk-cs">Časy jsou orientační, pořadí platí.
           Dopředu se ničeho nebojte, nic se nezkouší.</p>
+        <p class="tlumene jazyk-en">Times are approximate, the order is
+          fixed. Don't worry about anything in advance — nothing is
+          rehearsed.</p>
 
         <!-- DOPLNIT: časy podle skutečného harmonogramu -->
         <dl class="program">
           <dt>12:30</dt>
           <dd>
-            <h3>Sjíždíme se</h3>
-            <p>Přivítání, něco k pití, čas se rozkoukat po chalupě.</p>
+            <h3><span class="jazyk-cs">Sjíždíme se</span><span class="jazyk-en">Everyone arrives</span></h3>
+            <p class="jazyk-cs">Přivítání, něco k pití, čas se rozkoukat po chalupě.</p>
+            <p class="jazyk-en">Welcome drinks and a chance to look around the cottage.</p>
           </dd>
 
           <dt>13:00</dt>
           <dd>
-            <h3>Obřad na louce</h3>
-            <p>Zhruba půl hodiny. Telefony prosím schované, máme fotografa.</p>
+            <h3><span class="jazyk-cs">Obřad pod skálou</span><span class="jazyk-en">Ceremony beneath the rock</span></h3>
+            <p class="jazyk-cs">Zhruba půl hodiny. Telefony prosím schované, máme fotografa.</p>
+            <p class="jazyk-en">About half an hour. Please keep phones away, we have a photographer.</p>
           </dd>
 
           <dt>13:45</dt>
           <dd>
-            <h3>Gratulace a společné focení</h3>
-            <p>Přípitek. Tohle je ta část, kde vás všechny naženeme k sobě.</p>
+            <h3><span class="jazyk-cs">Gratulace a společné focení</span><span class="jazyk-en">Congratulations &amp; group photos</span></h3>
+            <p class="jazyk-cs">Přípitek. Tohle je ta část, kde vás všechny naženeme k sobě.</p>
+            <p class="jazyk-en">A toast. This is the part where we round everyone up together.</p>
           </dd>
 
           <dt>15:00</dt>
           <dd>
-            <h3>Oběd</h3>
-            <p>Od Pod Císaře. Kdo má něco, co nejí, ať nám to napíše předem.</p>
+            <h3><span class="jazyk-cs">Oběd</span><span class="jazyk-en">Lunch</span></h3>
+            <p class="jazyk-cs">Od Pod Císaře. Kdo má něco, co nejí, ať nám to napíše předem.</p>
+            <p class="jazyk-en">Catered by Pod Císařem. If there's something you don't eat, let us know in advance.</p>
           </dd>
 
           <dt>17:00</dt>
           <dd>
-            <h3>Dort a první tanec</h3>
-            <p>Krátké, slibujeme.</p>
+            <h3><span class="jazyk-cs">Dort a první tanec</span><span class="jazyk-en">Cake &amp; first dance</span></h3>
+            <p class="jazyk-cs">Krátké, slibujeme.</p>
+            <p class="jazyk-en">Short, we promise.</p>
           </dd>
 
           <dt>19:00</dt>
           <dd>
-            <h3>Oheň za chalupou</h3>
-            <p>Raut, buřty, klid. Kdo chce, může jít k rybníku.</p>
+            <h3><span class="jazyk-cs">Oheň za chalupou</span><span class="jazyk-en">Fire behind the cottage</span></h3>
+            <p class="jazyk-cs">Raut, buřty, klid. Kdo chce, může jít k rybníku.</p>
+            <p class="jazyk-en">Buffet, sausages, calm. Anyone who wants can head down to the pond.</p>
           </dd>
 
           <dt>21:00</dt>
           <dd>
-            <h3>Hraje se a tancuje</h3>
-            <p>Dokud někdo stojí.</p>
+            <h3><span class="jazyk-cs">Hraje se a tancuje</span><span class="jazyk-en">Music &amp; dancing</span></h3>
+            <p class="jazyk-cs">Dokud někdo stojí.</p>
+            <p class="jazyk-en">Until someone's still standing.</p>
           </dd>
 
-          <dt>do rána</dt>
+          <dt><span class="jazyk-cs">do rána</span><span class="jazyk-en">till dawn</span></dt>
           <dd>
-            <h3>Kdo zůstává, zůstává</h3>
-            <p>Snídaně pro přespávající od devíti.</p>
+            <h3><span class="jazyk-cs">Kdo zůstává, zůstává</span><span class="jazyk-en">Whoever stays, stays</span></h3>
+            <p class="jazyk-cs">Snídaně pro přespávající od devíti.</p>
+            <p class="jazyk-en">Breakfast for overnight guests from nine.</p>
           </dd>
         </dl>
       </div>
@@ -173,79 +211,131 @@
   <!-- ====================== UBYTOVÁNÍ A DOPRAVA ====================== -->
   <section class="sekce" id="ubytovani">
     <div class="sekce-mrizka">
-      <h2>Kde spát a jak se tam dostat</h2>
+      <h2><span class="jazyk-cs">Kde spát a jak se tam dostat</span><span class="jazyk-en">Where to stay &amp; how to get there</span></h2>
       <div class="telo">
-        <!-- DOPLNIT: počet pokojů pro rodinu a datum, do kdy je blokujeme -->
-        <p>Nejbližší rodina spí přímo u nás na chalupě — [POČET] pokojů,
-          blokujeme je do [DATUM]. Ozvěte se nám, ne přímo na chalupě, ať se
-          rezervace nepřekříží.</p>
+        <p class="jazyk-cs">Není to malá věc, ale požádáme vás, ať si spaní
+          zarezervujete sami — pokud mluvíte česky. Pokud ne, spojíme se
+          s vámi osobně.</p>
+        <p class="jazyk-en">This is no small ask, but we'll need you to book
+          your own accommodation — if you speak Czech. If not, we'll get
+          in touch with you personally.</p>
 
-        <p>Pro všechny ostatní je do postele pár minut chůze. Seřazeno podle
-          pohodlí:</p>
+        <p class="jazyk-cs">Jaké jsou vaše možnosti?</p>
+        <p class="jazyk-en">What are your options?</p>
+
+        <!-- DOPLNIT: počet pokojů pro rodinu a datum, do kdy je blokujeme (na obou jazykových verzích) -->
+        <p class="jazyk-cs">Nejbližší rodina spí přímo u nás na chalupě —
+          [POČET] pokojů, blokujeme je do [DATUM]. Ozvěte se nám, ne přímo
+          na chalupě, ať se rezervace nepřekříží.</p>
+        <p class="jazyk-en">Closest family stays with us at the cottage —
+          [POČET] rooms, held until [DATUM]. Get in touch with us, not the
+          cottage directly, so bookings don't overlap.</p>
+
+        <p class="jazyk-cs">Pro všechny ostatní je do postele pár minut
+          chůze. Seřazeno podle pohodlí:</p>
+        <p class="jazyk-en">For everyone else, it's a few minutes' walk to
+          a bed. Sorted by comfort:</p>
 
         <ol class="ubytovani-zebricek">
           <li class="uroven uroven--hotel">
             <h3>Hotel Ostrov</h3>
-            <p>Vlastní pokoj, vlastní koupelna, tři minuty pěšky od chalupy.
+            <p class="jazyk-cs">Vlastní pokoj, vlastní koupelna, tři minuty
+              pěšky od chalupy.
+              <a href="https://www.hotelostrov.com/" target="_blank" rel="noopener">hotelostrov.com</a></p>
+            <p class="jazyk-en">Private room, private bathroom, a
+              three-minute walk from the cottage.
               <a href="https://www.hotelostrov.com/" target="_blank" rel="noopener">hotelostrov.com</a></p>
           </li>
 
           <li class="uroven uroven--kemp">
             <h3>Kemp Pod Císařem</h3>
-            <p>Přes ulici — sto metrů od chalupy. Pokoj, chatka nebo vlastní
-              stan, podle chuti:</p>
-            <ul class="kemp-varianty">
-              <li><strong>Pokoje</strong> — dvou- nebo čtyřlůžkové, koupelna
-                společná na patře.</li>
-              <li><strong>Chatky</strong> — pro čtyři nebo pět, vlastní krytá
-                terasa. Lůžkoviny nejsou součástí, vezměte si spacák.</li>
+            <p class="jazyk-cs">Přes ulici — sto metrů od chalupy. Pokoj,
+              chatka nebo vlastní stan, podle chuti:</p>
+            <p class="jazyk-en">Across the street — a hundred meters from
+              the cottage. Room, cabin, or your own tent, whatever you
+              prefer:</p>
+            <ul class="kemp-varianty jazyk-cs">
+              <li><strong>Pokoje</strong> — dvou- nebo čtyřlůžkové,
+                koupelna společná na patře.</li>
+              <li><strong>Chatky</strong> — pro čtyři nebo pět, vlastní
+                krytá terasa. Lůžkoviny nejsou součástí, vezměte si spacák.</li>
               <li><strong>Stan, karavan nebo auto</strong> — tři louky,
                 elektrické přípojky, ohniště povolená.</li>
+            </ul>
+            <ul class="kemp-varianty jazyk-en">
+              <li><strong>Rooms</strong> — double or quad, shared bathroom
+                on the floor.</li>
+              <li><strong>Cabins</strong> — for four or five, with a
+                private covered terrace. Bedding isn't included, bring
+                a sleeping bag.</li>
+              <li><strong>Tent, camper, or car</strong> — three meadows,
+                electrical hookups, campfires allowed.</li>
             </ul>
             <p><a href="https://podcisarem.cz/cs" target="_blank" rel="noopener">podcisarem.cz</a></p>
           </li>
 
           <li class="uroven uroven--bivak">
-            <h3>Bivak ve skalách</h3>
-            <p>Jsme v pískovcových skalách plných horolezeckých bivaků — pro
-              otužilé, co chtějí spát pod širákem a ráno se probudit s
-              výhledem. Tři oblíbené:
+            <h3><span class="jazyk-cs">Bivak ve skalách</span><span class="jazyk-en">Bivouac in the rocks</span></h3>
+            <p class="jazyk-cs">Jsme v pískovcových skalách plných
+              horolezeckých bivaků — pro otužilé, co chtějí spát pod
+              širákem a ráno se probudit s výhledem. Tři oblíbené:
               <a href="https://www.horosvaz.cz/skaly-skala-5939/" target="_blank" rel="noopener">Německý bivak</a>,
               <a href="https://www.horosvaz.cz/skaly-skala-5863/" target="_blank" rel="noopener">Sova</a>
               a Lesní jesličky, kde se prý hezky spí — a jsou taky nejblíž,
               takže bývají obsazené jako první. Kdo na ně myslí vážně, ať
               nenechává rozhodnutí na poslední chvíli.</p>
+            <p class="jazyk-en">We're in sandstone rocks full of climbers'
+              bivouacs — for the hardy ones who want to sleep under the
+              open sky and wake up to a view. Three favorites:
+              <a href="https://www.horosvaz.cz/skaly-skala-5939/" target="_blank" rel="noopener">Německý bivak</a>
+              (German Bivouac),
+              <a href="https://www.horosvaz.cz/skaly-skala-5863/" target="_blank" rel="noopener">Sova</a>
+              (Owl), and Lesní jesličky (Forest Manger), said to be the
+              comfiest — and also the closest, so it tends to fill up
+              first. If you're serious about it, don't leave the decision
+              to the last minute.</p>
           </li>
         </ol>
 
         <div class="mapa-ramecek">
-          <svg class="mapka" viewBox="0 0 625 627" role="img" aria-label="Mapka okolí chalupy Himmelreich s možnostmi ubytování"><path d="M 314.0,413.5 Q 347.0,386.3 333.1,337.2 Q 319.1,288.1 280.1,263.8 Q 241.1,239.5 199.0,238.9 Q 156.8,238.3 117.6,256.0 Q 78.5,273.7 74.4,308.2 Q 70.4,342.7 102.1,386.1 Q 133.9,429.6 156.4,477.1 Q 178.9,524.6 209.8,531.2 Q 240.8,537.8 260.8,489.2 Q 280.9,440.7 314.0,413.5 Z" fill="var(--trava-tmava)" fill-opacity="0.13" stroke="none"/><text x="223.8" y="351.7" text-anchor="middle" font-family="var(--text-font)" font-size="12" font-style="italic" fill="var(--text-tlumeny)">pískovcové skály</text><path d="M 391.9,63.8 Q 391.1,57.2 392.7,50.4 Q 394.4,43.6 388.1,39.2 Q 381.7,34.8 377.4,36.7 Q 373.0,38.6 370.4,45.3 Q 367.9,52.0 365.9,57.5 Q 364.0,63.1 367.3,69.2 Q 370.5,75.2 377.0,73.8 Q 383.5,72.3 388.1,71.4 Q 392.7,70.4 391.9,63.8 Z" fill="var(--chrpa)" fill-opacity="0.24" stroke="var(--chrpa)" stroke-opacity="0.35" stroke-width="1"/><path d="M 356.1,444.1 L 359.0,297.1 L 361.5,179.5 L 364.0,133.3 L 367.4,82.9 L 371.6,-30.5" fill="none" stroke="var(--text-tlumeny)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/><path d="M 370.8,141.7 Q 209.7,184.2 110.0,227.3" fill="none" stroke="var(--text-tlumeny)" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round" stroke-opacity="0.7"/><path d="M 370.8,141.7 Q 291.7,309.1 297.7,497.3" fill="none" stroke="var(--text-tlumeny)" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round" stroke-opacity="0.7"/><path d="M 370.8,141.7 Q 481.5,195.8 504.5,271.1" fill="none" stroke="var(--text-tlumeny)" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round" stroke-opacity="0.7"/><circle cx="349.8" cy="171.1" r="7" fill="var(--mak)"/><rect x="304.7" y="179.1" width="90" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="349.8" y="191.1" text-anchor="middle" font-family="var(--display)" font-size="15" font-weight="600" fill="var(--odkaz)">Himmelreich</text><circle cx="368.1" cy="78.0" r="5.5" fill="var(--chrpa)"/><rect x="318.9" y="86.0" width="98" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="368.1" y="98.0" text-anchor="middle" font-family="var(--display)" font-size="15" fill="var(--chrpa)">Hotel Ostrov</text><circle cx="372.3" cy="136.3" r="5.5" fill="var(--kemp)"/><rect x="382.3" y="112.3" width="131" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="382.3" y="124.3" text-anchor="start" font-family="var(--display)" font-size="15" fill="var(--text)">Kemp Pod Císařem</text><circle cx="110.0" cy="227.3" r="5" fill="var(--pozadi)" stroke="var(--text-tlumeny)" stroke-width="1.5"/><rect x="118.0" y="201.3" width="107" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="118.0" y="213.3" text-anchor="start" font-family="var(--display)" font-size="15" fill="var(--text-tlumeny)">Německý bivak</text><circle cx="297.7" cy="497.3" r="5" fill="var(--pozadi)" stroke="var(--text-tlumeny)" stroke-width="1.5"/><rect x="281.3" y="471.3" width="33" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="297.7" y="483.3" text-anchor="middle" font-family="var(--display)" font-size="15" fill="var(--text-tlumeny)">Sova</text><circle cx="504.5" cy="271.1" r="5" fill="var(--pozadi)" stroke="var(--text-tlumeny)" stroke-width="1.5"/><rect x="381.7" y="247.1" width="115" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="496.5" y="259.1" text-anchor="end" font-family="var(--display)" font-size="15" fill="var(--text-tlumeny)">Lesní jesličky</text><g font-family="var(--text-font)" font-size="12" fill="var(--text-tlumeny)"><line x1="110.0" y1="572.7" x2="194.0" y2="572.7" stroke="var(--text-tlumeny)" stroke-width="1.5"/><line x1="110.0" y1="568.7" x2="110.0" y2="576.7" stroke="var(--text-tlumeny)"/><line x1="194.0" y1="568.7" x2="194.0" y2="576.7" stroke="var(--text-tlumeny)"/><text x="152.0" y="564.7" text-anchor="middle">200 m</text></g><g stroke="var(--text-tlumeny)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="558.5" y1="572.7" x2="558.5" y2="548.7"/><path d="M 554.5,554.7 L 558.5,546.7 L 562.5,554.7"/></g><text x="558.5" y="542.7" text-anchor="middle" font-family="var(--text-font)" font-size="12" font-weight="600" fill="var(--text-tlumeny)">S</text></svg>
+          <svg class="mapka" viewBox="0 0 625 627" role="img" aria-label="Mapka okolí chalupy Himmelreich s možnostmi ubytování"><path d="M 314.0,413.5 Q 347.0,386.3 333.1,337.2 Q 319.1,288.1 280.1,263.8 Q 241.1,239.5 199.0,238.9 Q 156.8,238.3 117.6,256.0 Q 78.5,273.7 74.4,308.2 Q 70.4,342.7 102.1,386.1 Q 133.9,429.6 156.4,477.1 Q 178.9,524.6 209.8,531.2 Q 240.8,537.8 260.8,489.2 Q 280.9,440.7 314.0,413.5 Z" fill="var(--trava-tmava)" fill-opacity="0.13" stroke="none"/><text class="jazyk-cs" x="223.8" y="351.7" text-anchor="middle" font-family="var(--text-font)" font-size="12" font-style="italic" fill="var(--text-tlumeny)">pískovcové skály</text><text class="jazyk-en" x="223.8" y="351.7" text-anchor="middle" font-family="var(--text-font)" font-size="12" font-style="italic" fill="var(--text-tlumeny)">sandstone rocks</text><path d="M 391.9,63.8 Q 391.1,57.2 392.7,50.4 Q 394.4,43.6 388.1,39.2 Q 381.7,34.8 377.4,36.7 Q 373.0,38.6 370.4,45.3 Q 367.9,52.0 365.9,57.5 Q 364.0,63.1 367.3,69.2 Q 370.5,75.2 377.0,73.8 Q 383.5,72.3 388.1,71.4 Q 392.7,70.4 391.9,63.8 Z" fill="var(--chrpa)" fill-opacity="0.24" stroke="var(--chrpa)" stroke-opacity="0.35" stroke-width="1"/><path d="M 356.1,444.1 L 359.0,297.1 L 361.5,179.5 L 364.0,133.3 L 367.4,82.9 L 371.6,-30.5" fill="none" stroke="var(--text-tlumeny)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/><path d="M 370.8,141.7 Q 209.7,184.2 110.0,227.3" fill="none" stroke="var(--text-tlumeny)" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round" stroke-opacity="0.7"/><path d="M 370.8,141.7 Q 291.7,309.1 297.7,497.3" fill="none" stroke="var(--text-tlumeny)" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round" stroke-opacity="0.7"/><path d="M 370.8,141.7 Q 481.5,195.8 504.5,271.1" fill="none" stroke="var(--text-tlumeny)" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round" stroke-opacity="0.7"/><circle cx="349.8" cy="171.1" r="7" fill="var(--mak)"/><rect x="304.7" y="179.1" width="90" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="349.8" y="191.1" text-anchor="middle" font-family="var(--display)" font-size="15" font-weight="600" fill="var(--odkaz)">Himmelreich</text><circle cx="368.1" cy="78.0" r="5.5" fill="var(--chrpa)"/><rect x="318.9" y="86.0" width="98" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="368.1" y="98.0" text-anchor="middle" font-family="var(--display)" font-size="15" fill="var(--chrpa)">Hotel Ostrov</text><circle cx="372.3" cy="136.3" r="5.5" fill="var(--kemp)"/><rect x="382.3" y="112.3" width="131" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="382.3" y="124.3" text-anchor="start" font-family="var(--display)" font-size="15" fill="var(--text)">Kemp Pod Císařem</text><circle cx="110.0" cy="227.3" r="5" fill="var(--pozadi)" stroke="var(--text-tlumeny)" stroke-width="1.5"/><rect x="118.0" y="201.3" width="107" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="118.0" y="213.3" text-anchor="start" font-family="var(--display)" font-size="15" fill="var(--text-tlumeny)">Německý bivak</text><circle cx="297.7" cy="497.3" r="5" fill="var(--pozadi)" stroke="var(--text-tlumeny)" stroke-width="1.5"/><rect x="281.3" y="471.3" width="33" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="297.7" y="483.3" text-anchor="middle" font-family="var(--display)" font-size="15" fill="var(--text-tlumeny)">Sova</text><circle cx="504.5" cy="271.1" r="5" fill="var(--pozadi)" stroke="var(--text-tlumeny)" stroke-width="1.5"/><rect x="381.7" y="247.1" width="115" height="17" fill="var(--pozadi)" fill-opacity="0.82"/><text x="496.5" y="259.1" text-anchor="end" font-family="var(--display)" font-size="15" fill="var(--text-tlumeny)">Lesní jesličky</text><g font-family="var(--text-font)" font-size="12" fill="var(--text-tlumeny)"><line x1="110.0" y1="572.7" x2="194.0" y2="572.7" stroke="var(--text-tlumeny)" stroke-width="1.5"/><line x1="110.0" y1="568.7" x2="110.0" y2="576.7" stroke="var(--text-tlumeny)"/><line x1="194.0" y1="568.7" x2="194.0" y2="576.7" stroke="var(--text-tlumeny)"/><text x="152.0" y="564.7" text-anchor="middle">200 m</text></g><g stroke="var(--text-tlumeny)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="558.5" y1="572.7" x2="558.5" y2="548.7"/><path d="M 554.5,554.7 L 558.5,546.7 L 562.5,554.7"/></g></svg>
         </div>
-        <p class="mapa-popisek">Vzdušnou čarou od chalupy: Kemp asi 100 m,
-          hotel 200 m, bivaky pak už pořádná procházka do skal —
+        <p class="mapa-popisek jazyk-cs">Vzdušnou čarou od chalupy: Kemp asi
+          100 m, hotel 200 m, bivaky pak už pořádná procházka do skal —
           400 až 800 m.</p>
+        <p class="mapa-popisek jazyk-en">As the crow flies from the
+          cottage: Kemp about 100 m, hotel 200 m, and the bivouacs
+          a proper hike into the rocks — 400 to 800 m.</p>
 
-        <!-- DOPLNIT: časy, vzdálenosti -->
+        <!-- DOPLNIT: časy, vzdálenosti (na obou jazykových verzích) -->
         <div class="prakticke">
           <div>
-            <h3>Autem</h3>
-            <p>Parkování přímo u chalupy, zdarma. Auto tam klidně může zůstat
-              přes noc.</p>
+            <h3><span class="jazyk-cs">Autem</span><span class="jazyk-en">By car</span></h3>
+            <p class="jazyk-cs">Parkování přímo u chalupy, zdarma. Auto tam
+              klidně může zůstat přes noc.</p>
+            <p class="jazyk-en">Free parking right at the cottage. Your car
+              can stay there overnight.</p>
           </div>
           <div>
-            <h3>Autobus z Ústí</h3>
-            <p>Vypravíme svoz z Ústí nad Labem v [ČAS] a zpátky ve [ČAS].
-              Místo si řekněte v potvrzení účasti.</p>
+            <h3><span class="jazyk-cs">Autobus z Ústí</span><span class="jazyk-en">Bus from Ústí</span></h3>
+            <p class="jazyk-cs">Vypravíme svoz z Ústí nad Labem v [ČAS]
+              a zpátky ve [ČAS]. Místo si řekněte v potvrzení účasti.</p>
+            <p class="jazyk-en">We'll run a shuttle from Ústí nad Labem at
+              [ČAS] and back at [ČAS]. Reserve a seat in your RSVP.</p>
           </div>
           <div>
-            <h3>Vlakem</h3>
-            <p>Do Ústí nad Labem, dál autobusem nebo vás vyzvedneme.
-              Napište nám čas příjezdu.</p>
+            <h3><span class="jazyk-cs">Vlakem</span><span class="jazyk-en">By train</span></h3>
+            <p class="jazyk-cs">Do Ústí nad Labem, dál autobusem nebo vás
+              vyzvedneme. Napište nám čas příjezdu.</p>
+            <p class="jazyk-en">To Ústí nad Labem, then by bus, or we'll
+              pick you up. Let us know your arrival time.</p>
           </div>
           <div>
-            <h3>S dětmi</h3>
-            <p>Děti jsou vítané, prostoru je tam dost. Od [ČAS] bude
-              hlídání.</p>
+            <h3><span class="jazyk-cs">S dětmi</span><span class="jazyk-en">With kids</span></h3>
+            <p class="jazyk-cs">Děti jsou vítané, prostoru je tam dost. Od
+              [ČAS] bude hlídání.</p>
+            <p class="jazyk-en">Kids are welcome, there's plenty of space.
+              Childcare starts at [ČAS].</p>
           </div>
         </div>
       </div>
@@ -255,16 +345,18 @@
   <!-- ====================== CO NA SEBE ====================== -->
   <section class="sekce" id="co-na-sebe">
     <div class="sekce-mrizka">
-      <h2>Co na sebe</h2>
+      <h2><span class="jazyk-cs">Co na sebe</span><span class="jazyk-en">What to wear</span></h2>
       <div class="telo">
-        <p>Sváteční, ale nic, co by vás mělo stresovat. Oblek být nemusí.</p>
+        <p class="jazyk-cs">V čem se cítíte krásní (a je vám pohodlně).
+          Barvu si vyberte jakou chcete, stejně jako květy na louce.</p>
+        <p class="jazyk-en">Wear whatever makes you feel good (and
+          comfortable). Pick any color you like, just like the flowers in
+          the meadow.</p>
 
-        <p>Jedna praktická věc: obřad je venku na trávě a kolem chalupy je
-          spíš kamení než parket. Podpatky to tam budou mít těžké — vezměte si
-          radši něco, v čem dojdete i k ohni.</p>
-
-        <p>A jedna prosba: bílou nechte nevěstě. Jinak si barvu vyberte jakou
-          chcete, čím pestřejší, tím líp — jedeme podle louky.</p>
+        <p class="jazyk-cs">Jedna praktická věc: vezměte si pohodlné boty,
+          večer může být zima, vezměte si něco teplejšího.</p>
+        <p class="jazyk-en">One practical note: bring comfortable shoes —
+          it might get cold in the evening, so bring something warmer too.</p>
       </div>
     </div>
   </section>
@@ -272,15 +364,20 @@
   <!-- ====================== FOTOGALERIE ====================== -->
   <section class="sekce" id="galerie">
     <div class="sekce-mrizka">
-      <h2>Fotky</h2>
+      <h2><span class="jazyk-cs">Fotky</span><span class="jazyk-en">Photos</span></h2>
       <div class="telo">
         <!-- Plní se ze seznamu v assets/gallery.js. Prázdný seznam = hláška níž. -->
         <div class="galerie" id="galerie" hidden></div>
 
         <div class="galerie-prazdno" id="galerie-prazdno">
-          <p>Sem přijdou fotky ze svatby, jakmile je dostaneme od fotografa.</p>
-          <p class="tlumene">Vyfotíte něco vy? Pošlete nám to, rádi to sem
-            přidáme.</p>
+          <p class="jazyk-cs">Sem přijdou fotky ze svatby, jakmile je
+            dostaneme od fotografa.</p>
+          <p class="jazyk-en">Wedding photos will go here once we get them
+            from the photographer.</p>
+          <p class="tlumene jazyk-cs">Vyfotíte něco vy? Pošlete nám to,
+            rádi to sem přidáme.</p>
+          <p class="tlumene jazyk-en">Did you take any photos? Send them
+            our way, we'd love to add them here.</p>
         </div>
       </div>
     </div>
@@ -289,12 +386,15 @@
   <!-- ====================== DARY ====================== -->
   <section class="sekce" id="dary">
     <div class="sekce-mrizka">
-      <h2>Dary</h2>
+      <h2><span class="jazyk-cs">Dary</span><span class="jazyk-en">Gifts</span></h2>
       <div class="telo">
-        <p>Že přijedete je dost. Myslíme to vážně, nic dalšího nečekáme.</p>
-        <!-- DOPLNIT: na co přispět, případně číslo účtu (nebo tenhle odstavec smaž) -->
-        <p>Kdyby vám to ale nedalo — domácnost máme zařízenou, takže nejvíc
-          pomůže příspěvek na [NA CO]. Obálka na místě úplně stačí.</p>
+        <p class="jazyk-cs">Přijeďte a ubytujte se. Nic dalšího si
+          neprosíme. Všeho máme víc než dost (Daník) a já už to i tak
+          špatně nesu.</p>
+        <p class="jazyk-en">Just come and find a place to stay. We don't
+          ask for anything else. We already have more than enough of
+          everything (Daník) — and I'm already struggling to deal with it
+          as it is.</p>
       </div>
     </div>
   </section>
@@ -306,81 +406,101 @@
        Kde ta čísla vzít je popsané v README, oddíl „Potvrzení účasti".
        Dokud tam zůstanou zástupná čísla, formulář se sám schová a ukáže
        se místo něj e-mail — viz assets/rsvp.js.
+
+       Viditelné popisky polí jsou dvojjazyčné (.jazyk-cs/.jazyk-en), ale
+       value="" u přepínačů zůstává jen česky — to je hodnota, která
+       padá do Sheetu, ne to, co vidí host. Funguje to správně v obou
+       jazycích zároveň, není potřeba druhý Google Formulář.
   -->
   <section class="sekce" id="potvrzeni">
     <div class="sekce-mrizka">
-      <h2>Dejte nám vědět</h2>
+      <h2><span class="jazyk-cs">Dejte nám vědět</span><span class="jazyk-en">Let us know</span></h2>
       <div class="telo">
         <div class="potvrzeni">
-          <!-- DOPLNIT: termín -->
-          <p class="termin">Prosíme do [DATUM]</p>
-          <p>Potřebujeme počty kvůli jídlu, lůžkům a autobusu.
-            Za každou pozvánku stačí jeden formulář.</p>
+          <!-- DOPLNIT: termín (na obou jazykových verzích) -->
+          <p class="termin jazyk-cs">Prosíme do [DATUM]</p>
+          <p class="termin jazyk-en">Please reply by [DATUM]</p>
+          <p class="jazyk-cs">Potřebujeme počty kvůli jídlu, lůžkům
+            a autobusu. Za každou pozvánku stačí jeden formulář.</p>
+          <p class="jazyk-en">We need numbers for food, beds, and the bus.
+            One form per invitation is enough.</p>
 
           <form class="formular" id="rsvp" method="post"
                 action="https://docs.google.com/forms/d/e/__ID_FORMULARE__/formResponse">
 
             <label class="pole">
-              <span>Kdo se hlásí <span class="napoveda">— jména všech, za koho vyplňujete</span></span>
+              <span><span class="jazyk-cs">Kdo se hlásí</span><span class="jazyk-en">Who's coming</span>
+                <span class="napoveda">
+                  <span class="jazyk-cs">— jména všech, za koho vyplňujete</span>
+                  <span class="jazyk-en">— names of everyone you're filling this out for</span>
+                </span></span>
               <input type="text" name="entry.1000000001" required autocomplete="name">
             </label>
 
             <fieldset class="pole">
-              <span>Přijedete?</span>
+              <span><span class="jazyk-cs">Přijedete?</span><span class="jazyk-en">Are you coming?</span></span>
               <div class="volby">
                 <label class="volba">
                   <input type="radio" name="entry.1000000002" value="Přijedeme" required checked
                          data-ucast="ano">
-                  <span>Přijedeme</span>
+                  <span><span class="jazyk-cs">Přijedeme</span><span class="jazyk-en">We'll be there</span></span>
                 </label>
                 <label class="volba">
                   <input type="radio" name="entry.1000000002" value="Bohužel nedorazíme"
                          data-ucast="ne">
-                  <span>Bohužel nedorazíme</span>
+                  <span><span class="jazyk-cs">Bohužel nedorazíme</span><span class="jazyk-en">Sorry, we can't make it</span></span>
                 </label>
               </div>
             </fieldset>
 
             <label class="pole jen-pri-ucasti">
-              <span>Kolik vás bude</span>
+              <span><span class="jazyk-cs">Kolik vás bude</span><span class="jazyk-en">How many of you</span></span>
               <input type="number" name="entry.1000000003" min="1" max="20" inputmode="numeric">
             </label>
 
             <label class="pole jen-pri-ucasti">
-              <span>Co nejíte <span class="napoveda">— alergie, bezlepkové, vegetariánské…</span></span>
+              <span><span class="jazyk-cs">Co nejíte</span><span class="jazyk-en">What you don't eat</span>
+                <span class="napoveda">
+                  <span class="jazyk-cs">— alergie, bezlepkové, vegetariánské…</span>
+                  <span class="jazyk-en">— allergies, gluten-free, vegetarian…</span>
+                </span></span>
               <input type="text" name="entry.1000000004">
             </label>
 
             <fieldset class="pole jen-pri-ucasti">
-              <span>Místo ve svozovém autobuse</span>
+              <span><span class="jazyk-cs">Místo ve svozovém autobuse</span><span class="jazyk-en">Seat on the shuttle bus</span></span>
               <div class="volby">
                 <label class="volba">
                   <input type="radio" name="entry.1000000005" value="Ano" checked>
-                  <span>Ano, prosím</span>
+                  <span><span class="jazyk-cs">Ano, prosím</span><span class="jazyk-en">Yes, please</span></span>
                 </label>
                 <label class="volba">
                   <input type="radio" name="entry.1000000005" value="Ne">
-                  <span>Přijedeme po svém</span>
+                  <span><span class="jazyk-cs">Přijedeme po svém</span><span class="jazyk-en">We'll make our own way</span></span>
                 </label>
               </div>
             </fieldset>
 
             <fieldset class="pole jen-pri-ucasti">
-              <span>Budete spát na chalupě?</span>
+              <span><span class="jazyk-cs">Budete spát na chalupě?</span><span class="jazyk-en">Will you sleep at the cottage?</span></span>
               <div class="volby">
                 <label class="volba">
                   <input type="radio" name="entry.1000000006" value="Ano" checked>
-                  <span>Ano</span>
+                  <span><span class="jazyk-cs">Ano</span><span class="jazyk-en">Yes</span></span>
                 </label>
                 <label class="volba">
                   <input type="radio" name="entry.1000000006" value="Ne">
-                  <span>Ne</span>
+                  <span><span class="jazyk-cs">Ne</span><span class="jazyk-en">No</span></span>
                 </label>
               </div>
             </fieldset>
 
             <label class="pole">
-              <span>Chcete nám něco vzkázat? <span class="napoveda">— nepovinné</span></span>
+              <span><span class="jazyk-cs">Chcete nám něco vzkázat?</span><span class="jazyk-en">Anything you'd like to tell us?</span>
+                <span class="napoveda">
+                  <span class="jazyk-cs">— nepovinné</span>
+                  <span class="jazyk-en">— optional</span>
+                </span></span>
               <textarea name="entry.1000000007" rows="3"></textarea>
             </label>
 
@@ -388,60 +508,24 @@
             <input type="hidden" name="fvv" value="1">
             <input type="hidden" name="pageHistory" value="0">
 
-            <button type="submit">Odeslat</button>
+            <button type="submit"><span class="jazyk-cs">Odeslat</span><span class="jazyk-en">Send</span></button>
             <p class="chyba" id="rsvp-chyba" hidden></p>
           </form>
 
           <div class="dekujeme" id="rsvp-dekujeme" hidden>
-            <h3>Děkujeme, máme to.</h3>
-            <p>Kdybyste potřebovali cokoli změnit, napište nám — kontakty jsou níž.</p>
+            <h3><span class="jazyk-cs">Děkujeme, máme to.</span><span class="jazyk-en">Thanks, got it.</span></h3>
+            <p class="jazyk-cs">Kdybyste potřebovali cokoli změnit, napište
+              nám — kontakty jsou níž.</p>
+            <p class="jazyk-en">If you need to change anything, just
+              message us — contacts are below.</p>
           </div>
 
-          <!-- DOPLNIT: e-mail -->
-          <p class="jinak">Nefunguje vám formulář? Napište na
+          <!-- DOPLNIT: e-mail (na obou jazykových verzích) -->
+          <p class="jinak jazyk-cs">Nefunguje vám formulář? Napište na
             <a href="mailto:[EMAIL]">[EMAIL]</a> nebo zavolejte, kontakty jsou níž.</p>
+          <p class="jinak jazyk-en">Form not working? Email
+            <a href="mailto:[EMAIL]">[EMAIL]</a> or call, contacts are below.</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====================== ČASTÉ DOTAZY ====================== -->
-  <section class="sekce" id="dotazy">
-    <div class="sekce-mrizka">
-      <h2>Na co se ptáte</h2>
-      <div class="telo dotazy">
-        <details>
-          <summary>Můžu vzít partnera nebo partnerku?</summary>
-          <p>Když je na pozvánce, tak jistě. Když si nejste jistí, napište —
-            kapacita chalupy je daná, ale zeptat se nic nestojí.</p>
-        </details>
-        <details>
-          <summary>Můžu vzít děti?</summary>
-          <p>Ano. Je tam kde běhat a od odpoledne bude hlídání. Do potvrzení
-            účasti napište počet a věk.</p>
-        </details>
-        <details>
-          <summary>Něco nejím, je to problém?</summary>
-          <p>Vůbec ne, jen to napište předem. Bezlepkové, vegetariánské
-            i veganské jídlo zařídíme.</p>
-        </details>
-        <details>
-          <summary>Můžu fotit?</summary>
-          <p>Během obřadu prosíme ne — máme fotografa a nechceme na fotkách
-            les telefonů. Potom fotěte, co hrdlo ráčí, a pošlete nám to.</p>
-        </details>
-        <details>
-          <summary>Co když bude pršet?</summary>
-          <p>Přesouváme se do stodoly. Program zůstává stejný.</p>
-        </details>
-        <details>
-          <summary>Můžu přijet se psem?</summary>
-          <p>Chalupa psy bere. Dejte nám vědět předem, ať s tím počítáme.</p>
-        </details>
-        <details>
-          <summary>Kdy to končí?</summary>
-          <p>Oficiálně nijak. Snídaně je od devíti.</p>
-        </details>
       </div>
     </div>
   </section>
@@ -449,9 +533,10 @@
   <!-- ====================== KONTAKT ====================== -->
   <section class="sekce" id="kontakt">
     <div class="sekce-mrizka">
-      <h2>Kontakt</h2>
+      <h2><span class="jazyk-cs">Kontakt</span><span class="jazyk-en">Contact</span></h2>
       <div class="telo">
-        <p>Ptejte se na cokoli, i na hlouposti. Odepíšeme.</p>
+        <p class="jazyk-cs">Ptejte se na cokoli, i na hlouposti. Odepíšeme.</p>
+        <p class="jazyk-en">Ask us anything, even silly questions. We'll reply.</p>
         <!-- DOPLNIT: jména, telefony, e-maily -->
         <div class="kontakty">
           <div>
@@ -467,7 +552,8 @@
           <div>
             <p class="jmeno">[JMÉNO]</p>
             <a href="tel:[TELEFON]">[TELEFON]</a>
-            <p class="tlumene" style="font-size:.875rem">Svědek, na místě celý den</p>
+            <p class="tlumene jazyk-cs" style="font-size:.875rem">Svědek, na místě celý den</p>
+            <p class="tlumene jazyk-en" style="font-size:.875rem">Witness, on site all day</p>
           </div>
         </div>
       </div>
@@ -478,7 +564,7 @@
 
 <footer class="paticka">
   <p class="jmena">Ája a Daník</p>
-  <p>19. června 2027 &nbsp;·&nbsp; Himmelreich, Ostrov u Tisé</p>
+  <p><span class="jazyk-cs">19. června 2027</span><span class="jazyk-en">June 19, 2027</span> &nbsp;·&nbsp; Himmelreich, Ostrov u Tisé</p>
 </footer>
 
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Zvětšená fotka">

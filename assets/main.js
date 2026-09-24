@@ -34,6 +34,42 @@
     });
   }
 
+  /* ---------- Čeština a angličtina ----------
+     Text tlačítka je cílový jazyk (na co přepne), ne aktuální — proto
+     se po každém kliku přepíše na tu druhou zkratku. */
+
+  var prepinacJazyka = document.querySelector('.prepinac-jazyk');
+
+  function nastavJazyk(jazyk, ulozit) {
+    var koren = document.documentElement;
+    koren.setAttribute('data-jazyk', jazyk);
+    koren.lang = jazyk;
+    if (prepinacJazyka) {
+      prepinacJazyka.textContent = jazyk === 'en' ? 'CZ' : 'EN';
+      prepinacJazyka.setAttribute('data-jazyk-cil', jazyk === 'en' ? 'cs' : 'en');
+      prepinacJazyka.setAttribute('aria-label',
+        jazyk === 'en' ? 'Přepnout do češtiny' : 'Switch to English');
+    }
+    if (ulozit) {
+      try {
+        localStorage.setItem('jazyk', jazyk);
+      } catch (e) {
+        // Soukromé okno nebo zakázaná úložiště — jazyk vydrží do reloadu.
+      }
+    }
+  }
+
+  if (prepinacJazyka) {
+    // Tlačítko v HTML má natvrdo "EN" — dosaď správný text i pro
+    // stránku načtenou rovnou s uloženou angličtinou (viz skript v
+    // <head>, který data-jazyk nastaví ještě před vykreslením).
+    nastavJazyk(document.documentElement.getAttribute('data-jazyk') === 'en' ? 'en' : 'cs', false);
+
+    prepinacJazyka.addEventListener('click', function () {
+      nastavJazyk(prepinacJazyka.getAttribute('data-jazyk-cil'), true);
+    });
+  }
+
   /* ---------- Odpočet ---------- */
 
   var odpocet = document.querySelector('.odpocet');

@@ -183,11 +183,17 @@ def vygeneruj_svg():
     teren.append(
         f'<path d="{vyhladit_uzavrenou(les_body)}" fill="var(--trava-tmava)" '
         f'fill-opacity="0.13" stroke="none"/>')
+    # Bilingvní popisek — bez podkladového obdélníku (sedí jen na tiché
+    # ploše zóny), takže se dva překryté <text> prvky dají bezpečně
+    # přepínat stejnou třídou jako zbytek stránky (viz .jazyk-cs/.jazyk-en
+    # v style.css). Jediné dvě slova v celé mapce, co se překládají —
+    # zbytek jsou vlastní jména.
     lx, ly = px(*LES_POPISEK_POZICE)
-    teren.append(
-        f'<text x="{lx:.1f}" y="{ly:.1f}" text-anchor="middle" '
-        f'font-family="var(--text-font)" font-size="12" font-style="italic" '
-        f'fill="var(--text-tlumeny)">pískovcové skály</text>')
+    for trida, text in (("jazyk-cs", "pískovcové skály"), ("jazyk-en", "sandstone rocks")):
+        teren.append(
+            f'<text class="{trida}" x="{lx:.1f}" y="{ly:.1f}" text-anchor="middle" '
+            f'font-family="var(--text-font)" font-size="12" font-style="italic" '
+            f'fill="var(--text-tlumeny)">{text}</text>')
 
     # Rybník.
     rybnik_body = [px(x, y) for x, y in nepravidelny_prstenec(
@@ -298,16 +304,17 @@ def vygeneruj_svg():
         f'<text x="{sx + delka_200m / 2:.1f}" y="{sy - 8:.1f}" text-anchor="middle">'
         f'200 m</text></g>')
 
+    # Jen šipka, bez písmene. "S" (sever) by anglicky čtenář přečetl jako
+    # "South" — přesný opak. Psát dvojjazyčně "S/N" je zbytečné, šipka
+    # nahoru je bez popisku jednoznačná i tak (mapy takhle sever značí
+    # běžně).
     nx, ny = W - PRAVY_OKRAJ * 0.55, H - DOLNI_OKRAJ * 0.42
     severka = (
         f'<g stroke="var(--text-tlumeny)" fill="none" stroke-width="1.5" '
         f'stroke-linecap="round" stroke-linejoin="round">'
         f'<line x1="{nx:.1f}" y1="{ny:.1f}" x2="{nx:.1f}" y2="{ny - 24:.1f}"/>'
         f'<path d="M {nx - 4:.1f},{ny - 18:.1f} L {nx:.1f},{ny - 26:.1f} '
-        f'L {nx + 4:.1f},{ny - 18:.1f}"/></g>'
-        f'<text x="{nx:.1f}" y="{ny - 30:.1f}" text-anchor="middle" '
-        f'font-family="var(--text-font)" font-size="12" font-weight="600" '
-        f'fill="var(--text-tlumeny)">S</text>')
+        f'L {nx + 4:.1f},{ny - 18:.1f}"/></g>')
 
     svg = (
         f'<svg class="mapka" viewBox="0 0 {W:.0f} {H:.0f}" role="img" '
