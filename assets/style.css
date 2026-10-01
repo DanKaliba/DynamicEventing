@@ -370,6 +370,8 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 }
 
 .hero-text {
+  position: relative;
+  z-index: 1;  /* nad plátnem světlušek */
   width: 100%;
   max-width: var(--sirka);
   margin-inline: auto;
@@ -437,6 +439,15 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 .louka-ziva {
   display: block;
   animation: none;
+}
+
+/* Světlušky v noci (assets/svetlusky.js) — nad loukou, pod textem. */
+.svetlusky {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 /* Obal, za který se rostlina naklání. Otáčí se kolem paty, ne kolem

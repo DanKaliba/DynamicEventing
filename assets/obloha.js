@@ -153,10 +153,17 @@
     return d.getHours() + d.getMinutes() / 60;
   }
 
+  // Od soumraku do svítání (podle OBLOHA) létají světlušky —
+  // assets/svetlusky.js sleduje tenhle atribut.
+  var NOC_OD = 21, NOC_DO = 5.5;
+
   function nastavit() {
-    var barvy = spocitat(hodinaTed()).css;
-    var styl = document.documentElement.style;
-    Object.keys(barvy).forEach(function (k) { styl.setProperty(k, barvy[k]); });
+    var hodina = hodinaTed();
+    var barvy = spocitat(hodina).css;
+    var koren = document.documentElement;
+    Object.keys(barvy).forEach(function (k) { koren.style.setProperty(k, barvy[k]); });
+    if (hodina >= NOC_OD || hodina < NOC_DO) koren.setAttribute('data-noc', '');
+    else koren.removeAttribute('data-noc');
   }
 
   nastavit();
