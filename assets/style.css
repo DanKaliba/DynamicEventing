@@ -53,16 +53,18 @@
      v obou motivech zároveň, --pryskyrnik na to nejde (1.75:1 na světlém). */
   --kemp: #8F740C;
 
-  /* Pozadí hera — pevná pastelová zelená, nezávislá na přepínači
-     světlý/tmavý motiv (na rozdíl od --les předtím). Proto i text v heru
-     potřebuje vlastní pevné barvy níž — var(--text) by se s přepínačem
-     měnilo na skoro bílou a na tomhle pozadí by zmizelo. Luminance
-     B0FF9D (0.83) je blízko --pozadi světlého motivu (0.90), takže jdou
-     použít prakticky stejné tmavé barvy jako jinde na stránce ve světlém
-     režimu — ověřeno kontrastem, ne od oka. */
-  --hero-bg: #B0FF9D;
+  /* Obloha v heru — mění se podle denní doby návštěvníka, přepisuje je
+     assets/obloha.js (tam i výpočet kontrastu). Tady je polední obloha
+     pro případ bez JS. Nezávislé na přepínači světlý/tmavý motiv, proto
+     i text v heru má vlastní barvy — var(--text) by se s přepínačem
+     měnilo a na obloze mohlo zmizet. */
+  --hero-bg: #6FB2EC;        /* vrch oblohy, i pod navigací */
+  --hero-stred: #A0CEF2;     /* u horní hrany louky */
+  --hero-obzor: #D2EAF8;     /* za loukou, bez textu */
   --hero-text: #0C1A06;
-  --hero-text-tlumeny: #496E16;
+  --hero-text-tlumeny: #2E480F;
+  --hero-akcent: #403E08;
+  --hero-aktivni: #7F0C0B;
 
   /* Odvozené pro text a plochy */
   --pozadi: #F3F5EC;
@@ -284,11 +286,9 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 
 /* Dokud nav sedí nad heroem (žádné .odscrollovano), prosvítá jeho
    pozadí — barvy tu proto musí číst na var(--hero-bg), ne na --pozadi.
-   Hero je od přepínače motivu nezávislý pevný pastelový odstín, takže
-   i tyhle barvy musí být pevné (var(--hero-text) / var(--mak)), ne
-   var(--kopretina)/var(--pryskyrnik) laděné na starý tmavý hero — na
-   světlé pastelové zelené by byly skoro neviditelné. Kontrast ověřený
-   i s opacitou započítanou (0.75 → 7.27:1, 0.6 → 4.42:1). */
+   Obloha se mění s denní dobou, takže barvy jsou var(--hero-text) /
+   var(--hero-aktivni) z assets/obloha.js, který kontrast hlídá i
+   s touhle opacitou započítanou (0.75 → AA 4,5:1, 0.6 → 3:1). */
 .nav-odkazy a {
   display: block;
   padding: 0.35rem 0.55rem;
@@ -301,7 +301,7 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   transition: opacity 0.15s, color 0.15s;
 }
 .nav-odkazy a:hover { opacity: 1; color: var(--hero-text); }
-.nav-odkazy a[aria-current="true"] { opacity: 1; color: var(--mak); }
+.nav-odkazy a[aria-current="true"] { opacity: 1; color: var(--hero-aktivni); }
 
 .prepinac {
   flex: none;
@@ -343,7 +343,9 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 .nav.odscrollovano .nav-odkazy a[aria-current="true"] { color: var(--odkaz); opacity: 1; }
 
 /* ================= Hero =================
-   Pastelově zelené pozadí, ze spodní hrany vyrůstá louka.
+   Obloha podle denní doby, ze spodní hrany vyrůstá louka. Barva obzoru
+   začíná až u horní hrany louky — za textem je jen vrch a střed, se
+   kterými obloha.js hlídá kontrast.
 
    Hero je vysoký přesně na obrazovku (svh kvůli mobilním lištám), takže
    louka je vidět hned po otevření a nemusí se k ní scrollovat. Text je
@@ -351,7 +353,11 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 
 .hero {
   position: relative;
-  background: var(--hero-bg);
+  background-color: var(--hero-bg);
+  background-image: linear-gradient(to bottom,
+    var(--hero-bg) 0%,
+    var(--hero-stred) calc(100% - var(--vyska-louky)),
+    var(--hero-obzor) 100%);
   color: var(--hero-text);
   min-height: 100vh;
   min-height: 100svh;
@@ -402,7 +408,7 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   font-family: var(--display);
   font-weight: 400;
   font-size: 1.5rem;
-  color: var(--kemp);
+  color: var(--hero-akcent);
   font-variant-numeric: tabular-nums;
   padding-inline: 0.1em;
 }

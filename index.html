@@ -26,6 +26,8 @@
     }
   } catch (e) {}
 </script>
+<!-- Obloha v heru podle denní doby — taky před vykreslením. -->
+<script src="assets/obloha.js"></script>
 </head>
 <body>
 
@@ -310,7 +312,7 @@
   <!-- ====================== POTVRZENÍ ÚČASTI ======================
        Formulář odesílá do Google Formuláře. Až ho založíš, přepiš:
          1. adresu v action= (ID je v odkazu formuláře)
-         2. sedm name="entry.XXXX" níž
+         2. šest name="entry.XXXX" níž
        Kde ta čísla vzít je popsané v README, oddíl „Potvrzení účasti".
        Dokud tam zůstanou zástupná čísla, formulář se sám schová a ukáže
        se místo něj e-mail — viz assets/rsvp.js.

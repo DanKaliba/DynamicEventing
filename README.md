@@ -66,7 +66,7 @@ bys poznal až podle prázdných židlí.
 
 ### a) Založit formulář
 
-V Google Formulářích vytvoř formulář se **sedmi otázkami v tomhle pořadí**
+V Google Formulářích vytvoř formulář se **šesti otázkami v tomhle pořadí**
 (na názvech nezáleží, na pořadí a typu ano):
 
 | # | otázka | typ | povinná |
@@ -75,11 +75,10 @@ V Google Formulářích vytvoř formulář se **sedmi otázkami v tomhle pořad�
 | 2 | Přijedete? | výběr z možností: `Přijedeme`, `Bohužel nedorazíme` | ano |
 | 3 | Kolik vás bude | krátká odpověď | ne |
 | 4 | Co nejíte | krátká odpověď | ne |
-| 5 | Místo v autobuse | výběr: `Ano`, `Ne` | ne |
-| 6 | Spaní na chalupě | výběr: `Ano`, `Ne` | ne |
-| 7 | Vzkaz | odstavec | ne |
+| 5 | Spaní na chalupě | výběr: `Ano`, `Ne` | ne |
+| 6 | Vzkaz | odstavec | ne |
 
-U otázek 2, 5 a 6 musí být možnosti napsané **přesně takhle**, jinak Google
+U otázek 2 a 5 musí být možnosti napsané **přesně takhle**, jinak Google
 odpověď zahodí. Nenastavuj žádnou otázku jako povinnou v Googlu — hlídá si
 to stránka sama a povinné pole v Googlu by odmítlo odeslání, když někdo
 napíše, že nedorazí.
@@ -87,7 +86,7 @@ napíše, že nedorazí.
 ### b) Zjistit čísla polí
 
 V editoru formuláře: **⋮ → Získat předvyplněný odkaz**. Vyplň do všech
-sedmi polí cokoliv a dej **Získat odkaz → Kopírovat odkaz**. Vznikne něco
+šesti polí cokoliv a dej **Získat odkaz → Kopírovat odkaz**. Vznikne něco
 jako:
 
 ```
@@ -103,7 +102,7 @@ https://docs.google.com/forms/d/e/1FAIpQLSdXXXXXXXX/viewform?usp=pp_url
 V sekci `id="potvrzeni"`:
 
 1. v `action=` nahraď `__ID_FORMULARE__` tím ID formuláře
-2. sedm `name="entry.10000000XX"` nahraď skutečnými čísly, v pořadí
+2. šest `name="entry.10000000XX"` nahraď skutečnými čísly, v pořadí
    podle tabulky výše
 
 ```powershell
