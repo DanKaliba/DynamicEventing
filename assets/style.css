@@ -458,6 +458,13 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 }
 [data-noc] .hvezdy { opacity: 1; }
 
+/* Měsíc (assets/mesic.js) — za loukou, polohu a velikost nastavuje skript. */
+.mesic {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+}
+
 /* Světlušky v noci a vlaštovky ve dne (assets/svetlusky.js,
    assets/vlastovky.js) — nad loukou, pod textem. */
 .svetlusky,

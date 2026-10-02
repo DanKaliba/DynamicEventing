@@ -164,6 +164,8 @@
     Object.keys(barvy).forEach(function (k) { koren.style.setProperty(k, barvy[k]); });
     if (hodina >= NOC_OD || hodina < NOC_DO) koren.setAttribute('data-noc', '');
     else koren.removeAttribute('data-noc');
+    // Pro assets/mesic.js — aby Měsíc šel s ?cas= i s posuvníkem v panelu.
+    koren.setAttribute('data-hodina', hodina.toFixed(3));
   }
 
   nastavit();

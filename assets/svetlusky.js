@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Světlušky nad loukou — od soumraku do svítání
+   Světlušky nad loukou a padající hvězdy — od soumraku do svítání
 
    Kdy je noc, rozhoduje assets/obloha.js atributem data-noc na <html>
    (podle času návštěvníka, ?cas= i ladicího panelu). Tenhle soubor ho
@@ -161,6 +161,56 @@
     return u < 0.35 ? 0.15 + 0.85 * Math.sin(u / 0.35 * Math.PI) : 0.15;
   }
 
+  /* ---------- Padající hvězdy ----------
+     Jedou ve stejné noční smyčce jako světlušky, ať nevzniká další
+     animace. Občas krátká stopa šikmo dolů přes horní část oblohy. */
+
+  var meteory = [];
+  var dalsiMeteor = nahoda(2, 5);
+
+  function novyMeteor() {
+    var doprava = Math.random() < 0.5;
+    var uhel = nahoda(15, 35) * Math.PI / 180;
+    var rychlost = nahoda(800, 1200);
+    meteory.push({
+      x: nahoda(0.1, 0.9) * sirka,
+      y: nahoda(70, Math.max(90, vyska * 0.4)),
+      vx: Math.cos(uhel) * rychlost * (doprava ? 1 : -1),
+      vy: Math.sin(uhel) * rychlost,
+      t: 0,
+      doba: nahoda(0.45, 0.8),
+      delka: nahoda(90, 170)
+    });
+  }
+
+  function meteoryKrok(dt, noc) {
+    if (noc && cas >= dalsiMeteor) {
+      novyMeteor();
+      dalsiMeteor = cas + nahoda(3, 10);
+    }
+    ctx.lineCap = 'round';
+    for (var i = meteory.length - 1; i >= 0; i--) {
+      var m = meteory[i];
+      m.t += dt;
+      if (m.t > m.doba) { meteory.splice(i, 1); continue; }
+      var hx = m.x + m.vx * m.t, hy = m.y + m.vy * m.t;
+      var v = Math.hypot(m.vx, m.vy);
+      // Ohon na začátku teprve narůstá, ať stopa nevyskočí celá najednou.
+      var l = m.delka * Math.min(1, m.t / 0.15);
+      var tx = hx - m.vx / v * l, ty = hy - m.vy / v * l;
+      var a = Math.sin(Math.PI * m.t / m.doba) * jas;
+      var g = ctx.createLinearGradient(hx, hy, tx, ty);
+      g.addColorStop(0, 'rgba(240,246,255,' + a.toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(200,215,255,0)');
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(hx, hy);
+      ctx.lineTo(tx, ty);
+      ctx.stroke();
+    }
+  }
+
   function snimek(ted) {
     if (!bezi) return;
     var dt = Math.min((ted - naposled) / 1000, 0.05);
@@ -179,6 +229,7 @@
       ctx.drawImage(sprite, s.x - 9, s.y - 9, 18, 18);
     }
     ctx.globalAlpha = 1;
+    meteoryKrok(dt, noc);
 
     if (!noc && jas === 0) { zastavit(); return; }
     requestAnimationFrame(snimek);
