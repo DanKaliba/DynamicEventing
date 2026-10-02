@@ -36,7 +36,10 @@ Texty sekcí (proč přijet, co na sebe, dotazy) jsou napsané — přepiš je p
 sebe, jsou to jen návrhy.
 
 Odpočet se řídí atributem `data-datum` u `<p class="odpocet">`, formát
-`RRRR-MM-DDTHH:MM`. Ukazuje dny, ne vteřiny, a po svatbě se sám schová.
+`RRRR-MM-DDTHH:MM`. Ukazuje dny, ne vteřiny, a text se mění podle data:
+„Zbývá N dní.“, posledních 14 dní „Už jen N dní.“ (1 den, 2–4 dny),
+ve svatební den „Je to dnes!“ a potom „Díky, že jste přijeli.“
+Vyzkoušet jiné datum: `?dnes=2027-06-10` v adrese.
 
 ## 2. Přidat fotky
 

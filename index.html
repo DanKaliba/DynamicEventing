@@ -60,10 +60,25 @@
       <span class="misto">Chalupa Himmelreich, Ostrov u Tisé</span>
     </p>
 
+    <!-- Text se mění podle data (assets/main.js): víc než 14 dní,
+         posledních 14 dní, svatební den a po svatbě. -->
     <p class="odpocet" data-datum="2027-06-19T13:00" hidden>
-      <span class="jazyk-cs">Zbývá</span><span class="jazyk-en">There are</span>
-      <strong data-dni>—</strong>
-      <span class="jazyk-cs">dní.</span><span class="jazyk-en">days to go.</span>
+      <span data-stav="zbyva">
+        <span class="jazyk-cs">Zbývá</span><span class="jazyk-en">There are</span>
+        <strong data-dni>—</strong>
+        <span class="jazyk-cs">dní.</span><span class="jazyk-en">days to go.</span>
+      </span>
+      <span data-stav="uz-jen" hidden>
+        <span class="jazyk-cs">Už jen</span><span class="jazyk-en">Only</span>
+        <strong data-dni>—</strong>
+        <span class="jazyk-cs" data-slovo-cs>dní.</span><span class="jazyk-en" data-slovo-en>days to go.</span>
+      </span>
+      <span data-stav="dnes" hidden>
+        <strong><span class="jazyk-cs">Je to dnes!</span><span class="jazyk-en">It's today!</span></strong>
+      </span>
+      <span data-stav="po" hidden>
+        <span class="jazyk-cs">Díky, že jste přijeli.</span><span class="jazyk-en">Thank you for coming.</span>
+      </span>
     </p>
   </div>
   <!-- Obloha svatební noci (tools/hvezdy.py), ukáže se jen v noci. -->
@@ -102,12 +117,11 @@
       <h2><span class="jazyk-cs">Kde a kdy</span><span class="jazyk-en">When &amp; where</span></h2>
       <div class="telo">
         <p class="misto-nazev"><span class="jazyk-cs">Chalupa Himmelreich</span><span class="jazyk-en">Himmelreich Cottage</span></p>
-        <!-- DOPLNIT: přesná adresa a odkaz na mapy -->
-        <address class="adresa">[ULICE ČP], Ostrov u Tisé<br>403 36 Tisá</address>
-        <p class="jazyk-cs"><a href="[ODKAZ NA MAPY]" target="_blank" rel="noopener">Otevřít v mapách</a>
+        <address class="adresa">Ostrov č. ev. 257<br>403 36 Tisá</address>
+        <p class="jazyk-cs"><a href="https://mapy.com/s/hohecohanu" target="_blank" rel="noopener">Otevřít v mapách</a>
           &nbsp;·&nbsp;
           <a href="https://www.himmelreich.cz" target="_blank" rel="noopener">himmelreich.cz</a></p>
-        <p class="jazyk-en"><a href="[ODKAZ NA MAPY]" target="_blank" rel="noopener">Open in maps</a>
+        <p class="jazyk-en"><a href="https://mapy.com/s/hohecohanu" target="_blank" rel="noopener">Open in maps</a>
           &nbsp;·&nbsp;
           <a href="https://www.himmelreich.cz" target="_blank" rel="noopener">himmelreich.cz</a></p>
 

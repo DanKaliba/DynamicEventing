@@ -78,14 +78,34 @@
 
   var odpocet = document.querySelector('.odpocet');
 
-  if (odpocet) {
-    var cil = new Date(odpocet.getAttribute('data-datum')).getTime();
-    var poleDni = odpocet.querySelector('[data-dni]');
+  /* Dny, ne hodiny a minuty — na svatbu vzdálenou rok je vteřinový
+     odpočet jen hluk. Počítá se v kalendářních dnech, ať je ve svatební
+     den "dnes" od rána, ne až od obřadu.
 
-    if (!isNaN(cil) && cil > Date.now()) {
-      // Dny, ne hodiny a minuty. Na svatbu vzdálenou rok je vteřinový
-      // odpočet jen hluk a nutí stránku přepisovat se každou vteřinu.
-      poleDni.textContent = Math.ceil((cil - Date.now()) / 86400000);
+     Na zkoušku: ?dnes=2027-06-10 nasimuluje jiné datum. */
+  if (odpocet) {
+    var cil = new Date(odpocet.getAttribute('data-datum'));
+    var zkouska = /[?&]dnes=(\d{4})-(\d{2})-(\d{2})(?:&|$)/.exec(location.search);
+    var ted = zkouska ? new Date(+zkouska[1], +zkouska[2] - 1, +zkouska[3]) : new Date();
+
+    if (!isNaN(cil)) {
+      var pulnoc = function (d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+      // Round, ne floor — den se střídáním letního času má 23 nebo 25 hodin.
+      var dni = Math.round((pulnoc(cil) - pulnoc(ted)) / 86400000);
+      var stav = dni > 14 ? 'zbyva' : dni > 0 ? 'uz-jen' : dni === 0 ? 'dnes' : 'po';
+
+      Array.prototype.forEach.call(odpocet.querySelectorAll('[data-stav]'), function (el) {
+        el.hidden = el.getAttribute('data-stav') !== stav;
+      });
+      Array.prototype.forEach.call(odpocet.querySelectorAll('[data-dni]'), function (el) {
+        el.textContent = dni;
+      });
+
+      var slovoCs = odpocet.querySelector('[data-slovo-cs]');
+      var slovoEn = odpocet.querySelector('[data-slovo-en]');
+      slovoCs.textContent = dni === 1 ? 'den.' : dni >= 2 && dni <= 4 ? 'dny.' : 'dní.';
+      slovoEn.textContent = dni === 1 ? 'day to go.' : 'days to go.';
+
       odpocet.hidden = false;
     }
   }
