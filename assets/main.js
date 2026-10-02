@@ -121,6 +121,24 @@
     }, { rootMargin: '-56px 0px 0px 0px' }).observe(hero);
   }
 
+  /* ---------- Vyblednutí okrajů lišty, když pokračuje mimo obrazovku ---------- */
+
+  var lista = document.querySelector('.nav-odkazy');
+
+  if (lista) {
+    var okraje = function () {
+      var konec = lista.scrollWidth - lista.clientWidth;
+      lista.classList.toggle('dal-vlevo', lista.scrollLeft > 2);
+      lista.classList.toggle('dal-vpravo', lista.scrollLeft < konec - 2);
+    };
+    lista.addEventListener('scroll', okraje, { passive: true });
+    window.addEventListener('resize', okraje, { passive: true });
+    // Šířku položek mění webové písmo i přepnutí jazyka.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(okraje);
+    new MutationObserver(okraje).observe(document.documentElement, { attributes: true, attributeFilter: ['data-jazyk'] });
+    okraje();
+  }
+
   /* ---------- Zvýraznění sekce, ve které právě jsme ---------- */
 
   var odkazy = Array.prototype.slice.call(document.querySelectorAll('.nav-odkazy a'));

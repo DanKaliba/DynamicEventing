@@ -281,8 +281,17 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   list-style: none;
   overflow-x: auto;
   scrollbar-width: none;
+  /* Vyblednutí okraje, za kterým lišta pokračuje — jinak na telefonu
+     useknuté „Ubytován“ nenaznačuje, že jde posunout. Třídy přepíná
+     assets/main.js podle polohy posunu; bez nich je maska neviditelná. */
+  --vybledni-l: 0px;
+  --vybledni-p: 0px;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--vybledni-l), #000 calc(100% - var(--vybledni-p)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--vybledni-l), #000 calc(100% - var(--vybledni-p)), transparent);
 }
 .nav-odkazy::-webkit-scrollbar { display: none; }
+.nav-odkazy.dal-vlevo { --vybledni-l: 1.5rem; }
+.nav-odkazy.dal-vpravo { --vybledni-p: 2.5rem; }
 
 /* Dokud nav sedí nad heroem (žádné .odscrollovano), prosvítá jeho
    pozadí — barvy tu proto musí číst na var(--hero-bg), ne na --pozadi.
