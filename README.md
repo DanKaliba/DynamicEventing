@@ -19,7 +19,11 @@ tools/louka.py      poskládá z nich louku
 tools/vzor.py       poskládá z nich opakovatelnou dlaždici na pozadí
 tools/mapa.py       mapka ubytování z reálných GPS souřadnic (vložená přímo v index.html)
 tools/paleta.py     vzorkovač barev z fotky
+tools/kontrola.py   zbylé zástupné texty a nefunkční odkazy (python tools/kontrola.py)
 ```
+
+`tools/kontrola.py` se spouští i sám před každým `git push` (hook v
+`.git/hooks/pre-push`, jen lokálně) — zatím jen varuje, push nezastaví.
 
 ---
 
