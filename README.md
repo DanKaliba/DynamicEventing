@@ -1,4 +1,4 @@
-# Svatba na Himmelreichu
+# Svatba v Himmelreichu
 
 Statická jednostránka. Žádný build, žádný framework, žádný externí request —
 otevřeš `index.html` v prohlížeči a funguje.

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Svatba na Himmelreichu — chování stránky
+   Svatba v Himmelreichu — chování stránky
 
    Vanilla JS, žádné závislosti. Bez něj stránka funguje dál, jen bez
    odpočtu, lightboxu a přepínače motivu — proto je odpočet v HTML

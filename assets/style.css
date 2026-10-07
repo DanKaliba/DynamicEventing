@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Svatba na Himmelreichu — styly
+   Svatba v Himmelreichu — styly
 
    Paleta je navzorkovaná z fotky květnaté louky, kterou vybral klient:
    medián sytých pixelů v každém pásmu odstínu. Nic není odhadnuté od oka.
@@ -1017,3 +1017,130 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   margin-bottom: 0.4rem;
 }
 
+
+/* ================= Hra: Cesta na vrchol =================
+   assets/hra.js. Plátno 160 × 144 px, zvětšené celým násobkem
+   (velikost nastavuje JS). Okno se ukáže, až když hra naběhne —
+   na dotykových zařízeních zůstane schované a místo něj věta .hra-mobil. */
+
+.hra {
+  display: none;
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  margin-top: 1.5rem;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--linka-silna);
+  outline: none;
+}
+.hra.pripravena { display: block; }
+.hra:focus-visible { box-shadow: 0 0 0 2px var(--odkaz); }
+.hra [hidden] { display: none !important; }
+
+.hra canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.hra-mobil { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .hra-mobil { display: block; }
+}
+
+/* Panel přes plátno: úvod, pauza, konec. Text vlevo dole, jako jinde na webu. */
+.hra-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(1rem, 4%, 1.75rem);
+  background: linear-gradient(to bottom, rgba(12, 26, 6, 0) 25%, rgba(12, 26, 6, 0.82));
+  color: #F3F5EC;
+}
+.hra-panel > div { display: none; }
+.hra-panel[data-typ="uvod"] .hra-panel-uvod,
+.hra-panel[data-typ="pauza"] .hra-panel-pauza,
+.hra-panel[data-typ="konec"] .hra-panel-konec { display: block; }
+.hra-panel p { max-width: 26rem; font-size: 0.9375rem; line-height: 1.45; }
+.hra-panel p + p { margin-top: 0.4rem; }
+.hra-panel .hra-nadpis {
+  font-family: var(--display);
+  font-size: clamp(1.375rem, 3.5vw, 1.875rem);
+  line-height: 1.15;
+  color: #fff;
+}
+.hra-panel .tlacitko { margin-top: 1rem; border: 0; cursor: pointer; font-family: inherit; }
+.hra-panel .tlacitko:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* Bublina nad postavou — pozici počítá JS, tady jen vzhled. */
+.hra-bublina {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: #fff;
+  color: #0C1A06;
+  border: 2px solid #0C1A06;
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.hra-bublina::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border: solid #0C1A06;
+  border-width: 0 2px 2px 0;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.hra-hud {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  right: 0.5rem;
+  width: max-content;
+  max-width: calc(100% - 1rem);
+  background: rgba(243, 245, 236, 0.9);
+  color: #0C1A06;
+  border-radius: 3px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.hra-hud .mam { text-decoration: line-through; opacity: 0.55; }
+
+.hra-titulek {
+  position: absolute;
+  top: 12%;
+  left: 0;
+  right: 0;
+  padding-left: 1.25rem;
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  color: #fff;
+  text-shadow: 0 2px 0 #0C1A06, 0 0 12px rgba(12, 26, 6, 0.5);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s, transform 0.5s;
+  pointer-events: none;
+}
+.hra-titulek.videt { opacity: 1; transform: none; }
+.hra-hud:not([hidden]) ~ .hra-titulek { top: 18%; }
+.hra-titulek small {
+  display: block;
+  font-family: var(--text-font);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.15rem;
+}

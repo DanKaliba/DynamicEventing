@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Ája a Daník — svatba na Himmelreichu</title>
+<title>Ája a Daník — svatba v Himmelreichu</title>
 <meta name="description" content="Bereme se 19. června 2027 na chalupě Himmelreich v Ostrově u Tisé. Kdy dorazit, kde přespat a jak se tam dostat.">
 <meta name="robots" content="noindex">
-<meta property="og:title" content="Ája a Daník — svatba na Himmelreichu">
+<meta property="og:title" content="Ája a Daník — svatba v Himmelreichu">
 <meta property="og:description" content="19. června 2027, chalupa Himmelreich, Ostrov u Tisé.">
 <meta property="og:type" content="website">
 
@@ -43,6 +43,7 @@
       <li><a href="#potvrzeni"><span class="jazyk-cs">Potvrzení</span><span class="jazyk-en">RSVP</span></a></li>
       <li><a href="#program"><span class="jazyk-cs">Program</span><span class="jazyk-en">Schedule</span></a></li>
       <li><a href="#kontakt"><span class="jazyk-cs">Kontakt</span><span class="jazyk-en">Contact</span></a></li>
+      <li><a href="#hra"><span class="jazyk-cs">Jak jsme se potkali</span><span class="jazyk-en">How we met</span></a></li>
     </ul>
     <button class="prepinac prepinac-jazyk" type="button" data-jazyk-cil="en"
             aria-label="Switch to English">EN</button>
@@ -57,7 +58,7 @@
     <p class="hero-udaje">
       <span class="jazyk-cs">Bereme se v sobotu 19. června 2027.</span>
       <span class="jazyk-en">We're getting married on Saturday, June 19, 2027.</span>
-      <span class="misto">Chalupa Himmelreich, Ostrov u Tisé</span>
+      <span class="misto"><span class="jazyk-cs">Chalupa Himmelreich, Ostrov u Tisé</span><span class="jazyk-en">Himmelreich Cottage, Ostrov near Tisá</span></span>
     </p>
 
     <!-- Text se mění podle data (assets/main.js): víc než 14 dní,
@@ -545,11 +546,50 @@
     </div>
   </section>
 
+  <!-- ====================== HRA ======================
+       Plošinovka (assets/hra.js, sprity v assets/hra-sprity.js).
+       Jen na počítači — na dotykových zařízeních se místo ní ukáže věta. -->
+  <section class="sekce" id="hra">
+    <div class="sekce-mrizka">
+      <h2><span class="jazyk-cs">Cesta na vrchol</span><span class="jazyk-en">The way up</span></h2>
+      <div class="telo">
+        <p class="jazyk-cs">Malá hra o tom, jak jsme se potkali a co nás čekalo nahoře.</p>
+        <p class="jazyk-en">A little game about how we met and what was waiting for us at the top.</p>
+        <p class="hra-mobil tlumene">
+          <span class="jazyk-cs">Hraje se na klávesnici — zkuste ji na počítači.</span>
+          <span class="jazyk-en">It's played with a keyboard — try it on a computer.</span>
+        </p>
+        <div class="hra" id="hra-okno" tabindex="0" aria-label="Hra: Cesta na vrchol">
+          <canvas width="160" height="144"></canvas>
+          <div class="hra-hud" hidden></div>
+          <div class="hra-titulek" aria-live="polite"></div>
+          <div class="hra-bublina" hidden aria-live="polite"></div>
+          <div class="hra-panel" data-typ="uvod">
+            <div class="hra-panel-uvod">
+              <p class="hra-nadpis"><span class="jazyk-cs">Jak se Ája a Daník potkali</span><span class="jazyk-en">How Ája and Daník met</span></p>
+              <p><span class="jazyk-cs">← → chůze, mezerník skok. Dlouhý stisk = vyšší skok.</span><span class="jazyk-en">← → to walk, space to jump. Hold it to jump higher.</span></p>
+              <button class="tlacitko" type="button"><span class="jazyk-cs">Hrát</span><span class="jazyk-en">Play</span></button>
+            </div>
+            <div class="hra-panel-pauza">
+              <p class="hra-nadpis"><span class="jazyk-cs">Pauza</span><span class="jazyk-en">Paused</span></p>
+              <button class="tlacitko" type="button"><span class="jazyk-cs">Pokračovat</span><span class="jazyk-en">Continue</span></button>
+            </div>
+            <div class="hra-panel-konec">
+              <p class="hra-nadpis"><span class="jazyk-cs">Řekla ano.</span><span class="jazyk-en">She said yes.</span></p>
+              <p><span class="jazyk-cs">A 19. června 2027 se bereme. Uvidíme se v Himmelreichu.</span><span class="jazyk-en">And on June 19, 2027, we're getting married. See you at Himmelreich.</span></p>
+              <button class="tlacitko" type="button"><span class="jazyk-cs">Hrát znovu</span><span class="jazyk-en">Play again</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="paticka">
   <p class="jmena">Ája <span class="jazyk-cs">a</span><span class="jazyk-en">and</span> Daník</p>
-  <p><span class="jazyk-cs">19. června 2027</span><span class="jazyk-en">June 19, 2027</span> &nbsp;·&nbsp; Himmelreich, Ostrov u Tisé</p>
+  <p><span class="jazyk-cs">19. června 2027</span><span class="jazyk-en">June 19, 2027</span> &nbsp;·&nbsp; Himmelreich, <span class="jazyk-cs">Ostrov u Tisé</span><span class="jazyk-en">Ostrov near Tisá</span></p>
 </footer>
 
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Zvětšená fotka">
@@ -567,5 +607,7 @@
 <script src="assets/svetlusky.js" defer></script>
 <script src="assets/vlastovky.js" defer></script>
 <script src="assets/rsvp.js" defer></script>
+<script src="assets/hra-sprity.js" defer></script>
+<script src="assets/hra.js" defer></script>
 </body>
 </html>
