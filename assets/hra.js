@@ -11,16 +11,18 @@
    vodorovná jízda — žádná patra navíc. Po dojetí se hra vrátí na
    plošinu, kde začala.
 
-   Logické rozlišení je 160 × 144 px, na obrazovce se zvětšuje celým
-   násobkem, aby pixely zůstaly ostré. Texty (bubliny, titulky, panely)
-   jsou HTML nad plátnem — kvůli diakritice a přepínání jazyka.
+   Logické rozlišení je 160 × 144 px, na počítači se zvětšuje celým
+   násobkem, aby pixely zůstaly ostré; na mobilu na šířku displeje.
+   Texty (bubliny, titulky, panely) jsou HTML nad plátnem — kvůli
+   diakritice a přepínání jazyka.
 
    Plošiny jsou jednosměrné: zespodu se jimi proskočí, shora se na ně
    doskočí. Plošina s `duch` je průhledná, dokud se neodemkne (setkání,
    zub) — tím se hlídá pořadí milníků.
 
-   Na dotykových zařízeních se hra nespouští (index.html tam ukáže větu,
-   ať si ji zahrajou na počítači). Sprity jsou v assets/hra-sprity.js.
+   Na dotykových zařízeních je pod plátnem řada tlačítek (◀ ▶ ▲ A), která
+   posílají stejné klávesy jako klávesnice — žádná zvláštní logika pro
+   mobil. Sprity jsou v assets/hra-sprity.js.
    ========================================================================== */
 
 (function () {
@@ -28,7 +30,7 @@
 
   var okno = document.getElementById('hra-okno');
   if (!okno) return;
-  if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
+  var DOTYK = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   // Bez spritů nebo canvasu se hra nespustí — ať tam aspoň není prázdno.
   if (!window.HRA_SPRITY || !document.createElement('canvas').getContext) {
     var chyba = document.querySelector('.hra-chyba');
@@ -1533,10 +1535,12 @@
     bublinaEl.style.top = Math.max(bublinaEl.offsetHeight + 4, sy) + 'px';
   }
 
+  // Na počítači celý násobek (ostré pixely), na mobilu přes celou šířku
+  // (pod plátnem jsou ještě tlačítka, ~72 px).
   function zmerit() {
     var sirka = okno.parentElement.clientWidth;
-    var s = Math.floor(Math.min(sirka / W, (window.innerHeight - 60) / H));
-    skala = Math.max(1, Math.min(s, 5));
+    var s = Math.min(sirka / W, (window.innerHeight - 60 - (DOTYK ? 72 : 0)) / H);
+    skala = Math.max(1, Math.min(DOTYK ? s : Math.floor(s), 5));
     platno.style.width = W * skala + 'px';
     platno.style.height = H * skala + 'px';
   }
@@ -1627,6 +1631,36 @@
     // Krátký stisk = nižší skok.
     if (k === 'skok' && hrac && hrac.vy < 0) hrac.vy *= ZKRACENI;
   });
+  // Tlačítka na dotyk: stisk = keydown, puštění = keyup se stejným kódem.
+  // preventDefault na pointerdown nechá fokus na okně (jinak by hra šla
+  // do pauzy) a nedovolí rolovat ani zvětšovat; capture pustí tlačítko,
+  // i když prst při držení sjede mimo něj.
+  function posliKlavesu(typ, kod) {
+    okno.dispatchEvent(new KeyboardEvent(typ, { code: kod, bubbles: true, cancelable: true }));
+  }
+  Array.prototype.forEach.call(okno.querySelectorAll('.hra-ovladac button'), function (b) {
+    var drzi = false;
+    function pust() {
+      if (!drzi) return;
+      drzi = false;
+      b.classList.remove('drzi');
+      posliKlavesu('keyup', b.dataset.kod);
+    }
+    b.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      if (rezim === 'pauza') { hrat(); return; }      // ťuknutí v pauze pokračuje
+      try { b.setPointerCapture(e.pointerId); } catch (chyba) { /* bez capture to jde taky */ }
+      okno.focus({ preventScroll: true });
+      drzi = true;
+      b.classList.add('drzi');
+      posliKlavesu('keydown', b.dataset.kod);
+    });
+    b.addEventListener('pointerup', pust);
+    b.addEventListener('pointercancel', pust);
+    b.addEventListener('lostpointercapture', pust);
+    b.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  });
+
   okno.addEventListener('focusout', function (e) {
     if (!okno.contains(e.relatedTarget)) pauza();
   });

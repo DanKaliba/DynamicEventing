@@ -555,10 +555,6 @@
       <div class="telo">
         <p class="jazyk-cs">Malá hra o tom, jak jsme se potkali a co nás čekalo nahoře.</p>
         <p class="jazyk-en">A little game about how we met and what was waiting for us at the top.</p>
-        <p class="hra-mobil tlumene">
-          <span class="jazyk-cs">Hraje se na klávesnici — zkuste ji na počítači.</span>
-          <span class="jazyk-en">It's played with a keyboard — try it on a computer.</span>
-        </p>
         <p class="hra-chyba tlumene" hidden>
           <span class="jazyk-cs">Hru se nepodařilo načíst — zkuste stránku obnovit.</span>
           <span class="jazyk-en">The game failed to load — try reloading the page.</span>
@@ -568,10 +564,20 @@
           <div class="hra-hud" hidden></div>
           <div class="hra-titulek" aria-live="polite"></div>
           <div class="hra-bublina" hidden aria-live="polite"></div>
+          <!-- Ovládání na dotyk (ukáže se jen na mobilu). Tlačítka posílají
+               hře stejné klávesy jako klávesnice: A = mezerník, ▲ = šipka nahoru. -->
+          <div class="hra-ovladac" aria-hidden="true">
+            <button type="button" tabindex="-1" data-kod="ArrowLeft">◀</button>
+            <button type="button" tabindex="-1" data-kod="ArrowRight">▶</button>
+            <span class="hra-ovladac-mezera"></span>
+            <button type="button" tabindex="-1" data-kod="ArrowUp">▲</button>
+            <button type="button" tabindex="-1" data-kod="Space" class="hra-ovladac-a">A</button>
+          </div>
           <div class="hra-panel" data-typ="uvod">
             <div class="hra-panel-uvod">
               <p class="hra-nadpis"><span class="jazyk-cs">Jak se Ája a Daník potkali</span><span class="jazyk-en">How Ája and Daník met</span></p>
-              <p><span class="jazyk-cs">← → chůze, mezerník skok. Dlouhý stisk = vyšší skok.</span><span class="jazyk-en">← → to walk, space to jump. Hold it to jump higher.</span></p>
+              <p class="jen-klavesnice"><span class="jazyk-cs">← → chůze, mezerník skok. Dlouhý stisk = vyšší skok.</span><span class="jazyk-en">← → to walk, space to jump. Hold it to jump higher.</span></p>
+              <p class="jen-dotyk"><span class="jazyk-cs">◀ ▶ chůze, A skok i potvrzení. Podržení = vyšší skok.</span><span class="jazyk-en">◀ ▶ to walk, A to jump and confirm. Hold it to jump higher.</span></p>
               <button class="tlacitko" type="button"><span class="jazyk-cs">Hrát</span><span class="jazyk-en">Play</span></button>
             </div>
             <div class="hra-panel-pauza">

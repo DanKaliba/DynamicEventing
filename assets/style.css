@@ -1019,9 +1019,10 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 
 
 /* ================= Hra: Cesta na vrchol =================
-   assets/hra.js. Plátno 160 × 144 px, zvětšené celým násobkem
-   (velikost nastavuje JS). Okno se ukáže, až když hra naběhne —
-   na dotykových zařízeních zůstane schované a místo něj věta .hra-mobil. */
+   assets/hra.js. Plátno 160 × 144 px, na počítači zvětšené celým
+   násobkem, na mobilu na šířku displeje (velikost nastavuje JS). Okno se
+   ukáže, až když hra naběhne. Na dotykových zařízeních je pod plátnem
+   řada tlačítek .hra-ovladac (výška --hra-ovladac). */
 
 .hra {
   display: none;
@@ -1044,15 +1045,51 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   image-rendering: crisp-edges;
 }
 
-.hra-mobil { display: none; }
+/* Nápověda k ovládání: klávesnice, nebo dotyk */
+.jen-dotyk { display: none; }
+
+/* Tlačítka na dotyk: ◀ ▶ vlevo, ▲ A vpravo. Držení nesmí rolovat
+   stránkou, zvětšovat ani vyvolat menu. */
+.hra-ovladac { display: none; }
 @media (hover: none) and (pointer: coarse) {
-  .hra-mobil { display: block; }
+  .hra { --hra-ovladac: 4.5rem; }
+  .hra:focus-visible { box-shadow: 0 0 0 1px var(--linka-silna); }   /* rámeček fokusu je pro klávesnici */
+  .jen-klavesnice { display: none; }
+  .jen-dotyk { display: block; }
+  .hra-ovladac {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    height: var(--hra-ovladac);
+    padding: 0 0.6rem;
+    background: var(--les);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  .hra-ovladac button {
+    flex: 0 0 3.3rem;
+    height: 3.3rem;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(243, 245, 236, 0.16);
+    color: #F3F5EC;
+    font: 600 1.25rem/1 var(--text-font);
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hra-ovladac button.drzi { background: rgba(243, 245, 236, 0.38); }
+  .hra-ovladac .hra-ovladac-a { background: var(--mak); }
+  .hra-ovladac .hra-ovladac-a.drzi { background: var(--odkaz-aktivni); }
+  .hra-ovladac-mezera { flex: 1; }
 }
 
-/* Panel přes plátno: úvod, pauza, konec. Text vlevo dole, jako jinde na webu. */
+/* Panel přes plátno: úvod, pauza, konec. Text vlevo dole, jako jinde na webu.
+   Tlačítka na dotyk (pod plátnem) nepřekrývá. */
 .hra-panel {
   position: absolute;
-  inset: 0;
+  inset: 0 0 var(--hra-ovladac, 0px) 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
