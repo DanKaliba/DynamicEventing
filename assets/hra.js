@@ -49,10 +49,12 @@
   var SVET_V = ZEM + 20;
   var KROK = 1 / 120;
 
-  // Fyzika (px, s). Výška skoku ≈ SKOK² / (2·GRAV) ≈ 39 px, plošiny jsou 26 px od sebe.
-  var GRAV = 900, SKOK = 265, RYCHLOST = 68, MAX_PAD = 320;
+  // Fyzika (px, s). Výška skoku ≈ SKOK² / (2·GRAV): podržený ≈ 48 px,
+  // ťuknutí (× ZKRACENI) ≈ 31 px. Plošiny jsou 26 px od sebe, takže i
+  // ťuknutí vždycky stačí na patro, ale dvě patra (52 px) se nepřeskočí.
+  var GRAV = 900, SKOK = 294, RYCHLOST = 68, MAX_PAD = 320;
   var KOYOT = 0.08, BUFFER = 0.12;
-  var ZKRACENI = 0.45;   // krátký stisk: rychlost skoku se zkrátí na tolik
+  var ZKRACENI = 0.8;    // krátký stisk: rychlost skoku se zkrátí na tolik
   var ODSTUP = 14;   // jak daleko za Daníkem Ája drží
 
   // ---------- Texty ----------
