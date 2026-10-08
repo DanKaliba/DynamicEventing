@@ -123,7 +123,15 @@
     ano:       { cs: 'Ano!', en: 'Yes!' }
   };
   function dvoj(k) {
-    return '<span class="jazyk-cs">' + TEXTY[k].cs + '</span><span class="jazyk-en">' + TEXTY[k].en + '</span>';
+    return '<span class="jazyk-cs">' + proOvladani(TEXTY[k].cs) + '</span><span class="jazyk-en">' + proOvladani(TEXTY[k].en) + '</span>';
+  }
+  // Na mobilu se mluví o tlačítkách pod hrou, ne o klávesnici:
+  // mezerník → A, šipky ← → ↑ → ◀ ▶ ▲ (jak jsou na tlačítkách).
+  function proOvladani(t) {
+    if (!DOTYK) return t;
+    return t.replace(/mezerníkem/g, 'tlačítkem A').replace(/Mezerník/g, 'A')
+      .replace(/with space/g, 'with A').replace(/Space/g, 'A')
+      .replace(/←/g, '◀').replace(/→/g, '▶').replace(/↑/g, '▲');
   }
   // Čas minihry jako m:ss.
   function casMmSs(sekundy) {
