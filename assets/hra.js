@@ -1362,8 +1362,16 @@
     CHYTY.forEach(function (c, i) {
       ctx.fillStyle = '#7A5A30'; ctx.fillRect(c.x - 1, c.y - 1, 3, 2);
       if (c.nyt) {
-        ctx.fillStyle = '#8A9096'; ctx.fillRect(c.x + 5, c.y - 3, 1, 1);
-        if (i <= s.cvak) { ctx.fillStyle = '#5F666B'; ctx.fillRect(c.x + 5, c.y - 2, 1, 3); ctx.fillStyle = '#E33B4B'; ctx.fillRect(c.x + 5, c.y, 1, 1); }
+        // Plaketa 3 × 3 s tmavým otvorem, ať je na pískovci vidět i zdálky.
+        ctx.fillStyle = '#9DA3A8'; ctx.fillRect(c.x + 4, c.y - 4, 3, 3);
+        ctx.fillStyle = '#4A5055'; ctx.fillRect(c.x + 5, c.y - 3, 1, 1);
+        // Ten, který je právě potřeba zacvaknout, bliká.
+        if (i === s.i && i > s.cvak && s.faze === 'leze' && Math.floor(cas * 4) % 2) {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(c.x + 3, c.y - 5, 5, 1); ctx.fillRect(c.x + 3, c.y - 1, 5, 1);
+          ctx.fillRect(c.x + 3, c.y - 4, 1, 3); ctx.fillRect(c.x + 7, c.y - 4, 1, 3);
+        }
+        if (i <= s.cvak) { ctx.fillStyle = '#5F666B'; ctx.fillRect(c.x + 5, c.y - 1, 1, 3); ctx.fillStyle = '#E33B4B'; ctx.fillRect(c.x + 5, c.y + 1, 1, 1); }
       }
     });
     var vrch = CHYTY[CHYTY.length - 1];
@@ -1397,8 +1405,8 @@
       var lx = Math.round(s.jisX) + 4, ly = PATA_STENY - 9;
       CHYTY.forEach(function (c, i) {
         if (!c.nyt || i > s.cvak) return;
-        linka(lx, ly, c.x + 5, c.y);
-        lx = c.x + 5; ly = c.y;
+        linka(lx, ly, c.x + 5, c.y + 1);
+        lx = c.x + 5; ly = c.y + 1;
       });
       // Nahoře se lezec přicvakne do kotvy a spouští se přes ni.
       if (s.faze === 'nahore' || s.faze === 'spousti' || s.faze === 'konec' || s.faze === 'nabidka') {
