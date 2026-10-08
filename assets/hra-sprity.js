@@ -37,7 +37,11 @@ window.HRA_SPRITY = (function () {
     h: '#9A5B2A',   // čaj
     M: '#8FC3E0',   // led
     e: '#F3F5EC',
-    x: '#E33B4B'    // srdce
+    x: '#E33B4B',   // srdce
+    d: '#8A5A2E',   // dřevo postele
+    D: '#5E3A1A',
+    q: '#7FA5F0',   // peřina
+    Q: '#4F74C8'
   };
 
   // ---------- Ája ----------
@@ -193,6 +197,23 @@ window.HRA_SPRITY = (function () {
       'kkkkkkk',
       '..kkk.y',
       '..kkk.y'
+    ],
+    // Postel na plošině se zubem — prázdná, a s nemocnou Ájou pod peřinou
+    postel: [
+      'D...............',
+      'D...............',
+      'D...............',
+      'Dwwqqqqqqqqqqqq.',
+      'DDDDDDDDDDDDDDDD',
+      'D..............D'
+    ],
+    postelSAjou: [
+      'D.oo............',
+      'DoOOo...........',
+      'Doosso.qqqqqq...',
+      'Dwsksqqqqqqqqqq.',
+      'DDDDDDDDDDDDDDDD',
+      'D..............D'
     ],
     // Lezecký batoh (stojí na plošině s lezením)
     batoh: [

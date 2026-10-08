@@ -45,7 +45,8 @@
   var titulekEl = okno.querySelector('.hra-titulek');
 
   var W = 160, H = 144;
-  var SVET_V = 1100;
+  var ZEM = 664;                  // y louky dole
+  var SVET_V = ZEM + 20;
   var KROK = 1 / 120;
 
   // Fyzika (px, s). Výška skoku ≈ SKOK² / (2·GRAV) ≈ 39 px, plošiny jsou 26 px od sebe.
@@ -97,6 +98,12 @@
     spoustej:    { cs: 'Spouštěj!', en: 'Lower me!' },
     krasnaCesta: { cs: 'Krásná cesta!', en: 'Beautiful route!' },
     dolezeno:    { cs: 'Dolezeno', en: 'Topped out' },
+    zaKoho:      { cs: 'Za koho hraješ? ← Daník · Ája → · potvrď mezerníkem', en: 'Who do you play? ← Daník · Ája → · confirm with space' },
+    stopaVolba:  { cs: 'Ten druhý půjde po tvé stopě: kam skočíš ty, skočí i on. Hlídej jen sebe.', en: 'The other one follows your steps: wherever you jump, they jump too. Just watch yourself.' },
+    stopaDan:    { cs: 'Ája jde po tvé stopě: kam skočíš ty, skočí i ona. Hlídej jen sebe.', en: 'Ája follows your steps: wherever you jump, she jumps too. Just watch yourself.' },
+    stopaAja:    { cs: 'Daník jde po tvé stopě: kam skočíš ty, skočí i on. Hlídej jen sebe.', en: 'Daník follows your steps: wherever you jump, he jumps too. Just watch yourself.' },
+    tedDan:      { cs: 'Ája leží v posteli, teď hraješ za Daníka', en: 'Ája is in bed, now you play as Daník' },
+    zaseAja:     { cs: 'Ája je zdravá, zase hraješ za ni', en: 'Ája is better, you play as her again' },
     zubTitul:  { cs: 'Bolavý zub', en: 'The toothache' },
     au:        { cs: 'Au! Bolí mě zub…', en: 'Ouch! My tooth hurts…' },
     zubUkol:   { cs: 'Přines Áje prášek, čaj a led.', en: 'Bring Ája a pill, tea and ice.' },
@@ -124,58 +131,42 @@
   // y roste dolů, 0 = nebe nad vrcholem, SVET_V = pod zemí.
   // duch: plošina je jen obrys, dokud se daný milník nesplní.
   var PLOSINY = [
-    { x: 0, y: 1080, w: 160, zem: true },
-    { x: 100, y: 1052, w: 36, duch: 'setkani' },
-    { x: 56, y: 1026, w: 30 },
-    { x: 12, y: 1000, w: 34 },
-    { x: 58, y: 974, w: 28 },
-    { x: 104, y: 948, w: 40, id: 'chodime' },    // 24. 10. 2024
-    { x: 70, y: 922, w: 24 },
-    { x: 24, y: 896, w: 30 },
-    { x: 70, y: 870, w: 30 },
-    { x: 112, y: 844, w: 34, id: 'bydleni' },    // 15. 1. 2025
-    { x: 74, y: 818, w: 26 },
-    { x: 30, y: 792, w: 30 },
-    { x: 6, y: 766, w: 24 },
+    { x: 0, y: 664, w: 160, zem: true },
+    { x: 100, y: 636, w: 36, duch: 'setkani' },
+    { x: 56, y: 610, w: 30 },
+    { x: 104, y: 584, w: 40, id: 'chodime' },    // 24. 10. 2024
+    { x: 70, y: 558, w: 24 },
+    { x: 112, y: 532, w: 34, id: 'bydleni' },    // 15. 1. 2025
+    { x: 74, y: 506, w: 26 },
+    { x: 30, y: 480, w: 30 },
     // --- milník: bolavý zub ---
-    { x: 36, y: 740, w: 84, id: 'zub' },
-    { x: 128, y: 764, w: 28 },               // prášek
-    { x: 4, y: 712, w: 22 },                 // čaj
-    { x: 132, y: 716, w: 24 },               // led
-    { x: 70, y: 714, w: 24, duch: 'zub' },
-    { x: 36, y: 690, w: 26, duch: 'zub' },
-    { x: 80, y: 664, w: 28, duch: 'zub' },
+    { x: 36, y: 454, w: 84, id: 'zub' },
+    { x: 128, y: 478, w: 28 },               // prášek
+    { x: 4, y: 426, w: 22 },                 // čaj
+    { x: 132, y: 430, w: 24 },               // led
+    { x: 70, y: 428, w: 24, duch: 'zub' },
+    { x: 36, y: 404, w: 26, duch: 'zub' },
+    { x: 80, y: 378, w: 28, duch: 'zub' },
     // --- dál nahoru ---
-    { x: 112, y: 638, w: 30 },
-    { x: 66, y: 612, w: 26 },
-    { x: 22, y: 586, w: 30, id: 'zlin' },        // 20. 5. 2025
-    { x: 64, y: 560, w: 24 },
-    { x: 108, y: 534, w: 30 },
-    { x: 70, y: 508, w: 22 },
-    { x: 30, y: 482, w: 28, id: 'kolo' },        // minihra na kole
-    { x: 4, y: 456, w: 24 },
-    { x: 40, y: 430, w: 26 },
-    { x: 86, y: 404, w: 26 },
-    { x: 126, y: 378, w: 30 },
-    { x: 88, y: 352, w: 22 },
-    { x: 48, y: 326, w: 26 },
-    { x: 10, y: 300, w: 26 },
-    { x: 50, y: 274, w: 24 },
-    { x: 94, y: 248, w: 26 },
-    { x: 128, y: 222, w: 28, id: 'lezeni' },      // minihra: lezení na Sicílii
-    { x: 90, y: 196, w: 24 },
-    { x: 50, y: 170, w: 24 },
-    { x: 86, y: 144, w: 28 },
-    { x: 120, y: 118, w: 30 },
+    { x: 112, y: 352, w: 30 },
+    { x: 66, y: 326, w: 26 },
+    { x: 22, y: 300, w: 30, id: 'zlin' },        // 20. 5. 2025
+    { x: 64, y: 274, w: 24 },
+    { x: 30, y: 248, w: 28, id: 'kolo' },        // minihra na kole
+    { x: 72, y: 222, w: 24 },
+    { x: 110, y: 196, w: 26 },
+    { x: 128, y: 170, w: 28, id: 'lezeni' },     // minihra: lezení na Sicílii
+    { x: 90, y: 144, w: 24 },
+    { x: 56, y: 118, w: 24 },
     { x: 28, y: 92, w: 104, id: 'vrchol' }
   ];
   var plosina = {};
   PLOSINY.forEach(function (p) { if (p.id) plosina[p.id] = p; });
 
   var VECI_ZUB = [
-    { id: 'prasek', x: 138, y: 764 - 10 },
-    { id: 'caj', x: 10, y: 712 - 10 },
-    { id: 'led', x: 140, y: 716 - 10 }
+    { id: 'prasek', x: 138, y: 478 - 10 },
+    { id: 'caj', x: 10, y: 426 - 10 },
+    { id: 'led', x: 140, y: 430 - 10 }
   ];
   var SCHRANKA = { x: 108, y: 92 - 13, w: 9, h: 13 };
   var KRIZ_X = 44;
@@ -192,7 +183,13 @@
   var PORADI = ['chodime', 'bydleni', 'zub', 'zlin', 'kolo', 'lezeni', 'vrchol'];
 
   // ---------- Stav ----------
-  var dan, aja, stopa, odemceno, veci, castice, scena, kamY, cas;
+  // dan, aja = postavy (mluví, kreslí se svými sprity). hrac = ta z nich,
+  // kterou hráč ovládá; druhy = ta, která jde po hráčově stopě. Na začátku
+  // si hráč vybere; u zubu se při hře za Áju role na chvíli prohodí.
+  var dan, aja, hrac, druhy, stopa, odemceno, veci, castice, scena, kamY, cas;
+  var zvoleno = 'dan';          // za koho hráč hraje (vybral si na začátku)
+  var volba = null;             // výběr postavy na začátku: { vyber }, jinak null
+  var infoDo = 0;               // do kdy svítí nápověda o stopě (čas hry)
   var hotovo;                   // splněné checkpointy a minihra, podle id
   var jizda = null;             // běžící minihra na kole, jinak null
   var stena = null;             // běžící minihra na lezení, jinak null
@@ -209,8 +206,11 @@
   var schrankaOtevrena = false, prstenY = null, klek = false;
 
   function novaHra() {
-    dan = { x: 18, y: 1080 - 18, w: 6, h: 18, vx: 0, vy: 0, smer: 1, naZemi: null, koyot: 0, krok: 0 };
-    aja = { x: 128, y: 1080 - 15, w: 6, h: 15, smer: -1, stav: 'ceka', anim: 'stoji', krok: 0, naZemi: true };
+    dan = { x: 18, y: ZEM - 18, w: 6, h: 18, vx: 0, vy: 0, smer: 1, naZemi: true, koyot: 0, krok: 0, stav: 'ceka', anim: 'stoji' };
+    aja = { x: 128, y: ZEM - 15, w: 6, h: 15, vx: 0, vy: 0, smer: -1, naZemi: true, koyot: 0, krok: 0, stav: 'ceka', anim: 'stoji' };
+    zvolPostavu('dan');
+    volba = null;
+    infoDo = 0;
     stopa = [];
     odemceno = {};
     veci = VECI_ZUB.map(function (v) { return { id: v.id, x: v.x, y: v.y, mam: false }; });
@@ -236,6 +236,7 @@
   function preskocNaMilnik() {
     var m = /[?&]hra=(\w+)/.exec(location.search);
     var poradi = m ? PORADI.indexOf(m[1]) : -1;
+    if (/[?&]za=aja/.test(location.search)) zvolPostavu('aja');
     if (poradi < 0) return;
     odemkni('setkani');
     PORADI.slice(0, poradi).forEach(function (id) {
@@ -245,11 +246,40 @@
     if (poradi > PORADI.indexOf('zub')) { odemkni('zub'); zub = 'hotovo'; }
     var p = PLOSINY[PLOSINY.indexOf(plosina[m[1]]) - 1];
     PLOSINY.forEach(function (pl) { if (pevna(pl)) pl.objev = 1; });
-    dan.x = p.x + p.w / 2; dan.y = p.y - dan.h;
-    aja.x = p.x + 1; aja.y = p.y - aja.h; aja.stav = 'sleduje';
-    kamY = Math.max(0, Math.min(SVET_V - H, dan.y - H * 0.6));
+    hrac.x = p.x + p.w / 2; hrac.y = p.y - hrac.h;
+    druhy.x = p.x + 1; druhy.y = p.y - druhy.h; druhy.stav = 'sleduje';
+    kamY = Math.max(0, Math.min(SVET_V - H, hrac.y - H * 0.6));
   }
   var zub = 'ceka';   // ceka | bolest | hotovo
+
+  // Za koho se hraje: ta postava je hrac, ta druhá jde po jeho stopě.
+  function zvolPostavu(kdo) {
+    zvoleno = kdo;
+    hrac = kdo === 'aja' ? aja : dan;
+    druhy = kdo === 'aja' ? dan : aja;
+  }
+
+  // Výběr na začátku: oba stojí na louce každý na své straně.
+  function zacniVolbu() {
+    volba = { vyber: null };
+    hud(dvoj('zaKoho') + '<br>' + dvoj('stopaVolba'));
+  }
+  function potvrdVolbu() {
+    zvolPostavu(volba.vyber);
+    volba = null;
+    hud('');
+  }
+
+  // Prohodí, koho hráč ovládá (u zubu: Ája leží, hraje se za Daníka).
+  // Těla zůstávají, kde jsou; nový druhý začne chodit po stopě od sebe.
+  function prohodRole() {
+    var byvaly = hrac;
+    hrac = druhy;
+    druhy = byvaly;
+    hrac.vx = 0; hrac.vy = 0; hrac.koyot = 0;
+    druhy.stav = 'sleduje'; druhy.naZemi = true; druhy.anim = 'stoji';
+    stopa = [{ x: druhy.x, y: druhy.y, g: true }];
+  }
 
   function pevna(p) { return !p.duch || odemceno[p.duch]; }
   function odemkni(klic) { odemceno[klic] = true; }
@@ -269,7 +299,7 @@
   }
   function hudZub() {
     var mam = veci.filter(function (v) { return v.mam; }).length;
-    hud(dvoj('proAju') + ': ' + mam + '/3 &nbsp;' + veci.map(function (v) {
+    hud((zvoleno === 'aja' ? dvoj('tedDan') + '<br>' : '') + dvoj('proAju') + ': ' + mam + '/3 &nbsp;' + veci.map(function (v) {
       return '<span class="' + (v.mam ? 'mam' : 'nemam') + '">' + dvoj(v.id) + '</span>';
     }).join(' · '));
   }
@@ -318,9 +348,11 @@
       [1.1, function () { rekni(dan, 'ahojDan', 1.1); }],
       [1.4, function () { srdicka(aja.x + 3, aja.y, 3); srdicka(dan.x + 3, dan.y, 3); }],
       [2.3, function () {
-        aja.stav = 'sleduje';
+        druhy.stav = 'sleduje';
         odemkni('setkani');
         titulek('spolu');
+        hud(dvoj(zvoleno === 'aja' ? 'stopaAja' : 'stopaDan'));
+        infoDo = cas + 7;
       }]
     ]);
   }
@@ -363,8 +395,12 @@
 
   function zacatekZubu() {
     zub = 'bolest';
+    // Hrálo se za Áju: teď leží, hráč přebírá Daníka.
+    if (hrac === aja) prohodRole();
     aja.stav = 'bolest';
+    aja.x = POSTEL.x + 2; aja.y = plosina.zub.y - aja.h; aja.naZemi = true;
     stopa = [];
+    infoDo = 0;
     titulek('zubTitul', 'zubDat');
     spustScenu([
       [0.3, function () { rekni(aja, 'au', 2.2); }],
@@ -383,23 +419,29 @@
       [0, function () { rekni(aja, 'diky', 2); srdicka(aja.x + 3, aja.y, 4); }],
       [0.6, function () { odemkni('zub'); }],
       [1.6, function () {
+        // Ája vstane z postele. Hrálo se za ni → zase ji ovládá hráč.
         aja.stav = 'sleduje';
         aja.naZemi = true;
-        stopa = [{ x: aja.x, y: aja.y, g: true }];
+        if (zvoleno === 'aja') {
+          prohodRole();
+          hud(dvoj('zaseAja'));
+          infoDo = cas + 3;
+        }
+        stopa = [{ x: druhy.x, y: druhy.y, g: true }];
       }]
     ]);
   }
 
   function zadost() {
     titulek('vrcholTit');
-    dan.vx = 0;
-    // Ája se postaví k Daníkovi (mohla zůstat o kus níž).
-    var ax = dan.x - ODSTUP;
-    if (ax < plosina.vrchol.x + 2) ax = dan.x + ODSTUP;
-    aja.x = ax; aja.y = plosina.vrchol.y - aja.h;
-    aja.stav = 'scena'; aja.anim = 'stoji';
-    aja.smer = ax < dan.x ? 1 : -1;
-    dan.smer = ax < dan.x ? -1 : 1;
+    hrac.vx = 0;
+    // Druhý se postaví k hráči (mohl zůstat o kus níž).
+    var ox = hrac.x - ODSTUP;
+    if (ox < plosina.vrchol.x + 2) ox = hrac.x + ODSTUP;
+    druhy.x = ox; druhy.y = plosina.vrchol.y - druhy.h;
+    dan.stav = aja.stav = 'scena'; dan.anim = aja.anim = 'stoji';
+    aja.smer = aja.x < dan.x ? 1 : -1;
+    dan.smer = -aja.smer;
     spustScenu([
       [0.2, function () { rekni(dan, 'knizka', 1.6); }],
       [1.4, function () { schrankaOtevrena = true; jiskry(SCHRANKA.x + 4, SCHRANKA.y + 3, 10); prstenY = SCHRANKA.y; }],
@@ -419,13 +461,13 @@
   // Ája, kterou zrovna bolí zub, zůstává sedět, kde je — to je ta plošina.
   function zpetNaCheckpoint() {
     var p = kontrolniBod;
-    dan.x = Math.round(p.x + p.w / 2 - dan.w / 2); dan.y = p.y - dan.h;
-    dan.vx = dan.vy = 0; dan.naZemi = p;
-    jiskry(dan.x + 3, dan.y + 8, 10);
-    if (aja.stav === 'sleduje') {
-      aja.x = dan.x - ODSTUP >= p.x ? dan.x - ODSTUP : dan.x + ODSTUP;
-      aja.y = p.y - aja.h; aja.naZemi = true; aja.anim = 'stoji';
-      stopa = [{ x: aja.x, y: aja.y, g: true }];
+    hrac.x = Math.round(p.x + p.w / 2 - hrac.w / 2); hrac.y = p.y - hrac.h;
+    hrac.vx = hrac.vy = 0; hrac.naZemi = p;
+    jiskry(hrac.x + 3, hrac.y + 8, 10);
+    if (druhy.stav === 'sleduje') {
+      druhy.x = hrac.x - ODSTUP >= p.x ? hrac.x - ODSTUP : hrac.x + ODSTUP;
+      druhy.y = p.y - druhy.h; druhy.naZemi = true; druhy.anim = 'stoji';
+      stopa = [{ x: druhy.x, y: druhy.y, g: true }];
     }
   }
 
@@ -438,10 +480,10 @@
     hud('');
     schovejBublinu();
     bufferSkoku = 0;
-    aja.x = p.x; aja.y = p.y - aja.h; aja.smer = 1;
-    dan.x = p.x + 7; dan.y = p.y - dan.h; dan.vx = dan.vy = 0; dan.smer = -1;
-    aja.stav = 'sleduje'; aja.naZemi = true; aja.anim = 'stoji';
-    stopa = [{ x: aja.x, y: aja.y, g: true }];
+    druhy.x = p.x; druhy.y = p.y - druhy.h; druhy.smer = 1;
+    hrac.x = p.x + 7; hrac.y = p.y - hrac.h; hrac.vx = hrac.vy = 0; hrac.smer = -1;
+    druhy.stav = 'sleduje'; druhy.naZemi = true; druhy.anim = 'stoji';
+    stopa = [{ x: druhy.x, y: druhy.y, g: true }];
   }
 
   function plosinaPod(e) {
@@ -451,6 +493,9 @@
     }
     return null;
   }
+  // Postel na plošině se zubem; věci se Áje nosí k ní.
+  var POSTEL = { x: plosina.zub.x + 12, w: 16 };
+  var U_POSTELE = { x: POSTEL.x - 4, y: plosina.zub.y - 12, w: POSTEL.w + 8, h: 12 };
   // Ke schránce stačí dojít, nemusí se do ní trefit pixel po pixelu.
   var U_SCHRANKY = { x: SCHRANKA.x - 6, y: SCHRANKA.y, w: SCHRANKA.w + 12, h: SCHRANKA.h };
 
@@ -464,50 +509,51 @@
   }
 
   function aktualizujLezeni(dt) {
-    var ovladani = !scena && rezim === 'hra';
+    var ovladani = !scena && !volba && rezim === 'hra';
+    if (infoDo && cas > infoDo) { infoDo = 0; hud(''); }
 
     // Daník
     var smerX = ovladani ? (klavesy.vpravo ? 1 : 0) - (klavesy.vlevo ? 1 : 0) : 0;
-    dan.vx = priblizit(dan.vx, smerX * RYCHLOST, (dan.naZemi ? 900 : 600) * dt);
-    if (smerX) dan.smer = smerX;
+    hrac.vx = priblizit(hrac.vx, smerX * RYCHLOST, (hrac.naZemi ? 900 : 600) * dt);
+    if (smerX) hrac.smer = smerX;
 
     bufferSkoku -= dt;
-    dan.koyot = dan.naZemi ? KOYOT : dan.koyot - dt;
-    if (ovladani && bufferSkoku > 0 && dan.koyot > 0) {
+    hrac.koyot = hrac.naZemi ? KOYOT : hrac.koyot - dt;
+    if (ovladani && bufferSkoku > 0 && hrac.koyot > 0) {
       // Skok z bufferu: když už mezerník pustil, je to krátký stisk = nižší skok.
-      dan.vy = klavesy.skok ? -SKOK : -SKOK * ZKRACENI;
-      dan.koyot = 0; bufferSkoku = 0;
+      hrac.vy = klavesy.skok ? -SKOK : -SKOK * ZKRACENI;
+      hrac.koyot = 0; bufferSkoku = 0;
     }
 
-    dan.vy = Math.min(dan.vy + GRAV * dt, MAX_PAD);
-    dan.x = Math.max(0, Math.min(W - dan.w, dan.x + dan.vx * dt));
-    var predNohy = dan.y + dan.h;
-    dan.y += dan.vy * dt;
-    var nohy = dan.y + dan.h;
-    dan.naZemi = null;
-    if (dan.vy >= 0) {
+    hrac.vy = Math.min(hrac.vy + GRAV * dt, MAX_PAD);
+    hrac.x = Math.max(0, Math.min(W - hrac.w, hrac.x + hrac.vx * dt));
+    var predNohy = hrac.y + hrac.h;
+    hrac.y += hrac.vy * dt;
+    var nohy = hrac.y + hrac.h;
+    hrac.naZemi = null;
+    if (hrac.vy >= 0) {
       for (var i = 0; i < PLOSINY.length; i++) {
         var p = PLOSINY[i];
         if (!pevna(p)) continue;
-        if (predNohy <= p.y + 0.01 && nohy >= p.y && dan.x + dan.w > p.x && dan.x < p.x + p.w) {
-          dan.y = p.y - dan.h; dan.vy = 0; dan.naZemi = p;
+        if (predNohy <= p.y + 0.01 && nohy >= p.y && hrac.x + hrac.w > p.x && hrac.x < p.x + p.w) {
+          hrac.y = p.y - hrac.h; hrac.vy = 0; hrac.naZemi = p;
           break;
         }
       }
     }
-    dan.krok += Math.abs(dan.vx) * dt;
+    hrac.krok += Math.abs(hrac.vx) * dt;
 
     // Checkpointy: doskočil výš → nový; propadl se hluboko pod → zpátky.
-    var na = dan.naZemi;
+    var na = hrac.naZemi;
     if (na && KONTROLNI.indexOf(na.id) >= 0 && na.y < kontrolniBod.y) kontrolniBod = na;
-    if (!scena && dan.y + dan.h > kontrolniBod.y + PROPAD) zpetNaCheckpoint();
+    if (!scena && hrac.y + hrac.h > kontrolniBod.y + PROPAD) zpetNaCheckpoint();
 
     // Ája
-    if (aja.stav === 'ceka' && !scena && dan.naZemi && dan.naZemi.zem && Math.abs(dan.x - aja.x) < 16) setkani();
+    if (druhy.stav === 'ceka' && !scena && hrac.naZemi && hrac.naZemi.zem && Math.abs(hrac.x - druhy.x) < 16) setkani();
 
-    if (aja.stav === 'sleduje') {
+    if (druhy.stav === 'sleduje') {
       var posl = stopa[stopa.length - 1];
-      var bod = { x: dan.x, y: dan.y + dan.h - aja.h, g: !!dan.naZemi };
+      var bod = { x: hrac.x, y: hrac.y + hrac.h - druhy.h, g: !!hrac.naZemi };
       if (!posl || posl.x !== bod.x || posl.y !== bod.y) stopa.push(bod);
 
       // Na zemi nevkročí na bod blíž než ODSTUP od Daníka a k bodu, který je
@@ -517,52 +563,51 @@
       var pesky = RYCHLOST * 1.3 * KROK;
       for (var n = 0; n < kolik && stopa.length; n++) {
         var b = stopa[0];
-        if (aja.naZemi && b.g) {
-          var bx = dan.x - b.x, by = (dan.y + dan.h) - (b.y + aja.h);
+        if (druhy.naZemi && b.g) {
+          var bx = hrac.x - b.x, by = (hrac.y + hrac.h) - (b.y + druhy.h);
           if (stopa.length <= 50 && bx * bx + by * by < ODSTUP * ODSTUP) break;
-          if (Math.abs(b.y - aja.y) < 0.5 && Math.abs(b.x - aja.x) > pesky) {
-            aja.smer = b.x > aja.x ? 1 : -1;
-            aja.x += aja.smer * pesky;
+          if (Math.abs(b.y - druhy.y) < 0.5 && Math.abs(b.x - druhy.x) > pesky) {
+            druhy.smer = b.x > druhy.x ? 1 : -1;
+            druhy.x += druhy.smer * pesky;
             posun += pesky;
             continue;
           }
         }
         stopa.shift();
-        if (b.x !== aja.x) aja.smer = b.x > aja.x ? 1 : -1;
-        posun += Math.abs(b.x - aja.x);
-        aja.x = b.x; aja.y = b.y;
-        aja.naZemi = b.g;
+        if (b.x !== druhy.x) druhy.smer = b.x > druhy.x ? 1 : -1;
+        posun += Math.abs(b.x - druhy.x);
+        druhy.x = b.x; druhy.y = b.y;
+        druhy.naZemi = b.g;
       }
       // Doskočila Daníkovi přímo pod nohy (skákal kolmo nahoru) — poodstoupí.
-      var vedle = aja.x - dan.x;
-      if (!posun && aja.naZemi && dan.naZemi && Math.abs(vedle) < ODSTUP - 2 &&
-          Math.abs(aja.y + aja.h - dan.y - dan.h) < 0.5) {
-        var pod = plosinaPod(aja);
-        var kam = vedle ? (vedle > 0 ? 1 : -1) : -dan.smer;
+      var vedle = druhy.x - hrac.x;
+      if (!posun && druhy.naZemi && hrac.naZemi && Math.abs(vedle) < ODSTUP - 2 &&
+          Math.abs(druhy.y + druhy.h - hrac.y - hrac.h) < 0.5) {
+        var pod = plosinaPod(druhy);
+        var kam = vedle ? (vedle > 0 ? 1 : -1) : -hrac.smer;
         for (var pokus = 0; pokus < 2; pokus++, kam = -kam) {
-          var nx = aja.x + kam * pesky;
-          if (pod && nx >= pod.x && nx + aja.w <= pod.x + pod.w && (vedle === 0 || pokus === 0)) {
-            aja.x = nx; aja.smer = kam; posun = pesky;
+          var nx = druhy.x + kam * pesky;
+          if (pod && nx >= pod.x && nx + druhy.w <= pod.x + pod.w && (vedle === 0 || pokus === 0)) {
+            druhy.x = nx; druhy.smer = kam; posun = pesky;
             break;
           }
         }
       }
-      aja.krok += posun;
-      aja.anim = !aja.naZemi ? 'skok' : posun > 0 ? 'krok' : 'stoji';
-      if (aja.anim === 'stoji') aja.smer = dan.x > aja.x ? 1 : -1;
+      druhy.krok += posun;
+      druhy.anim = !druhy.naZemi ? 'skok' : posun > 0 ? 'krok' : 'stoji';
+      if (druhy.anim === 'stoji') druhy.smer = hrac.x > druhy.x ? 1 : -1;
 
-      // Došla na plošinu se zubem.
+      // Ája (jako ta, co jde po stopě) došla na plošinu se zubem.
       var z = plosina.zub;
-      if (zub === 'ceka' && !scena && aja.naZemi && Math.abs(aja.y + aja.h - z.y) < 0.5 && aja.x + aja.w > z.x && aja.x < z.x + z.w) {
-        aja.anim = 'bolest';
+      if (zub === 'ceka' && !scena && druhy === aja && aja.naZemi && Math.abs(aja.y + aja.h - z.y) < 0.5 && aja.x + aja.w > z.x && aja.x < z.x + z.w) {
         zacatekZubu();
       }
 
       // Došla na plošinu s checkpointem — nebo je už nad ním (návrat
       // z minihry nebo na checkpoint ji přenese výš), pak se dohraje teď.
       // Vždycky jen jeden, další až po jeho scéně.
-      if (!scena && aja.naZemi) {
-        var nohyAji = aja.y + aja.h;
+      if (!scena && druhy.naZemi) {
+        var nohyAji = druhy.y + druhy.h;
         CHECKPOINTY.some(function (cp) {
           if (hotovo[cp.id] || nohyAji > plosina[cp.id].y + 0.5) return false;
           hotovo[cp.id] = true;
@@ -573,35 +618,34 @@
       }
     }
 
-    // Kolo: Daník doskočí na plošinu s cedulkou a Ája je s ním.
-    if (!scena && !hotovo.kolo && rezim === 'hra' && aja.stav === 'sleduje' && dan.naZemi === plosina.kolo) zacniJizdu();
-    if (!scena && !hotovo.lezeni && rezim === 'hra' && aja.stav === 'sleduje' && dan.naZemi === plosina.lezeni) zacniStenu();
-    if (aja.stav === 'bolest') {
-      aja.anim = 'bolest';
-      aja.smer = dan.x > aja.x ? 1 : -1;
-    }
+    // Hráč hraje za Áju a sám doskočil na plošinu se zubem.
+    if (zub === 'ceka' && !scena && hrac === aja && hrac.naZemi === plosina.zub) zacatekZubu();
+
+    // Kolo: hráč doskočí na plošinu se silničkou a druhý je s ním.
+    if (!scena && !hotovo.kolo && rezim === 'hra' && druhy.stav === 'sleduje' && hrac.naZemi === plosina.kolo) zacniJizdu();
+    if (!scena && !hotovo.lezeni && rezim === 'hra' && druhy.stav === 'sleduje' && hrac.naZemi === plosina.lezeni) zacniStenu();
 
     // Věci pro Áju
     if (zub === 'bolest') {
       veci.forEach(function (v) {
-        if (!v.mam && prekryv(dan, { x: v.x, y: v.y, w: 7, h: 7 })) {
+        if (!v.mam && prekryv(hrac, { x: v.x, y: v.y, w: 7, h: 7 })) {
           v.mam = true;
           jiskry(v.x + 3, v.y + 3, 8);
           hudZub();
         }
       });
-      if (!scena && prekryv(dan, aja)) predejVeci();
+      if (!scena && prekryv(hrac, U_POSTELE)) predejVeci();
     }
 
     // Vrchol
-    if (!scena && rezim === 'hra' && aja.stav === 'sleduje' && dan.naZemi === plosina.vrchol && prekryv(dan, U_SCHRANKY)) zadost();
+    if (!scena && rezim === 'hra' && druhy.stav === 'sleduje' && hrac.naZemi === plosina.vrchol && prekryv(hrac, U_SCHRANKY)) zadost();
     if (prstenY !== null && !klek) prstenY = Math.max(SCHRANKA.y - 10, prstenY - 12 * dt);
 
     // Plošiny, které se právě odemkly, se zviditelní.
     PLOSINY.forEach(function (p) { if (pevna(p) && p.objev < 1) p.objev = Math.min(1, p.objev + dt * 2); });
 
     // Kamera jen svisle, plynule za Daníkem.
-    var cil = Math.max(0, Math.min(SVET_V - H, dan.y + dan.h / 2 - H * 0.6));
+    var cil = Math.max(0, Math.min(SVET_V - H, hrac.y + hrac.h / 2 - H * 0.6));
     kamY += (cil - kamY) * Math.min(1, dt * 6);
   }
 
@@ -683,7 +727,7 @@
     // Skalní stěna pod vrcholem
     ctx.fillStyle = 'rgba(110,104,94,0.35)';
     ctx.beginPath();
-    ctx.moveTo(28, 92); ctx.lineTo(132, 92); ctx.lineTo(W, 330); ctx.lineTo(0, 330);
+    ctx.moveTo(28, 92); ctx.lineTo(132, 92); ctx.lineTo(W, 230); ctx.lineTo(0, 230);
     ctx.fill();
 
     kresliZem();
@@ -716,9 +760,28 @@
       });
     }
 
-    postava(SPR.aja, aja, aja.anim === 'krok' ? (Math.floor(aja.krok / 5) % 2 ? 'krok1' : 'krok2') : aja.anim);
-    var danAnim = klek ? 'klek' : !dan.naZemi ? 'skok' : Math.abs(dan.vx) > 5 ? (Math.floor(dan.krok / 6) % 2 ? 'krok1' : 'krok2') : 'stoji';
-    postava(SPR.dan, dan, danAnim);
+    // Postel u zubu (s Ájou, dokud ji bolí zub)
+    var zp = plosina.zub, ps = aja.stav === 'bolest' ? SPR.veci.postelSAjou : SPR.veci.postel;
+    sprite(ps, POSTEL.x, zp.y - ps.h, 1);
+
+    // Nejdřív ten, kdo jde po stopě, navrch hráč.
+    [druhy, hrac].forEach(function (e) {
+      if (e === aja && aja.stav === 'bolest') return;       // leží v posteli
+      postava(e === aja ? SPR.aja : SPR.dan, e, animTela(e));
+    });
+
+    // Výběr postavy: nad Daníkem ←, nad Ájou →; vybraný podtržený.
+    if (volba) {
+      var blik = Math.floor(cas * 3) % 2;
+      ctx.fillStyle = '#FFFFFF';
+      if (volba.vyber === 'dan' || (!volba.vyber && blik)) sipka(dan.x + 3, dan.y - 6, -1);
+      if (volba.vyber === 'aja' || (!volba.vyber && blik)) sipka(aja.x + 3, aja.y - 6, 1);
+      if (volba.vyber) {
+        var vy = volba.vyber === 'aja' ? aja : dan;
+        ctx.fillStyle = '#F9D976';
+        ctx.fillRect(vy.x - 2, ZEM + 3, 10, 1);
+      }
+    }
 
     // Prsten: vyletí ze schránky, pak ho Daník drží v natažené ruce.
     if (prstenY !== null) {
@@ -822,14 +885,23 @@
     ctx.drawImage(smer < 0 ? s.l : s.p, Math.round(x), Math.round(y));
   }
 
+  // Animace: hráč podle pohybu, druhý podle stopy, ve scéně podle scénky.
+  function animTela(e) {
+    if (e === dan && klek) return 'klek';
+    if (e !== hrac || e.stav === 'scena') {
+      return e.anim === 'krok' ? (Math.floor(e.krok / 5) % 2 ? 'krok1' : 'krok2') : e.anim;
+    }
+    return !e.naZemi ? 'skok' : Math.abs(e.vx) > 5 ? (Math.floor(e.krok / 6) % 2 ? 'krok1' : 'krok2') : 'stoji';
+  }
+
   function postava(sada, e, anim) {
     var s = sada[anim] || sada.stoji;
     sprite(s, e.x + e.w / 2 - s.w / 2, e.y + e.h - s.h, e.smer);
   }
 
   function barvyPatra(y) {
-    if (y >= 760) return ['#99B949', '#6E9431', '#7A5A2E'];
-    if (y >= 300) return ['#6E9A3A', '#496E16', '#5A3E1F'];
+    if (y >= 474) return ['#99B949', '#6E9431', '#7A5A2E'];
+    if (y >= 210) return ['#6E9A3A', '#496E16', '#5A3E1F'];
     return ['#DAD7CE', '#A9A59A', '#7D796F'];
   }
 
@@ -862,7 +934,7 @@
   }
 
   function kresliZem() {
-    var y = 1080;
+    var y = ZEM;
     ctx.fillStyle = '#7A5A2E'; ctx.fillRect(0, y, W, SVET_V - y);
     ctx.fillStyle = '#99B949'; ctx.fillRect(0, y, W, 2);
     ctx.fillStyle = '#6E9431'; ctx.fillRect(0, y + 2, W, 1);
@@ -1494,7 +1566,11 @@
   }
 
   function hrat() {
-    if (rezim === 'uvod' || rezim === 'konec') novaHra();
+    if (rezim === 'uvod' || rezim === 'konec') {
+      novaHra();
+      // Výběr postavy; při ladění s ?hra=… nebo ?za=… se přeskakuje.
+      if (!/[?&](hra|za)=/.test(location.search) || /[?&]volba/.test(location.search)) zacniVolbu();
+    }
     rezim = 'hra';
     panel.hidden = true;
     okno.focus({ preventScroll: true });
@@ -1529,6 +1605,13 @@
     var k = KLAVESY[e.code];
     if (!k) return;
     e.preventDefault();
+    if (volba) {
+      // ← Daník, → Ája, mezerník potvrdí.
+      if (!e.repeat && k === 'vlevo') volba.vyber = 'dan';
+      if (!e.repeat && k === 'vpravo') volba.vyber = 'aja';
+      if (!e.repeat && e.code === 'Space' && volba.vyber) potvrdVolbu();
+      return;
+    }
     if (k === 'skok' && !e.repeat) bufferSkoku = BUFFER;
     if (jizda && jizda.faze === 'nabidka' && !e.repeat) poJizde(e.code);
     else if (jizda && k !== 'skok' && !e.repeat) slapni(k);
@@ -1540,7 +1623,7 @@
     if (!k) return;
     klavesy[k] = false;
     // Krátký stisk = nižší skok.
-    if (k === 'skok' && dan && dan.vy < 0) dan.vy *= ZKRACENI;
+    if (k === 'skok' && hrac && hrac.vy < 0) hrac.vy *= ZKRACENI;
   });
   okno.addEventListener('focusout', function (e) {
     if (!okno.contains(e.relatedTarget)) pauza();
@@ -1563,7 +1646,7 @@
       // Krokování bez requestAnimationFrame (pro testy v headless prohlížeči).
       for (var i = 0; i < (simulujSekund || 0) / KROK; i++) aktualizuj(KROK);
       if (simulujSekund) vykresli();
-      return { dan: dan, aja: aja, zub: zub, rezim: rezim, stopa: stopa.length, scena: !!scena,
+      return { dan: dan, aja: aja, hrac: hrac === aja ? 'aja' : 'dan', volba: volba, zub: zub, rezim: rezim, stopa: stopa.length, scena: !!scena,
                hotovo: hotovo, jizda: jizda, stena: stena, cesta: CHYTY };
     };
   }
