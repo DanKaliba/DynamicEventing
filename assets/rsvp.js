@@ -11,7 +11,7 @@
 
    Čemu se nedá vyhnout: prohlížeč kvůli pravidlům pro cizí domény
    neprozradí, co Google odpověděl. Událost load na iframu znamená jen
-   „něco se vrátilo", ne „uloženo". Pro jistotu je pod formulářem e-mail.
+   „něco se vrátilo", ne „uloženo". Pro jistotu je pod formulářem věta, ať nám napíšou.
    ========================================================================== */
 
 (function () {
@@ -31,17 +31,17 @@
      hláška vždycky odpovídá tomu, co je zrovna přepnuté na stránce. */
   var TEXTY = {
     cs: {
-      nenapojeny: 'Formulář ještě není napojený — napište nám prosím e-mailem.',
+      nenapojeny: 'Formulář ještě není napojený — napište nám prosím.',
       odesilam: 'Odesílám…',
       odeslat: 'Odeslat',
       selhalo: 'Odeslání se nepovedlo. Zkuste to prosím znovu, nebo nám ' +
-        'napište e-mailem.'
+        'napište.'
     },
     en: {
-      nenapojeny: 'The form isn’t connected yet — please email us instead.',
+      nenapojeny: 'The form isn’t connected yet — please message us instead.',
       odesilam: 'Sending…',
       odeslat: 'Send',
-      selhalo: 'Sending failed. Please try again, or email us instead.'
+      selhalo: 'Sending failed. Please try again, or message us instead.'
     }
   };
 

@@ -16,6 +16,8 @@
    ========================================================================== */
 
 window.GALERIE = [
+  { src: 'assets/img/aja-danik-01.jpg', popis: 'Ája a Daník v bílém na gauči, nos na nos', sirka: 1634, vyska: 2000 },
+  { src: 'assets/img/aja-danik-02.jpg', popis: 'Ája a Daník se sklenkami v kuchyni, smějí se', sirka: 1333, vyska: 2000 },
   // { src: 'assets/img/obrad-01.jpg', popis: 'Obřad na louce', sirka: 2000, vyska: 1333 },
   // { src: 'assets/img/ohen.jpg',     popis: 'Oheň za chalupou', sirka: 2000, vyska: 2500 },
 ];

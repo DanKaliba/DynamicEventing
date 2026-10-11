@@ -880,22 +880,6 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   color: var(--text-tlumeny);
 }
 
-/* Kontakty */
-
-.kontakty {
-  display: grid;
-  gap: 1.5rem;
-}
-@media (min-width: 42rem) {
-  .kontakty { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-.kontakty .jmeno {
-  font-family: var(--display);
-  font-size: 1.25rem;
-  margin-bottom: 0.2rem;
-}
-.kontakty a { display: block; font-size: 0.9375rem; }
-
 /* Patička */
 
 .paticka {
