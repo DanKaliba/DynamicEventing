@@ -9,6 +9,11 @@
 
    Den = bez data-noc na <html> (nastavuje assets/obloha.js). V noci
    létají světlušky (assets/svetlusky.js). Pod prefers-reduced-motion nic.
+
+   Klik (ťuknutí) blízko vlaštovky ji vyplaší: obrátí směr letu, zrychlí,
+   vystoupá a uletí. Ostatní z hejnka poblíž s ní.
+   Plátno má pointer-events: none (nesmí překážet textu), proto se klik
+   poslouchá na celém hero a ptáci se hledají podle souřadnic.
    ========================================================================== */
 
 (function () {
@@ -126,6 +131,10 @@
     for (var i = ptaci.length - 1; i >= 0; i--) {
       var p = ptaci[i];
       p.t += dt;
+      if (p.utek) {
+        if (!uletet(p, dt)) ptaci.splice(i, 1);
+        continue;
+      }
       var t = p.t - p.zpozdeni;
       if (t < 0) continue;
       if (t > p.doba) { ptaci.splice(i, 1); continue; }
@@ -137,6 +146,7 @@
       var kridla = cyklus < 0.7 ? 0.55 + 0.45 * Math.cos(t * p.mavani * 6.28) : 1;
       if (b.y - a.y > 3) kridla = Math.min(kridla, 0.6);
       nakreslit(a.x, a.y, uhel, p.rozpeti, kridla, p.pruhlednost);
+      p.x = a.x; p.y = a.y; p.vx = (b.x - a.x) / 0.02; p.vy = (b.y - a.y) / 0.02;   // pro vyplašení
     }
 
     if (!ptaci.length) {
@@ -146,6 +156,52 @@
     }
     requestAnimationFrame(snimek);
   }
+
+  /* ---------- Vyplašení ----------
+     Vyplašená vlaštovka opustí naplánovanou dráhu a letí volně: otočí
+     se proti původnímu směru, stoupá a zrychluje, mává rychleji. Vrací
+     false, když už je mimo obrazovku. */
+  function vyplasit(p) {
+    var rychlost = Math.max(300, Math.hypot(p.vx, p.vy)) * nahoda(1.25, 1.5);
+    var smer = p.vx >= 0 ? -1 : 1;                 // obrátit vodorovný směr
+    var uhel = nahoda(0.35, 0.8);                    // a stoupat
+    p.utek = {
+      x: p.x, y: p.y,
+      vx: smer * Math.cos(uhel) * rychlost,
+      vy: -Math.sin(uhel) * rychlost,
+      t: 0
+    };
+  }
+
+  function uletet(p, dt) {
+    var u = p.utek;
+    u.t += dt;
+    u.vx *= 1 + 0.6 * dt;                            // nabírá rychlost
+    u.vy -= 40 * dt;                                 // a výšku
+    u.x += u.vx * dt;
+    u.y += u.vy * dt;
+    var kridla = 0.5 + 0.5 * Math.cos(u.t * p.mavani * 1.7 * 6.28);
+    nakreslit(u.x, u.y, Math.atan2(u.vy, u.vx), p.rozpeti, kridla, p.pruhlednost);
+    return u.x > -80 && u.x < sirka + 80 && u.y > -80;
+  }
+
+  // Klik/ťuknutí: vyplaší vlaštovku, na kterou mířil, a ty z hejna poblíž.
+  hero.addEventListener('pointerdown', function (e) {
+    if (!bezi || !ptaci.length) return;
+    var r = hero.getBoundingClientRect();
+    var x = e.clientX - r.left, y = e.clientY - r.top;
+    var zasah = null;
+    ptaci.forEach(function (p) {
+      if (p.utek || p.x == null) return;
+      var dosah = Math.max(40, p.rozpeti * 1.3);  // je malá a rychlá — ať se trefí i prstem
+      if (Math.hypot(p.x - x, p.y - y) < dosah) zasah = p;
+    });
+    if (!zasah) return;
+    ptaci.forEach(function (p) {
+      if (p.utek || p.x == null) return;
+      if (p === zasah || Math.hypot(p.x - zasah.x, p.y - zasah.y) < 160) vyplasit(p);
+    });
+  });
 
   function vyletet() {
     casovac = null;
