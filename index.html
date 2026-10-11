@@ -38,13 +38,13 @@
     <ul class="nav-odkazy">
       <li><a href="#proc"><span class="jazyk-cs">Domů</span><span class="jazyk-en">Home</span></a></li>
       <li><a href="#kde"><span class="jazyk-cs">Kde a kdy</span><span class="jazyk-en">When &amp; where</span></a></li>
+      <li><a href="#hra"><span class="jazyk-cs">Jak jsme se potkali</span><span class="jazyk-en">How we met</span></a></li>
       <li><a href="#ubytovani"><span class="jazyk-cs">Ubytování</span><span class="jazyk-en">Where to stay</span></a></li>
       <!-- Fotky a Program zatím schované (i sekce níž) — až budou, smazat hidden. -->
       <li hidden><a href="#galerie"><span class="jazyk-cs">Fotky</span><span class="jazyk-en">Photos</span></a></li>
       <li><a href="#potvrzeni"><span class="jazyk-cs">Potvrzení</span><span class="jazyk-en">RSVP</span></a></li>
       <li hidden><a href="#program"><span class="jazyk-cs">Program</span><span class="jazyk-en">Schedule</span></a></li>
       <li><a href="#kontakt"><span class="jazyk-cs">Kontakt</span><span class="jazyk-en">Contact</span></a></li>
-      <li><a href="#hra"><span class="jazyk-cs">Jak jsme se potkali</span><span class="jazyk-en">How we met</span></a></li>
     </ul>
     <button class="prepinac prepinac-jazyk" type="button" data-jazyk-cil="en"
             aria-label="Switch to English">EN</button>
@@ -153,6 +153,56 @@
         <p class="jazyk-en">If you're flying, ideally fly into Prague, already
           on Thursday or Friday. We'll either drive you to the venue or lend
           you a car.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== HRA ======================
+       Plošinovka (assets/hra.js, sprity v assets/hra-sprity.js).
+       Na mobilu se ovládá tlačítky pod plátnem (.hra-ovladac). -->
+  <section class="sekce" id="hra">
+    <div class="sekce-mrizka">
+      <h2><span class="jazyk-cs">Cesta na vrchol</span><span class="jazyk-en">The way up</span></h2>
+      <div class="telo">
+        <p class="jazyk-cs">Malá hra o tom, jak jsme se potkali a co nás čekalo nahoře.</p>
+        <p class="jazyk-en">A little game about how we met and what was waiting for us at the top.</p>
+        <p class="hra-chyba tlumene" hidden>
+          <span class="jazyk-cs">Hru se nepodařilo načíst — zkuste stránku obnovit.</span>
+          <span class="jazyk-en">The game failed to load — try reloading the page.</span>
+        </p>
+        <div class="hra" id="hra-okno" tabindex="0" aria-label="Hra: Cesta na vrchol">
+          <canvas width="160" height="144"></canvas>
+          <div class="hra-hud" hidden></div>
+          <div class="hra-titulek" aria-live="polite"></div>
+          <div class="hra-bublina" hidden aria-live="polite"></div>
+          <!-- Ovládání na dotyk (ukáže se jen na mobilu). Tlačítka posílají
+               hře stejné klávesy jako klávesnice: A = mezerník, ▲ = šipka nahoru. -->
+          <div class="hra-ovladac" aria-hidden="true">
+            <!-- Levý palec ◀ ▲, pravý palec A ▶ -->
+            <button type="button" tabindex="-1" data-kod="ArrowLeft">◀</button>
+            <button type="button" tabindex="-1" data-kod="ArrowUp">▲</button>
+            <span class="hra-ovladac-mezera"></span>
+            <button type="button" tabindex="-1" data-kod="Space" class="hra-ovladac-a">A</button>
+            <button type="button" tabindex="-1" data-kod="ArrowRight">▶</button>
+          </div>
+          <div class="hra-panel" data-typ="uvod">
+            <div class="hra-panel-uvod">
+              <p class="hra-nadpis"><span class="jazyk-cs">Jak se Ája a Daník potkali</span><span class="jazyk-en">How Ája and Daník met</span></p>
+              <p class="jen-klavesnice"><span class="jazyk-cs">← → chůze, mezerník skok. Dlouhý stisk = vyšší skok.</span><span class="jazyk-en">← → to walk, space to jump. Hold it to jump higher.</span></p>
+              <p class="jen-dotyk"><span class="jazyk-cs">◀ ▶ chůze, A skok i potvrzení. Podržení = vyšší skok.</span><span class="jazyk-en">◀ ▶ to walk, A to jump and confirm. Hold it to jump higher.</span></p>
+              <button class="tlacitko" type="button"><span class="jazyk-cs">Hrát</span><span class="jazyk-en">Play</span></button>
+            </div>
+            <div class="hra-panel-pauza">
+              <p class="hra-nadpis"><span class="jazyk-cs">Pauza</span><span class="jazyk-en">Paused</span></p>
+              <button class="tlacitko" type="button"><span class="jazyk-cs">Pokračovat</span><span class="jazyk-en">Continue</span></button>
+            </div>
+            <div class="hra-panel-konec">
+              <p class="hra-nadpis"><span class="jazyk-cs">Řekla ano.</span><span class="jazyk-en">She said yes.</span></p>
+              <p><span class="jazyk-cs">A 15. května 2027 se bereme. Uvidíme se u Větrné Víly.</span><span class="jazyk-en">And on May 15, 2027, we're getting married. See you at Větrná Víla.</span></p>
+              <button class="tlacitko" type="button"><span class="jazyk-cs">Hrát znovu</span><span class="jazyk-en">Play again</span></button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -456,56 +506,6 @@
             <a href="tel:[TELEFON]">[TELEFON]</a>
             <p class="tlumene jazyk-cs" style="font-size:.875rem">Svědek, na místě celý den</p>
             <p class="tlumene jazyk-en" style="font-size:.875rem">Witness, on site all day</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====================== HRA ======================
-       Plošinovka (assets/hra.js, sprity v assets/hra-sprity.js).
-       Na mobilu se ovládá tlačítky pod plátnem (.hra-ovladac). -->
-  <section class="sekce" id="hra">
-    <div class="sekce-mrizka">
-      <h2><span class="jazyk-cs">Cesta na vrchol</span><span class="jazyk-en">The way up</span></h2>
-      <div class="telo">
-        <p class="jazyk-cs">Malá hra o tom, jak jsme se potkali a co nás čekalo nahoře.</p>
-        <p class="jazyk-en">A little game about how we met and what was waiting for us at the top.</p>
-        <p class="hra-chyba tlumene" hidden>
-          <span class="jazyk-cs">Hru se nepodařilo načíst — zkuste stránku obnovit.</span>
-          <span class="jazyk-en">The game failed to load — try reloading the page.</span>
-        </p>
-        <div class="hra" id="hra-okno" tabindex="0" aria-label="Hra: Cesta na vrchol">
-          <canvas width="160" height="144"></canvas>
-          <div class="hra-hud" hidden></div>
-          <div class="hra-titulek" aria-live="polite"></div>
-          <div class="hra-bublina" hidden aria-live="polite"></div>
-          <!-- Ovládání na dotyk (ukáže se jen na mobilu). Tlačítka posílají
-               hře stejné klávesy jako klávesnice: A = mezerník, ▲ = šipka nahoru. -->
-          <div class="hra-ovladac" aria-hidden="true">
-            <!-- Levý palec ◀ ▲, pravý palec A ▶ -->
-            <button type="button" tabindex="-1" data-kod="ArrowLeft">◀</button>
-            <button type="button" tabindex="-1" data-kod="ArrowUp">▲</button>
-            <span class="hra-ovladac-mezera"></span>
-            <button type="button" tabindex="-1" data-kod="Space" class="hra-ovladac-a">A</button>
-            <button type="button" tabindex="-1" data-kod="ArrowRight">▶</button>
-          </div>
-          <div class="hra-panel" data-typ="uvod">
-            <div class="hra-panel-uvod">
-              <p class="hra-nadpis"><span class="jazyk-cs">Jak se Ája a Daník potkali</span><span class="jazyk-en">How Ája and Daník met</span></p>
-              <p class="jen-klavesnice"><span class="jazyk-cs">← → chůze, mezerník skok. Dlouhý stisk = vyšší skok.</span><span class="jazyk-en">← → to walk, space to jump. Hold it to jump higher.</span></p>
-              <p class="jen-dotyk"><span class="jazyk-cs">◀ ▶ chůze, A skok i potvrzení. Podržení = vyšší skok.</span><span class="jazyk-en">◀ ▶ to walk, A to jump and confirm. Hold it to jump higher.</span></p>
-              <button class="tlacitko" type="button"><span class="jazyk-cs">Hrát</span><span class="jazyk-en">Play</span></button>
-            </div>
-            <div class="hra-panel-pauza">
-              <p class="hra-nadpis"><span class="jazyk-cs">Pauza</span><span class="jazyk-en">Paused</span></p>
-              <button class="tlacitko" type="button"><span class="jazyk-cs">Pokračovat</span><span class="jazyk-en">Continue</span></button>
-            </div>
-            <div class="hra-panel-konec">
-              <p class="hra-nadpis"><span class="jazyk-cs">Řekla ano.</span><span class="jazyk-en">She said yes.</span></p>
-              <p><span class="jazyk-cs">A 15. května 2027 se bereme. Uvidíme se u Větrné Víly.</span><span class="jazyk-en">And on May 15, 2027, we're getting married. See you at Větrná Víla.</span></p>
-              <button class="tlacitko" type="button"><span class="jazyk-cs">Hrát znovu</span><span class="jazyk-en">Play again</span></button>
-            </div>
           </div>
         </div>
       </div>
