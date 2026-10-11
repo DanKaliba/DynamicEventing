@@ -83,6 +83,11 @@
     });
     jenPriUcasti.forEach(function (pole) {
       pole.hidden = !prijedou;
+      // Schované pole by se jinak odeslalo taky (třeba výchozí „V penzionu“
+      // u omluvy) — vypnuté pole formulář neposílá.
+      Array.prototype.forEach.call(pole.querySelectorAll('input, textarea, select'), function (vstup) {
+        vstup.disabled = !prijedou;
+      });
     });
   }
 

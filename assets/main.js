@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Svatba v Himmelreichu — chování stránky
+   Svatba u Větrné Víly — chování stránky
 
    Vanilla JS, žádné závislosti. Bez něj stránka funguje dál, jen bez
    odpočtu, lightboxu a přepínače motivu — proto je odpočet v HTML
@@ -82,7 +82,7 @@
      odpočet jen hluk. Počítá se v kalendářních dnech, ať je ve svatební
      den "dnes" od rána, ne až od obřadu.
 
-     Na zkoušku: ?dnes=2027-06-10 nasimuluje jiné datum. */
+     Na zkoušku: ?dnes=2027-05-06 nasimuluje jiné datum. */
   if (odpocet) {
     var cil = new Date(odpocet.getAttribute('data-datum'));
     var zkouska = /[?&]dnes=(\d{4})-(\d{2})-(\d{2})(?:&|$)/.exec(location.search);
@@ -188,7 +188,7 @@
   /* ---------- Galerie a lightbox ---------- */
 
   var fotky = window.GALERIE || [];
-  var mrizka = document.getElementById('galerie');
+  var mrizka = document.getElementById('galerie-mrizka');
   var prazdno = document.getElementById('galerie-prazdno');
 
   if (!mrizka || !fotky.length) return;

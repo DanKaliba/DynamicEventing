@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Svatba v Himmelreichu — styly
+   Svatba u Větrné Víly — styly
 
    Paleta je navzorkovaná z fotky květnaté louky, kterou vybral klient:
    medián sytých pixelů v každém pásmu odstínu. Nic není odhadnuté od oka.
@@ -450,8 +450,8 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   animation: none;
 }
 
-/* Hvězdy svatební noci (tools/hvezdy.py) — skutečné polohy 19. 6. 2027
-   ve 23:30 nad Himmelreichem. Spodní hrana obrázku je obzor, louka ho
+/* Hvězdy svatební noci (tools/hvezdy.py) — skutečné polohy 15. 5. 2027
+   ve 23:30 nad Žibřidicemi. Spodní hrana obrázku je obzor, louka ho
    překryje; ořezávají se boky, ne obzor. Viditelné jen s data-noc
    z assets/obloha.js; bez JS zůstanou skryté s denní oblohou. */
 .hvezdy {
@@ -659,110 +659,6 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   margin: 0;
   color: var(--text-tlumeny);
   font-size: 0.9375rem;
-}
-
-/* Praktické informace — pojem a vysvětlení, žádné karty. */
-
-.prakticke {
-  /* margin-top narovnává specificitu: .telo > * + * dává 1.1em, ale
-     tahle třída má stejnou specificitu a je definovaná později v souboru
-     — bez vlastního pravidla by mezera nad mřížkou spadla na 0. Stejná
-     hodnota jako u .mapa-ramecek, ať obě navazují stejným rytmem. */
-  margin: 1.75rem 0 0;
-  display: grid;
-  gap: 1.5rem;
-}
-@media (min-width: 42rem) {
-  .prakticke { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 2.5rem; }
-}
-.prakticke > div > p {
-  margin: 0;
-  color: var(--text-tlumeny);
-  font-size: 0.9375rem;
-}
-
-/* Ubytování — seřazeno podle luxusu, proto <ol>, ne <ul>: pořadí je
-   skutečná informace (i bez viditelných čísel z něj odečítač obrazovky
-   pozná "1 ze 3" atd.). Barevná tečka před názvem každé úrovně je stejná
-   barva jako její bod na mapce hned pod seznamem — spojuje text s mapou,
-   aniž by bylo nutné cokoli popisovat navíc. */
-
-.ubytovani-zebricek {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.uroven {
-  padding: 1.25rem 0;
-  border-top: 1px solid var(--linka);
-}
-.uroven:first-child { border-top: 0; padding-top: 0; }
-
-.uroven h3 {
-  display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
-  font-size: 1.0625rem;
-}
-.uroven h3::before {
-  content: "";
-  flex: none;
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  transform: translateY(-0.05rem);
-}
-.uroven--hotel h3::before { background: var(--chrpa); }
-.uroven--kemp h3::before { background: var(--kemp); }
-.uroven--bivak h3::before {
-  background: var(--pozadi);
-  border: 1.5px solid var(--text-tlumeny);
-}
-
-.uroven p {
-  margin: 0.5rem 0 0;
-  max-width: 34rem;
-}
-.uroven p + p { margin-top: 0.6rem; }
-
-.kemp-varianty {
-  margin: 0.6rem 0 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.4rem;
-  max-width: 34rem;
-}
-.kemp-varianty li {
-  font-size: 0.9375rem;
-  color: var(--text-tlumeny);
-  padding-left: 1rem;
-  position: relative;
-}
-.kemp-varianty li::before {
-  content: "–";
-  position: absolute;
-  left: 0;
-}
-.kemp-varianty strong { color: var(--text); }
-
-/* Mapka — rámeček jako u fotky ve field guide, ne karta se stínem. */
-.mapa-ramecek {
-  margin-top: 1.75rem;
-  max-width: 34rem;
-  border: 1px solid var(--linka-silna);
-  border-radius: 2px;
-}
-.mapka {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.mapa-popisek {
-  margin: 0.6rem 0 0;
-  font-size: 0.875rem;
-  color: var(--text-tlumeny);
-  max-width: 34rem;
 }
 
 /* Galerie */
@@ -1048,29 +944,32 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
 /* Nápověda k ovládání: klávesnice, nebo dotyk */
 .jen-dotyk { display: none; }
 
-/* Tlačítka na dotyk: ◀ ▶ vlevo, ▲ A vpravo. Držení nesmí rolovat
-   stránkou, zvětšovat ani vyvolat menu. */
+/* Tlačítka na dotyk: levý palec ◀ ▲, pravý palec A ▶ (pořadí v HTML).
+   Držení nesmí rolovat stránkou, zvětšovat ani vyvolat menu. */
 .hra-ovladac { display: none; }
 @media (hover: none) and (pointer: coarse) {
-  .hra { --hra-ovladac: 4.5rem; }
+  .hra { --hra-ovladac: 5rem; }
   .hra:focus-visible { box-shadow: 0 0 0 1px var(--linka-silna); }   /* rámeček fokusu je pro klávesnici */
   .jen-klavesnice { display: none; }
   .jen-dotyk { display: block; }
   .hra-ovladac {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
     height: var(--hra-ovladac);
-    padding: 0 0.6rem;
+    padding: 0 0.5rem;
     background: var(--les);
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
   }
+  /* Na úzkém telefonu (320 px) se tlačítka zmenší, ať se vejdou všechna
+     čtyři — aspect-ratio drží kolečko, i když se zúží. */
   .hra-ovladac button {
-    flex: 0 0 3.3rem;
-    height: 3.3rem;
+    flex: 0 1 3.75rem;
+    min-width: 2.75rem;
+    aspect-ratio: 1;
     border: 0;
     border-radius: 50%;
     background: rgba(243, 245, 236, 0.16);

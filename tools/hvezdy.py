@@ -1,6 +1,6 @@
-"""Hvězdná obloha nad Himmelreichem ve svatební noc → assets/hvezdy.svg.
+"""Hvězdná obloha nad Žibřidicemi (Větrná Víla) ve svatební noc → assets/hvezdy.svg.
 
-Skutečné polohy hvězd 19. 6. 2027 ve 23:30 (SELČ) nad Himmelreichem,
+Skutečné polohy hvězd 15. 5. 2027 ve 23:30 (SELČ) nad Žibřidicemi,
 pohled k jihovýchodu až jihozápadu. Na webu se ukazuje každou noc stejná
 — je to obloha té noci, ne obloha dneška.
 
@@ -21,8 +21,8 @@ import sys
 import urllib.request
 from datetime import datetime, timedelta, timezone
 
-LAT, LON = 50.8019203, 14.0456936          # Himmelreich, viz tools/mapa.py
-CAS = datetime(2027, 6, 19, 23, 30, tzinfo=timezone(timedelta(hours=2)))
+LAT, LON = 50.7397, 14.8644                # Žibřidice (Větrná Víla)
+CAS = datetime(2027, 5, 15, 23, 30, tzinfo=timezone(timedelta(hours=2)))
 
 AZ_OD, AZ_DO = 50, 270    # stupně azimutu: od VSV přes jih po západ
 VYSKA_MAX = 75            # stupně nad obzorem nahoře v obrázku

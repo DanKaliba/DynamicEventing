@@ -1543,11 +1543,14 @@
     bublinaEl.style.top = Math.max(bublinaEl.offsetHeight + 4, sy) + 'px';
   }
 
-  // Na počítači celý násobek (ostré pixely), na mobilu přes celou šířku
-  // (pod plátnem jsou ještě tlačítka, ~72 px).
+  // Na počítači celý násobek (ostré pixely), na mobilu přes celou šířku.
+  // Pod plátnem může být lišta s tlačítky — její výšku bere z CSS
+  // (--hra-ovladac), ať se nemusí hlídat na dvou místech.
+  var ovladacEl = okno.querySelector('.hra-ovladac');
   function zmerit() {
     var sirka = okno.parentElement.clientWidth;
-    var s = Math.min(sirka / W, (window.innerHeight - 60 - (DOTYK ? 72 : 0)) / H);
+    var lista = ovladacEl ? ovladacEl.offsetHeight : 0;
+    var s = Math.min(sirka / W, (window.innerHeight - 60 - lista) / H);
     skala = Math.max(1, Math.min(DOTYK ? s : Math.floor(s), 5));
     platno.style.width = W * skala + 'px';
     platno.style.height = H * skala + 'px';

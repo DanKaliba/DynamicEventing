@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Měsíc nad loukou — skutečná fáze a poloha pro Himmelreich
+   Měsíc nad loukou — skutečná fáze a poloha pro Žibřidice
 
    Poloha i fáze se počítají pro aktuální okamžik (nebo pro ?cas= / ?dnes=
    / posuvník v panelu oblohy — hodinu bere z data-hodina, které nastavuje
@@ -19,7 +19,7 @@
   var hero = document.querySelector('.hero');
   if (!hero || !document.createElementNS) return;
 
-  var LAT = 50.8019203, LON = 14.0456936;   // Himmelreich, viz tools/mapa.py
+  var LAT = 50.7397, LON = 14.8644;          // Žibřidice (Větrná Víla)
   var AZ_VLEVO = 40, AZ_VPRAVO = 320;        // azimut na levém a pravém okraji
   var VYSKA_NAHORE = 70;                     // stupně výšky u horního okraje
 

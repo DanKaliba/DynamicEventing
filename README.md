@@ -1,4 +1,4 @@
-# Svatba v Himmelreichu
+# Svatba u Větrné Víly
 
 Statická jednostránka. Žádný build, žádný framework, žádný externí request —
 otevřeš `index.html` v prohlížeči a funguje.
@@ -17,7 +17,7 @@ assets/vzor.svg     obrysy rostlin na pozadí sekcí, jako maska
 tools/extrakce.py   rozseká plát z PDF na jednotlivé rostliny
 tools/louka.py      poskládá z nich louku
 tools/vzor.py       poskládá z nich opakovatelnou dlaždici na pozadí
-tools/mapa.py       mapka ubytování z reálných GPS souřadnic (vložená přímo v index.html)
+tools/mapa.py       mapka ubytování pro starý Himmelreich (teď na stránce není)
 tools/paleta.py     vzorkovač barev z fotky
 tools/kontrola.py   zbylé zástupné texty a nefunkční odkazy (python tools/kontrola.py)
 ```
@@ -43,7 +43,7 @@ Odpočet se řídí atributem `data-datum` u `<p class="odpocet">`, formát
 `RRRR-MM-DDTHH:MM`. Ukazuje dny, ne vteřiny, a text se mění podle data:
 „Zbývá N dní.“, posledních 14 dní „Už jen N dní.“ (1 den, 2–4 dny),
 ve svatební den „Je to dnes!“ a potom „Díky, že jste přijeli.“
-Vyzkoušet jiné datum: `?dnes=2027-06-10` v adrese.
+Vyzkoušet jiné datum: `?dnes=2027-05-06` v adrese.
 
 ## 2. Přidat fotky
 
@@ -79,10 +79,10 @@ V Google Formulářích vytvoř formulář se **šesti otázkami v tomhle pořad
 | # | otázka | typ | povinná |
 |---|---|---|---|
 | 1 | Kdo se hlásí | krátká odpověď | ano |
-| 2 | Přijedete? | výběr z možností: `Přijedeme`, `Bohužel nedorazíme` | ano |
-| 3 | Kolik vás bude | krátká odpověď | ne |
+| 2 | Přijedete? | výběr z možností: `Ano`, `Ne` | ano |
+| 3 | Kolik vás bude | lineární škála 1–10 (nebo krátká odpověď) | ne |
 | 4 | Co nejíte | krátká odpověď | ne |
-| 5 | Spaní na chalupě | výběr: `Ano`, `Ne` | ne |
+| 5 | Kde budete spát | výběr: `V penzionu`, `Ve stanu nebo v autě`, `Nebudeme přespávat` | ne |
 | 6 | Vzkaz | odstavec | ne |
 
 U otázek 2 a 5 musí být možnosti napsané **přesně takhle**, jinak Google
@@ -308,7 +308,12 @@ Google Fonts (a tedy ani žádné sledování hostů).
 
 ### Mapka ubytování
 
-V sekci Ubytování je malá mapka okolí — poloha Himmelreichu a pár možností,
+> **Od října 2026 na stránce není** — svatba se přesunula z Himmelreichu
+> k Větrné Víle v Žibřidicích, kde se spí v jednom penzionu. Nástroj zůstává
+> pro případ, že by mapka byla potřeba znovu (pro nové místo by chtěl nové
+> souřadnice v `BODY`).
+
+V sekci Ubytování byla malá mapka okolí — poloha Himmelreichu a pár možností,
 kde spát, když se na chalupu nevejdete. Není to vložený Google/Mapy.cz iframe
 (to by táhlo externí požadavky a sledování, čemuž se zbytek webu vyhýbá), ale
 vlastní SVG generované z reálných GPS souřadnic.
