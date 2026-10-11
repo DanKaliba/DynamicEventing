@@ -137,6 +137,15 @@
     zmerit();
 
     var kurzor = { x: null, rychlost: 0 };
+    // Překážka, kterou louce posílá kočka z vlastovky.js (clientX, nebo null).
+    var kocka = { x: null };
+    var DOSAH_KOCKY = 70;
+    window.LOUKA = {
+      prekazka: function (clientX) {
+        kocka.x = clientX === null ? null : clientX - svg.getBoundingClientRect().left;
+        probudit();
+      }
+    };
     // Závan má vlastní dosah a může putovat — proto posun. Bez něj by
     // scroll rozhýbal jen okolí jednoho bodu místo celé louky.
     var poryv = { x: 0, sila: 0, smer: 1, dosah: DOSAH_TUKNUTI, posun: 0, utlum: 0.93 };
@@ -168,6 +177,15 @@
             var smer = s.x < kurzor.x ? -1 : 1;
             cil += smer * MAX_UHEL * podil * podil *
                    (0.45 + Math.min(kurzor.rychlost / 900, 0.55)) * s.sila;
+          }
+        }
+
+        // Kočka z vlastovky.js — rostliny se rozhrnou, kudy jde.
+        if (kocka.x !== null) {
+          var dk = Math.abs(s.x - kocka.x);
+          if (dk < DOSAH_KOCKY) {
+            var podilK = 1 - dk / DOSAH_KOCKY;
+            cil += (s.x < kocka.x ? -1 : 1) * MAX_UHEL * 0.7 * podilK * podilK * s.sila;
           }
         }
 
