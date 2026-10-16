@@ -14,6 +14,12 @@
      scroll   — zhoupnutí podle rychlosti; na mobilu jediné, co uživatel
                 udělá vždycky
 
+   Po stažení se louka pokaždé nově rozsází (zamichat): stejný počet
+   rostlin ve stejných vrstvách, ale jiná místa, výšky a druhy. Stejně
+   jako tools/louka.py, jen s náhodou místo pevného semínka. Dokud
+   výměna neproběhne, je obrázek schovaný (třída louka-ceka na <html>
+   z hlavičky index.html) — jinak by louka přeskočila na jiné rozložení.
+
    Trvalé kývání na pozadí tu schválně není. Louka je v hero, byla by
    pořád na obrazovce a 96 nepřetržitě animovaných prvků zbytečně žere
    baterku. Pohyb je vždycky odpověď na akci.
@@ -59,11 +65,24 @@
     k103: -64.3, k104: -68.6, k106: -71.1, k109: -61.5
   };
 
+  // Druhy a jejich váhy jako DRUHY/VAHY v tools/louka.py — trávy jsou
+  // výplň, padají častěji. Výšky vrstev taky odtud.
+  var KVETY = [7, 29, 40, 55, 96, 102, 13, 14, 44, 83, 104, 21, 72, 76, 91, 103, 109,
+               42, 88, 90, 68, 99, 106];
+  var TRAVY = [32, 58, 71, 84, 92, 101];
+  var VAHY = [];
+  KVETY.forEach(function (n) { VAHY.push(n, n, n); });
+  TRAVY.forEach(function (n) { for (var i = 0; i < 7; i++) VAHY.push(n); });
+  var VRSTVY = { 'vrstva-zadni': [105, 190], 'vrstva-predni': [175, 290] };
+
+  var koren = document.documentElement;
+  function ukazat() { koren.classList.remove('louka-ceka'); }
+
   var obrazek = document.querySelector('img.louka');
-  if (!obrazek || !window.fetch || !window.requestAnimationFrame) return;
+  if (!obrazek || !window.fetch || !window.requestAnimationFrame) return ukazat();
 
   // Kdo má v systému vypnuté animace, dostane rovnou statický obrázek.
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return ukazat();
 
   fetch(obrazek.getAttribute('src'))
     .then(function (odpoved) {
@@ -73,22 +92,51 @@
     .then(function (text) {
       var doc = new DOMParser().parseFromString(text, 'image/svg+xml');
       var svg = doc.documentElement;
-      if (!svg || svg.nodeName !== 'svg' || svg.querySelector('parsererror')) return;
+      if (!svg || svg.nodeName !== 'svg' || svg.querySelector('parsererror')) return ukazat();
+      zamichat(svg);
 
       // Louka je dekorace; odečítače obrazovky ji mají přeskočit.
-      svg.setAttribute('class', 'louka louka-ziva');
+      // Obrázek byl schovaný, takže nástup ještě nikdo neviděl — přehraje se tady.
+      svg.setAttribute('class', 'louka louka-ziva' +
+        (koren.classList.contains('louka-ceka') ? ' louka-nastup' : ''));
       svg.setAttribute('aria-hidden', 'true');
       svg.setAttribute('focusable', 'false');
       svg.removeAttribute('role');
       svg.removeAttribute('aria-label');
 
       obrazek.parentNode.replaceChild(document.adoptNode(svg), obrazek);
+      ukazat();
       rozhybat(svg);
     })
     .catch(function () {
       // Obrázek zůstane. Nejčastější případ: otevřeno přes file://,
       // kde prohlížeč fetch na sousední soubor nepovolí.
+      ukazat();
     });
+
+  // Každá rostlina je <g transform="translate(x,300)"><g class="kytka">
+  // <use href="#k…" transform="scale(…)">. Přepíše se poloha, druh,
+  // výška a zrcadlení; rozestupy rovnoměrné s rozptylem, ať nejsou shluky.
+  function zamichat(svg) {
+    var vb = (svg.getAttribute('viewBox') || '0 0 3000 300').split(/[\s,]+/);
+    var W = +vb[2], H = +vb[3];
+    Object.keys(VRSTVY).forEach(function (trida) {
+      var vrstva = svg.querySelector('.' + trida);
+      if (!vrstva) return;
+      var kusy = vrstva.children, n = kusy.length, rozsah = VRSTVY[trida];
+      for (var i = 0; i < n; i++) {
+        var use = kusy[i].querySelector('use');
+        if (!use) continue;
+        var x = Math.max(-40, Math.min(W + 40, (i + Math.random() - 0.5) * W / n));
+        var m = (rozsah[0] + Math.random() * (rozsah[1] - rozsah[0])) / 100;
+        var druh = VAHY[Math.floor(Math.random() * VAHY.length)];
+        var zrcadlo = Math.random() < 0.5 ? -1 : 1;
+        kusy[i].setAttribute('transform', 'translate(' + x.toFixed(0) + ',' + H + ')');
+        use.setAttribute('href', '#k' + ('00' + druh).slice(-3));
+        use.setAttribute('transform', 'scale(' + (m * zrcadlo).toFixed(3) + ',' + m.toFixed(3) + ')');
+      }
+    });
+  }
 
   function rozhybat(svg) {
     var kytky = Array.prototype.slice.call(svg.querySelectorAll('.kytka'));

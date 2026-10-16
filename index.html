@@ -25,6 +25,13 @@
       document.documentElement.lang = j;
     }
   } catch (e) {}
+  // Louku vymění assets/vitr.js za živou, pokaždé jinak rozsázenou; do té
+  // doby je obrázek schovaný. Kdyby skript nedoběhl, za 4 s se ukáže.
+  if (window.fetch && location.protocol !== 'file:' &&
+      !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    document.documentElement.classList.add('louka-ceka');
+    setTimeout(function () { document.documentElement.classList.remove('louka-ceka'); }, 4000);
+  }
 </script>
 <!-- Obloha v heru podle denní doby — taky před vykreslením. -->
 <script src="assets/obloha.js"></script>
@@ -219,13 +226,13 @@
         <p class="jazyk-cs">V <a href="https://www.uvetrnevily.cz/ubytovani" target="_blank" rel="noopener">penzionu</a> je celkem 40 míst. Pokoje vám přiřadíme
           podle našeho nejlepšího vědomí a&nbsp;svědomí. Pokud budete chtít spát
           ve stanu nebo autě, dejte nám vědět pomocí
-          <a href="#potvrzeni">formuláře</a>. Ubytování stojí 600&nbsp;Kč za osobu
-          a&nbsp;noc.</p>
+          <a href="#potvrzeni">formuláře</a>. Ubytování v&nbsp;penzionu stojí 600&nbsp;Kč za osobu
+          a&nbsp;noc, spaní ve stanu nebo autě 200&nbsp;Kč za osobu a&nbsp;noc.</p>
         <p class="jazyk-en">The <a href="https://www.uvetrnevily.cz/ubytovani" target="_blank" rel="noopener">guesthouse</a> has 40 beds in total. We'll assign
           rooms to the best of our knowledge and conscience. If you'd rather
           sleep in a&nbsp;tent or your car, let us know in the
-          <a href="#potvrzeni">form</a>. Accommodation costs 600&nbsp;CZK per
-          person per night.</p>
+          <a href="#potvrzeni">form</a>. A&nbsp;bed in the guesthouse costs 600&nbsp;CZK per
+          person per night, a&nbsp;tent or car spot 200&nbsp;CZK per person per night.</p>
       </div>
     </div>
   </section>

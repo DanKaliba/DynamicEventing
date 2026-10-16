@@ -450,6 +450,13 @@ a:hover { color: var(--odkaz-aktivni); text-decoration-thickness: 2px; }
   animation: none;
 }
 
+/* Živá louka je pokaždé jinak rozsázená, takže výchozí obrázek se do
+   výměny neukazuje (jinak by louka přeskočila) a nástup přehraje až ona. */
+.louka-ceka img.louka { visibility: hidden; }
+.louka-ziva.louka-nastup {
+  animation: louka-nastup 1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
 /* Hvězdy svatební noci (tools/hvezdy.py) — skutečné polohy 15. 5. 2027
    ve 23:30 nad Žibřidicemi. Spodní hrana obrázku je obzor, louka ho
    překryje; ořezávají se boky, ne obzor. Viditelné jen s data-noc

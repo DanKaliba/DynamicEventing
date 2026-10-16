@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Vlaštovky přes denní oblohu
+   Vlaštovky přes denní oblohu, netopýři v noci
 
    Občas přes hero přeletí hejnko 1–3 vlaštovek: pár rychlých mávnutí,
    klouzání, sem tam střemhlav dolů k louce (lovení hmyzu nad trávou je
@@ -8,11 +8,14 @@
    žral baterku.
 
    Den = bez data-noc na <html> (nastavuje assets/obloha.js). V noci
-   létají světlušky (assets/svetlusky.js). Pod prefers-reduced-motion nic.
+   místo vlaštovek přiletí 1–3 netopýři, chvíli kličkují nad loukou a loví
+   světlušky (assets/svetlusky.js, window.SVETLUSKY) — sežraná světluška
+   zhasne a za pár vteřin se objeví jinde. Netopýři jsou skoro černí, na
+   noční obloze je schválně skoro nevidět. Pod prefers-reduced-motion nic.
 
    Klik (ťuknutí) na vlaštovku ji omráčí: spadne mezi kytky, nad hlavou
    jí krouží hvězdičky. Přikrade se kočka, chvíli vrtí zadkem, skočí —
-   a vlaštovka těsně před ní vystřelí pryč. Kočka zůstane sedět, otráveně
+   a vlaštovka těsně před ní vystřelí pryč. S netopýrem je to stejné. Kočka zůstane sedět, otráveně
    se rozhlédne, olízne si tlapku a odejde. Ostatní z hejnka poblíž se
    vyplaší (obrátí směr, zrychlí, vystoupají). Během scénky klik jen plaší.
    Spadlá vlaštovka a kočka se kreslí na druhé plátno, které je v DOM
@@ -34,6 +37,7 @@
   var PAUZA_OD = 6, PAUZA_DO = 16;   // s mezi přelety
   var BARVA = '#16213F';             // tmavě modročerná, jako hřbet vlaštovky
   var KOCKA = '#2A2431', OKO = '#E9CF3A', HVEZDA = '#F6D93B';
+  var NETOPYR = '#07060A';
   var ZEM = 0.72;                    // kde v louce (0 = horní hrana, 1 = dno) leží vlaštovka a chodí kočka
 
   var koren = document.documentElement;
@@ -41,7 +45,8 @@
   var zem = null, zctx = null;       // plátno za loukou
   var scenka = null;
   var sirka = 0, vyska = 0;
-  var ptaci = [];
+  var ptaci = [];                    // vlaštovky i netopýři (p.netopyr)
+  var zablesky = [];                 // kde netopýr právě sežral světlušku
   var bezi = false, viditelny = true, casovac = null;
   var naposled = 0;
 
@@ -93,6 +98,128 @@
     c.lineTo(-6, 1.2);
     c.fill();
     c.restore();
+  }
+
+  /* Netopýr zepředu, hlavou nahoru (−y), rozpětí 40 jednotek. `mav` −1…1:
+     1 = křídla nahoře, −1 = dole. `slozena` 0–1 přitáhne křídla k tělu. */
+  function nakreslitNetopyra(c, x, y, uhel, rozpeti, mav, slozena) {
+    var m = rozpeti / 40, w = 1 - 0.6 * (slozena || 0);
+    c.save();
+    c.translate(x, y);
+    c.rotate(uhel);
+    c.scale(m, m);
+    c.fillStyle = NETOPYR;
+    c.beginPath();
+    c.ellipse(0, 1, 3, 5.5, 0, 0, Math.PI * 2);
+    c.moveTo(2.6, -5);
+    c.arc(0, -5, 2.6, 0, Math.PI * 2);
+    c.moveTo(-2.5, -6); c.lineTo(-2.3, -10.5); c.lineTo(-0.5, -7);   // uši
+    c.moveTo(2.5, -6); c.lineTo(2.3, -10.5); c.lineTo(0.5, -7);
+    c.fill();
+    // Křídla: náběžná hrana obloukem ke špičce, zadní vykrojená mezi prsty.
+    for (var s = -1; s <= 1; s += 2) {
+      var ty = -9 * mav;
+      c.beginPath();
+      c.moveTo(s * 2, -2);
+      c.quadraticCurveTo(s * 10 * w, -4 - 9 * mav, s * 20 * w, ty - 1);
+      c.quadraticCurveTo(s * 16 * w, ty * 0.6 + 1, s * 14 * w, ty * 0.55 + 6);
+      c.quadraticCurveTo(s * 10 * w, ty * 0.3 + 2, s * 8 * w, ty * 0.3 + 7);
+      c.quadraticCurveTo(s * 5 * w, ty * 0.1 + 3, s * 2, 5);
+      c.closePath();
+      c.fill();
+    }
+    c.restore();
+  }
+
+  function naklon(vx) { return Math.max(-0.5, Math.min(0.5, vx / 600)); }
+
+  function netopyri() {
+    var pocet = 1 + Math.floor(Math.random() * 3);
+    var zaklad = Math.max(14, Math.min(26, sirka / 55));
+    var louka = horniHranaLouky();
+    for (var i = 0; i < pocet; i++) {
+      var zleva = Math.random() < 0.5;
+      ptaci.push({
+        netopyr: true,
+        t: 0,
+        zpozdeni: i * nahoda(0.5, 2.5),
+        x: zleva ? -40 : sirka + 40,
+        y: nahoda(vyska * 0.1, louka * 0.8),
+        vx: (zleva ? 1 : -1) * 120, vy: 0,
+        zbyva: nahoda(12, 25),          // s, jak dlouho loví, než odletí
+        cil: null, cilDo: 0, korist: null, domu: null,
+        rychlost: nahoda(150, 210) * Math.max(0.7, Math.min(1, sirka / 1200)),
+        rozpeti: zaklad * nahoda(0.85, 1.15),
+        pruhlednost: 1,
+        mavani: nahoda(6, 8)
+      });
+    }
+  }
+
+  /* Netopýr neletí po dráze jako vlaštovka: kličkuje mezi náhodnými body
+     nad loukou (nový každou chvíli, z toho ten trhaný let) a občas si
+     vyhlédne světlušku, zrychlí a sežere ji. Když mu vyprší čas nebo
+     začne den, odletí za bližší okraj. Vrací false, když je pryč. */
+  function letNetopyra(p, dt) {
+    var t = p.t - p.zpozdeni;
+    if (t < 0) return true;
+    p.zbyva -= dt;
+    var sv = window.SVETLUSKY;
+    if (p.korist && (p.korist.snezena || t > p.cilDo)) p.korist = null;   // nechytil, vzdá to
+    if (!p.domu && (p.zbyva <= 0 || !koren.hasAttribute('data-noc'))) {
+      p.domu = { x: p.x < sirka / 2 ? -80 : sirka + 80, y: nahoda(0, vyska * 0.3) };
+      p.korist = null;
+    }
+    if (p.domu) p.cil = p.domu;
+    else if (p.korist) p.cil = p.korist;
+    else if (!p.cil || t > p.cilDo) {
+      var seznam = sv ? sv.seznam() : [];
+      if (seznam.length && Math.random() < 0.35) {
+        p.korist = p.cil = seznam[Math.floor(Math.random() * seznam.length)];
+        p.cilDo = t + 4;
+      } else {
+        p.cil = { x: nahoda(sirka * 0.05, sirka * 0.95), y: nahoda(vyska * 0.08, horniHranaLouky() + 10) };
+        p.cilDo = t + nahoda(0.4, 1.1);
+      }
+    }
+
+    var dx = p.cil.x - p.x, dy = p.cil.y - p.y, d = Math.hypot(dx, dy) || 1;
+    var v = p.rychlost * (p.korist ? 1.4 : 1);
+    var k = Math.min(1, dt * (p.korist ? 5 : 3));
+    p.vx += (dx / d * v - p.vx) * k + nahoda(-1, 1) * 900 * dt;
+    p.vy += (dy / d * v - p.vy) * k + nahoda(-1, 1) * 900 * dt;
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+
+    if (p.korist && d < Math.max(8, p.rozpeti * 0.35)) {
+      sv.sezrat(p.korist);
+      zablesky.push({ x: p.korist.x, y: p.korist.y, t: 0 });
+      p.korist = p.cil = null;
+      p.vy -= 120;                                   // a hned zas nahoru
+    } else if (!p.korist && !p.domu && d < 20) {
+      p.cilDo = 0;
+    }
+    if (p.domu && (p.x < -60 || p.x > sirka + 60)) return false;
+
+    nakreslitNetopyra(ctx, p.x, p.y, naklon(p.vx), p.rozpeti, Math.sin(t * p.mavani * 6.28), 0);
+    return true;
+  }
+
+  // Sežraná světluška naposled krátce blikne.
+  function kreslitZablesky(dt) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (var i = zablesky.length - 1; i >= 0; i--) {
+      var z = zablesky[i];
+      z.t += dt;
+      if (z.t > 0.3) { zablesky.splice(i, 1); continue; }
+      ctx.globalAlpha = 0.7 * (1 - z.t / 0.3);
+      ctx.fillStyle = '#E6FA82';
+      ctx.beginPath();
+      ctx.arc(z.x, z.y, 3 + 10 * z.t / 0.3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
   }
 
   function hejno() {
@@ -152,6 +279,10 @@
         if (!uletet(p, dt)) ptaci.splice(i, 1);
         continue;
       }
+      if (p.netopyr) {
+        if (!letNetopyra(p, dt)) ptaci.splice(i, 1);
+        continue;
+      }
       var t = p.t - p.zpozdeni;
       if (t < 0) continue;
       if (t > p.doba) { ptaci.splice(i, 1); continue; }
@@ -166,7 +297,9 @@
       p.x = a.x; p.y = a.y; p.vx = (b.x - a.x) / 0.02; p.vy = (b.y - a.y) / 0.02;   // pro vyplašení
     }
 
-    if (!ptaci.length && !scenka) {
+    kreslitZablesky(dt);
+
+    if (!ptaci.length && !scenka && !zablesky.length) {
       bezi = false;
       naplanovat();
       return;
@@ -197,8 +330,12 @@
     u.vy -= 40 * dt;                                 // a výšku
     u.x += u.vx * dt;
     u.y += u.vy * dt;
-    var kridla = 0.5 + 0.5 * Math.cos(u.t * p.mavani * 1.7 * 6.28);
-    nakreslit(ctx, u.x, u.y, Math.atan2(u.vy, u.vx), p.rozpeti, kridla, p.pruhlednost);
+    if (p.netopyr) {
+      nakreslitNetopyra(ctx, u.x, u.y, naklon(u.vx), p.rozpeti, Math.sin(u.t * p.mavani * 1.6 * 6.28), 0);
+    } else {
+      var kridla = 0.5 + 0.5 * Math.cos(u.t * p.mavani * 1.7 * 6.28);
+      nakreslit(ctx, u.x, u.y, Math.atan2(u.vy, u.vx), p.rozpeti, kridla, p.pruhlednost);
+    }
     return u.x > -80 && u.x < sirka + 80 && u.y > -80;
   }
 
@@ -289,12 +426,16 @@
     if (!s.uletela) {
       if (s.faze === 'pad') {
         var dole = Math.max(0, Math.min(1, (s.y - s.y0) / (s.zemY - s.y0 || 1)));
-        nakreslit(zctx, s.x, s.y, s.uhel, p.rozpeti + (s.r - p.rozpeti) * dole, 0.6 + 0.4 * Math.sin(s.cas * 30), p.pruhlednost);
+        var r = p.rozpeti + (s.r - p.rozpeti) * dole;
+        if (p.netopyr) nakreslitNetopyra(zctx, s.x, s.y, s.uhel, r, Math.sin(s.cas * 40), 0.3);
+        else nakreslit(zctx, s.x, s.y, s.uhel, r, 0.6 + 0.4 * Math.sin(s.cas * 30), p.pruhlednost);
       } else {
         // Leží, občas sebou cukne; když kočka vrtí zadkem, probírá se.
         var cuk = s.faze === 'vrti' ? 0.12 * Math.sin(s.cas * 20) : 0.04 * Math.sin(s.cas * 2.5);
         var y = s.y - 2 * mb;
-        nakreslit(zctx, s.x, y, s.lezi + cuk, s.r, 0.8 + cuk, p.pruhlednost);
+        // Netopýr má hlavu na −y, vlaštovka na +x — proto ta čtvrtotáčka.
+        if (p.netopyr) nakreslitNetopyra(zctx, s.x, y, s.lezi + Math.PI / 2 + cuk, s.r, 0.2 + cuk * 3, 0.7);
+        else nakreslit(zctx, s.x, y, s.lezi + cuk, s.r, 0.8 + cuk, p.pruhlednost);
         // Hvězdičky nad hlavou — na horním plátně, ať je kytky nezakryjí.
         hvezdicky(ctx, s.x + Math.cos(s.lezi) * 7 * mb, y + Math.sin(s.lezi) * 7 * mb - 12 * mb,
           s.cas, mb * 1.3);
@@ -431,7 +572,7 @@
     c.restore();
   }
 
-  // Klik/ťuknutí: trefená vlaštovka spadne (nebo se jen vyplaší, když
+  // Klik/ťuknutí: trefená vlaštovka (netopýr) spadne (nebo se jen vyplaší, když
   // už jedna scénka běží), ty z hejna poblíž se vyplaší.
   hero.addEventListener('pointerdown', function (e) {
     if (!bezi || !ptaci.length) return;
@@ -456,7 +597,7 @@
 
   function vyletet() {
     casovac = null;
-    if (!viditelny || koren.hasAttribute('data-noc') || document.hidden) {
+    if (!viditelny || document.hidden) {
       naplanovat();
       return;
     }
@@ -473,7 +614,7 @@
       zctx = zem.getContext('2d');
       zmerit();
     }
-    hejno();
+    if (koren.hasAttribute('data-noc')) netopyri(); else hejno();
     if (!bezi) {
       bezi = true;
       naposled = performance.now();
@@ -483,7 +624,9 @@
 
   function naplanovat(za) {
     if (casovac) return;
-    casovac = setTimeout(vyletet, (za != null ? za : nahoda(PAUZA_OD, PAUZA_DO)) * 1000);
+    // Netopýři se vracejí dřív — v noci mají být skoro pořád.
+    if (za == null) za = koren.hasAttribute('data-noc') ? nahoda(2, 6) : nahoda(PAUZA_OD, PAUZA_DO);
+    casovac = setTimeout(vyletet, za * 1000);
   }
 
   if ('IntersectionObserver' in window) {
@@ -499,6 +642,6 @@
     zmenaCeka = setTimeout(zmerit, 200);
   }, { passive: true });
 
-  // První hejno brzy po načtení, ať je vidět, že tu jsou.
+  // První hejno (netopýři) brzy po načtení, ať je vidět, že tu jsou.
   naplanovat(nahoda(1.5, 3));
 })();

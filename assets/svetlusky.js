@@ -10,6 +10,9 @@
    rytmem. Když živé SVG není (vitr.js selhal), míří na náhodná místa
    v horní části louky.
 
+   Netopýři z assets/vlastovky.js je loví přes window.SVETLUSKY: sežraná
+   zhasne a za pár vteřin se rozsvítí na jiném květu.
+
    Je to jediný trvalý pohyb na stránce — proto jen v noci, jen když je
    hero na obrazovce, a pod prefers-reduced-motion vůbec.
    ========================================================================== */
@@ -224,8 +227,17 @@
     ctx.globalCompositeOperation = 'lighter';
     for (var i = 0; i < svetlusky.length; i++) {
       var s = svetlusky[i];
+      if (s.snezena) {
+        if (cas < s.zpet) continue;
+        var start = bodNa(aktualniCile()[Math.floor(Math.random() * cile.length)]);
+        s.x = start.x; s.y = start.y; s.cil = start;
+        s.vx = s.vy = 0;
+        s.sedi = nahoda(1, 3);
+        s.snezena = false;
+      }
       pohnout(s, dt);
-      ctx.globalAlpha = svit(s) * jas;
+      // Nová se rozsvěcí pomalu, ať nevyskočí.
+      ctx.globalAlpha = svit(s) * jas * (s.zpet ? Math.min(1, (cas - s.zpet) / 1.5) : 1);
       ctx.drawImage(sprite, s.x - 9, s.y - 9, 18, 18);
     }
     ctx.globalAlpha = 1;
@@ -257,6 +269,16 @@
     bezi = false;
     if (platno && jas === 0) platno.hidden = true;
   }
+
+  window.SVETLUSKY = {
+    seznam: function () {
+      return bezi ? svetlusky.filter(function (s) { return !s.snezena; }) : [];
+    },
+    sezrat: function (s) {
+      s.snezena = true;
+      s.zpet = cas + nahoda(5, 10);
+    }
+  };
 
   new MutationObserver(spustit).observe(koren, { attributes: true, attributeFilter: ['data-noc'] });
 
