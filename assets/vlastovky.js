@@ -15,9 +15,10 @@
 
    Klik (ťuknutí) na vlaštovku ji omráčí: spadne mezi kytky, nad hlavou
    jí krouží hvězdičky. Přikrade se kočka, chvíli vrtí zadkem, skočí —
-   a vlaštovka těsně před ní vystřelí pryč. S netopýrem je to stejné. Kočka zůstane sedět, otráveně
+   a vlaštovka těsně před ní vystřelí pryč. Kočka zůstane sedět, otráveně
    se rozhlédne, olízne si tlapku a odejde. Ostatní z hejnka poblíž se
    vyplaší (obrátí směr, zrychlí, vystoupají). Během scénky klik jen plaší.
+   S netopýrem je to stejné.
    Spadlá vlaštovka a kočka se kreslí na druhé plátno, které je v DOM
    před loukou — proto jsou za kytkami. Louka se kolem kočky rozhrne
    (window.LOUKA z assets/vitr.js).
@@ -624,8 +625,17 @@
 
   function naplanovat(za) {
     if (casovac) return;
-    // Netopýři se vracejí dřív — v noci mají být skoro pořád.
-    if (za == null) za = koren.hasAttribute('data-noc') ? nahoda(2, 6) : nahoda(PAUZA_OD, PAUZA_DO);
+    // Netopýři se vracejí dřív — v noci mají být skoro pořád. Na telefonu
+    // (dotykový ukazatel) s delší pauzou, ať se plátno nehýbe nonstop a
+    // nežere baterku. Pod prefers-reduced-motion se skript vůbec nespustí.
+    if (za == null) {
+      if (koren.hasAttribute('data-noc')) {
+        var dotyk = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+        za = dotyk ? nahoda(6, 14) : nahoda(2, 6);
+      } else {
+        za = nahoda(PAUZA_OD, PAUZA_DO);
+      }
+    }
     casovac = setTimeout(vyletet, za * 1000);
   }
 

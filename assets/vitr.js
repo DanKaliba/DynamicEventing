@@ -93,7 +93,10 @@
       var doc = new DOMParser().parseFromString(text, 'image/svg+xml');
       var svg = doc.documentElement;
       if (!svg || svg.nodeName !== 'svg' || svg.querySelector('parsererror')) return ukazat();
-      zamichat(svg);
+      // Když se SVG načetlo až po pojistce z <head> (4 s), je statická louka už
+      // vidět — nová rozmístění by rostliny viditelně přeskočila, takže se
+      // ponechá původní a vymění se jen za živé SVG (bez nástupu).
+      if (koren.classList.contains('louka-ceka')) zamichat(svg);
 
       // Louka je dekorace; odečítače obrazovky ji mají přeskočit.
       // Obrázek byl schovaný, takže nástup ještě nikdo neviděl — přehraje se tady.
